@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <% if (BASE_URL === './') { %><base href="app://./" /><% } %>
+    <% if (VUE_APP_NODE_MODULES_PATH !== "false") { %><script>require('module').globalPaths.push('<%= VUE_APP_NODE_MODULES_PATH %>')</script><% } %>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -13,5 +15,34 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <style>
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgb(24, 135, 244);
+    }
+    ::-webkit-scrollbar-track {
+      background: rgb(241, 241, 241);
+    }
+    .blis-grid{
+      display: grid;
+    }
+    .blis-stats-card-parent{
+      padding:10px;
+    }
+    .blis-stats-card{
+      padding: 15px;
+      background-color: white;
+    }
+    .blis-stats-num{
+      font-size: 2rem;
+    }
+    .blis-stats-num-label{
+      color: #d1d1d1;
+
+    }
+    </style>
   </body>
 </html>

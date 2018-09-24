@@ -5,16 +5,32 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build:electron": "vue-cli-service build:electron",
+    "serve:electron": "vue-cli-service serve:electron",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "vue": "^2.5.17"
+    "@casl/ability": "^2.4.2",
+    "@casl/vue": "^0.4.3",
+    "axios": "^0.18.0",
+    "chart.js": "^2.7.2",
+    "material-design-icons-iconfont": "^3.0.3",
+    "roboto-fontface": "*",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
+    "vuetify": "^1.2.0",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.3",
     "@vue/cli-plugin-eslint": "^3.0.3",
     "@vue/cli-service": "^3.0.3",
-    "vue-template-compiler": "^2.5.17"
+    "electron": "^2.0.2",
+    "vue-cli-plugin-electron-builder": "^1.0.0-rc.3",
+    "vue-cli-plugin-vuetify": "^0.2.0",
+    "vue-template-compiler": "^2.5.17",
+    "webpack-dev-server": "^3.1.8"
   },
   "eslintConfig": {
     "root": true,
@@ -39,5 +55,6 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "main": "dist_electron/bundled/background.js"
 }
