@@ -50,6 +50,7 @@
   import apiCall from '../../utils/api'
 
   export default {
+    name: 'Permissions',
     data: () => ({
       valid: true,
       search: '',

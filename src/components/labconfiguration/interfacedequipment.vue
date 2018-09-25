@@ -93,6 +93,7 @@
 <script>
   import apiCall from '../../utils/api'
   export default {
+    name:'InterfacedEquipment',
     data: () => ({
       valid: true,
       dialog: false,

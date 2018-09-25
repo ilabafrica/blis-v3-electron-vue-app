@@ -99,6 +99,7 @@
   import apiCall from '../../utils/api'
   import result from './result'
   export default {
+    name: 'ControlTest',
     components: {
       result,
     },

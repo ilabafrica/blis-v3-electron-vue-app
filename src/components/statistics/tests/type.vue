@@ -307,8 +307,9 @@
 <script>
 import apiCall from "../../../utils/api";
 import Chart from "chart.js";
+import Vue from "vue";
 export default {
-   
+    name:'TestStatsType',
   data: () => ({
     url_prefix: "/api/stats/",
     search: "",

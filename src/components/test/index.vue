@@ -151,6 +151,7 @@
   import result from './result'
 
   export default {
+    name: 'Test',
     components: {
       specimencollection,
       result,
@@ -240,8 +241,6 @@
 
           return '';
         }
-
-          return ~~((Date.now() - Date.parse(birthday)) / (31557600000));
       },
 
       collectSpecimen (test) {

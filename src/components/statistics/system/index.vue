@@ -42,6 +42,7 @@
 import apiCall from "../../../utils/api";
 import Chart from "chart.js";
 export default {
+    name:'Stats',
   data: () => ({
     url_prefix: "/api/stats/",
     search: "",

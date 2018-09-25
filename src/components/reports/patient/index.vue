@@ -56,8 +56,10 @@
 <script>
   import apiCall from '../../../utils/api'
   import { EventBus } from '../../../main.js';
+  import Vue from 'vue';
 
   export default {
+    name:'PatientReport',
     components: {
     },
     data: () => ({

@@ -77,6 +77,7 @@
 <script>
   import apiCall from '../../utils/api'
   export default {
+    name:'Role',
     data: () => ({
       valid: true,
       dialog: false,

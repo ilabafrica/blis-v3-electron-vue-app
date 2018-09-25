@@ -95,6 +95,7 @@
 <script>
   import apiCall from '../../utils/api'
   export default {
+    name: 'TestTypeCategory',
     data: () => ({
       valid: true,
       dialog: false,

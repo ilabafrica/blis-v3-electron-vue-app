@@ -415,6 +415,7 @@ import testdetail from '../../test/testdetail'
 import referral from '../../test/referral'
 import result from '../../test/result'
 export default {
+    name:'TestStatsSearch',
     components: {
         specimencollection,
         result,

@@ -102,6 +102,7 @@
 <script>
   import apiCall from '../../utils/api'
   export default {
+    name:'UserAccounts',
     data: () => ({
       valid: true,
       dialog: false,

@@ -97,6 +97,7 @@
 <script>
   import apiCall from '../../../utils/api'
   export default {
+    name: 'TestType',
     data: () => ({
       dialog: false,
       dialogTestType: false,

@@ -64,6 +64,7 @@
 <script>
   import apiCall from '../../utils/api'
   export default {
+    name: 'SpecimenRejectionReason',
     data: () => ({
       valid: true,
       dialog: false,

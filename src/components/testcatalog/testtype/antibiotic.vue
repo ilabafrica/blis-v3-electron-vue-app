@@ -81,6 +81,7 @@
 <script>
   import apiCall from '../../../utils/api'
   export default {
+    name: 'Antibiotic',
     data: () => ({
       valid: true,
       dialog: false,

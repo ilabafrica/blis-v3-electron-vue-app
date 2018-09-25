@@ -44,7 +44,6 @@
                   label="Instrument"
                 ></v-select>
               </v-flex>
-              </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
@@ -104,6 +103,7 @@
 <script>
   import apiCall from '../../utils/api'
   export default {
+    name:'Lot',
     data: () => ({
       calendar: false,
       landscape: true,

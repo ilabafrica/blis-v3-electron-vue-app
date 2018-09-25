@@ -264,7 +264,8 @@
 </template>
 <script>
   import apiCall from '../../../utils/api'
-export default {
+  export default {
+    name:'Measure',
     data: () => ({
       dialog: false,
       dialogMeasure: false,

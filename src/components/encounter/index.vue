@@ -78,6 +78,7 @@
   import encounterdetail from './encounterdetail'
 
   export default {
+    name:'Encounter',
     components: {
       specimencollection,
       encounterdetail,
@@ -163,8 +164,6 @@
 
           return '';
         }
-
-          return ~~((Date.now() - Date.parse(birthday)) / (31557600000));
       },
 
       collectSpecimen (encounter) {

@@ -6,6 +6,33 @@ import Home from '../components/home'
 import Sidebar from '../components/sidebar'
 import Patient from '../components/patients/patient'
 import HealthUnit from '../components/labconfiguration/healthunit'
+import Organization from '../components/labconfiguration/organization'
+import InterfacedEquipment from '../components/labconfiguration/interfacedequipment'
+import TestTypeCategory from '../components/testcatalog/testtypecategory'
+import SpecimenType from '../components/testcatalog/specimentype'
+import TestType from '../components/testcatalog/testtype/index'
+import Measure from '../components/testcatalog/testtype/measure'
+import SpecimenRejectionReason from '../components/testcatalog/specimenrejectionreason'
+import Antibiotic from '../components/testcatalog/testtype/antibiotic'
+import UserAccounts from '../components/accesscontrol/useraccounts'
+import Permissions from '../components/accesscontrol/permissions'
+import Role from '../components/accesscontrol/role'
+import RoleUser from '../components/accesscontrol/roleusers'
+import Test from '../components/test/index'
+import Encounter from '../components/encounter/index'
+import Lot from '../components/qualitycontrol/lot'
+import Stats from '../components/statistics/system/index'
+import UserStats from '../components/statistics/users/index'
+import UserStatsSingle from '../components/statistics/users/single'
+import TestStats from '../components/statistics/tests/index'
+import SpecimenStats from '../components/statistics/specimen/index'
+import TestStatsSearch from '../components/statistics/tests/search'
+import TestStatsType from '../components/statistics/tests/type'
+import InfectionReport from '../components/reports/infection'
+import PatientReport from '../components/reports/patient/index'
+import PatientReportSingle from '../components/reports/patient/single'
+import ControlTest from '../components/qualitycontrol/controltest'
+
 
 Vue.use(Router)
 
@@ -60,170 +87,170 @@ export default new Router({
     {
       path: '/labconfiguration/organization',
       name: 'Organization',
-      component: require('../components/labconfiguration/organization'),
+      component: Organization,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/labconfiguration/interfacedequipment',
       name: 'InterfacedEquipment',
-      component: require('../components/labconfiguration/interfacedequipment'),
+      component: InterfacedEquipment,
       beforeEnter: ifAuthenticated,
     },
     // Test Catalog
     {
       path: '/testcatalog/testtypecategory',
       name: 'LabSection',
-      component: require('../components/testcatalog/testtypecategory'),
+      component: TestTypeCategory,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/testcatalog/specimentype',
       name: 'SpecimenType',
-      component: require('../components/testcatalog/specimentype'),
+      component: SpecimenType,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/testcatalog/testtype',
       name: 'TestType',
-      component: require('../components/testcatalog/testtype/index'),
+      component: TestType,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/testcatalog/measures/:id/',
       name: 'Measure',
-      component: require('../components/testcatalog/testtype/measure'),
+      component: Measure,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/testcatalog/specimenrejectionreason',
       name: 'RejectionReason',
-      component: require('../components/testcatalog/specimenrejectionreason'),
+      component: SpecimenRejectionReason,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/testcatalog/antibiotic',
       name: 'Antibiotic',
-      component: require('../components/testcatalog/testtype/antibiotic'),
+      component: Antibiotic,
       beforeEnter: ifAuthenticated,
     },
     // Access Control
     {
       path: '/accesscontrol/useraccounts',
       name: 'UserAccount',
-      component: require('../components/accesscontrol/useraccounts'),
+      component: UserAccounts,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/accesscontrol/permissions',
       name: 'Permission',
-      component: require('../components/accesscontrol/permissions'),
+      component: Permissions,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/accesscontrol/role',
       name: 'Role',
-      component: require('../components/accesscontrol/role'),
+      component: Role,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/accesscontrol/roleusers',
       name: 'RoleUser',
-      component: require('../components/accesscontrol/roleusers'),
+      component: RoleUser,
       beforeEnter: ifAuthenticated,
     },
     //Routine and Reference Testing
     {
       path: '/test/index',
       name: 'Test',
-      component: require('../components/test/index'),
+      component: Test,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/encounter/index',
       name: 'Encounter',
-      component: require('../components/encounter/index'),
+      component: Encounter,
       beforeEnter: ifAuthenticated,
     },
     //Quality Control
     {
       path: '/qualitycontrol/lot',
       name: 'Lot',
-      component: require('../components/qualitycontrol/lot'),
+      component: Lot,
       beforeEnter: ifAuthenticated,
     },
     // General Stats
     {
       path: '/stats/',
       name: 'Stats',
-      component: require('../components/statistics/system/index'),
+      component: Stats,
       beforeEnter: ifAuthenticated,
     },
     //All Users Stats
     {
       path: '/stats/users',
       name: 'user_stats',
-      component: require('../components/statistics/users/index'),
+      component: UserStats,
       beforeEnter: ifAuthenticated,
     },
     //Single User Stats
     {
       path: '/stats/users/:id',
       name: 'single_user_stats',
-      component: require('../components/statistics/users/single'),
+      component: UserStatsSingle,
       beforeEnter: ifAuthenticated,
     },
     //All Tests Stats
     {
       path: '/stats/tests',
       name: 'tests_stats',
-      component: require('../components/statistics/tests/index'),
+      component: TestStats,
       beforeEnter: ifAuthenticated,
     },
     //All Specimen Stats
     {
       path: '/stats/specimen',
       name: 'specimen_stats',
-      component: require('../components/statistics/specimen/index'),
+      component: SpecimenStats,
     },
     //Search Tests Stats
     {
       path: '/stats/tests/search',
       name: 'tests_stats_search',
-      component: require('../components/statistics/tests/search'),
+      component: TestStatsSearch,
       beforeEnter: ifAuthenticated,
     },
     //Search Tests Stats
     {
       path: '/stats/tests/type',
       name: 'tests_stats_type',
-      component: require('../components/statistics/tests/type'),
+      component: TestStatsType,
       beforeEnter: ifAuthenticated,
     },
     //Reports
     {
       path: '/reports/infection',
       name: 'infection_report',
-      component: require('../components/reports/infection'),
+      component: InfectionReport,
       beforeEnter: ifAuthenticated,
     },
     //Patient Reports
     {
       path: '/reports/patients',
       name: 'patient_reports',
-      component: require('../components/reports/patient/index'),
+      component: PatientReport,
       beforeEnter: ifAuthenticated,
     },
     //Patient Reports
     {
       path: '/reports/patients/:id',
       name: 'patient_reports_single',
-      component: require('../components/reports/patient/single'),
+      component: PatientReportSingle,
       beforeEnter: ifAuthenticated,
     },
     {
       path: '/qualitycontrol/controltest',
       name: 'ControlTest',
-      component: require('../components/qualitycontrol/controltest'),
+      component: ControlTest,
       beforeEnter: ifAuthenticated,
     },
   ],

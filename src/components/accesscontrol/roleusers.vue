@@ -50,6 +50,7 @@
   import apiCall from '../../utils/api'
 
   export default {
+    name: 'RoleUser',
     data: () => ({
       valid: true,
       search: '',

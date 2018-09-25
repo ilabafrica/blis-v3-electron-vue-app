@@ -87,6 +87,7 @@
 <script>
   import apiCall from '../../utils/api'
   export default {
+    name: 'SpecimenType',
     data: () => ({
       valid: true,
       dialog: false,
