@@ -1,4 +1,6 @@
 import axios from 'axios'
+import electron from 'electron'
+const BrowserWindow = electron.remote.BrowserWindow;
 const base_url ="http://blis3.ilab"
 const apiCall = ({url, data, method}) => new Promise((resolve, reject) => {
   console.log(url)
@@ -13,13 +15,19 @@ const apiCall = ({url, data, method}) => new Promise((resolve, reject) => {
          method: 'GET',
          responseType: 'blob',
        }).then((response) => {
+        const win = new BrowserWindow()
           //create a blob from the pdf stream
          const file = new Blob([response.data], {type: 'application/pdf'});
           //build a url from the file
          const fileURL = URL.createObjectURL(file);
           //open the url on new window
-         window.open(fileURL);
-       });
+          console.log(fileURL)
+         win.loadURL(fileURL);
+        //  win.loadURL('https://github.com');
+        //  win.show()
+       }).catch((err)=>{
+         console.log("Error on PDF Load is, "+ err)
+       })
       } else if (method == 'GET') {
         axios.get(url, { crossdomain: true }).then((response) => {
           resolve(response.data)
