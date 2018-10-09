@@ -7,26 +7,28 @@
             </v-btn>
         </v-layout>
         <v-layout row wrap>
-            <v-data-table
-                :headers="headers"
-                :items="tableData"
-                hide-actions
-                class="elevation-1"
-            >
-                <template slot="items" slot-scope="props">
-                    <tr v-for="row in props.item" :key="row.uniqueKey">
-                        <td v-if="row.tt" :rowspan="row.tt.rc">{{row.tt.value}}</td>
-                        <td v-if="row.measure" :rowspan="row.measure.rc">{{row.measure.value}}</td>
-                        <td v-if="row.measure_range" :rowspan="row.measure_range.rc">{{row.measure_range.value}}</td>
-                        <td v-if="row.gender" :rowspan="row.gender.rc">{{row.gender.value}}</td>
-                        <td v-if="row.under_5" :rowspan="row.under_5.rc">{{row.under_5.value}}</td>
-                        <td v-if="row['5_to_20']" :rowspan="row['5_to_20'].rc">{{row['5_to_20'].value}}</td>
-                        <td v-if="row.over_20" :rowspan="row.over_20.rc">{{row.over_20.value}}</td>
-                        <td v-if="row.total" :rowspan="row.total.rc">{{row.total.value}}</td>
-                        <td v-if="row.main_total" :rowspan="row.main_total.rc">{{row.main_total.value}}</td>
-                    </tr>
-                </template>
-            </v-data-table>
+            <v-flex sm12>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableData"
+                    hide-actions
+                    class="elevation-1"
+                >
+                    <template slot="items" slot-scope="props">
+                        <tr v-for="row in props.item" :key="row.uniqueKey">
+                            <td v-if="row.tt" :rowspan="row.tt.rc">{{row.tt.value}}</td>
+                            <td v-if="row.measure" :rowspan="row.measure.rc">{{row.measure.value}}</td>
+                            <td v-if="row.measure_range" :rowspan="row.measure_range.rc">{{row.measure_range.value}}</td>
+                            <td v-if="row.gender" :rowspan="row.gender.rc">{{row.gender.value}}</td>
+                            <td v-if="row.under_5" :rowspan="row.under_5.rc">{{row.under_5.value}}</td>
+                            <td v-if="row['5_to_20']" :rowspan="row['5_to_20'].rc">{{row['5_to_20'].value}}</td>
+                            <td v-if="row.over_20" :rowspan="row.over_20.rc">{{row.over_20.value}}</td>
+                            <td v-if="row.total" :rowspan="row.total.rc">{{row.total.value}}</td>
+                            <td v-if="row.main_total" :rowspan="row.main_total.rc">{{row.main_total.value}}</td>
+                        </tr>
+                    </template>
+                </v-data-table>
+            </v-flex>
         </v-layout>
     </div>
 </template>

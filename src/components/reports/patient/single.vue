@@ -1,13 +1,13 @@
 <template>
     <div>
         <v-layout row wrap align-center>
-            <v-flex xs12 md6 pa-4 v-if="patient.name" style="font-size:1.4em;">
+            <v-flex xs12 sm7 md6 pa-4 v-if="patient.name" style="font-size:1.4em;">
                 <b>Patient Name:</b> {{patient.name.family}}, {{patient.name.given}}<br>
                 <b>Gender:</b> {{patient.gender.display}} <br>
                 <b>Date Of Birth:</b> {{patient.birth_date}}
             </v-flex>
-            <v-flex xs12 md6 text-md-right pr-5>
-                <p style="font-size:1.4rem; font-weight:100">Patient Report</p>
+            <v-flex xs12 sm5 md6 text-sm-right pr-5>
+                <p class="hidden-xs-only" style="font-size:1.4rem; font-weight:100">Patient Report</p>
                 <v-btn @click.native="getPDF()">Get PDF</v-btn>
             </v-flex>
         </v-layout>
