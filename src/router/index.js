@@ -32,6 +32,7 @@ import InfectionReport from '../components/reports/infection'
 import PatientReport from '../components/reports/patient/index'
 import PatientReportSingle from '../components/reports/patient/single'
 import ControlTest from '../components/qualitycontrol/controltest'
+import Profile from '../components/account/profile'
 
 
 Vue.use(Router)
@@ -75,6 +76,13 @@ export default new Router({
       path: '/patients/patient',
       name: 'Patient',
       component: Patient,
+      beforeEnter: ifAuthenticated,
+    },
+    // User Profile
+    {
+      path: '/account/profile',
+      name: 'Profile',
+      component: Profile,
       beforeEnter: ifAuthenticated,
     },
     // Lab Configurations

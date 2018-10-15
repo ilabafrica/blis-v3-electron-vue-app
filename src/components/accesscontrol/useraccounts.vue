@@ -1,11 +1,24 @@
 <template>
   <div>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn slot="activator" color="primary" dark class="mb-2">New User</v-btn>
+      <v-btn
+        outline
+        small
+        color="primary"
+        slot="activator"
+        flat>
+        New User
+        <v-icon right dark>playlist_add</v-icon>
+      </v-btn>
       <v-card>
-        <v-card-title>
-          <span class="headline">{{ formTitle }}</span>
-        </v-card-title>
+        <v-toolbar dark color="primary" class="elevation-0">
+          <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn round outline color="blue lighten-1" flat @click.native="close">
+            Cancel
+            <v-icon right dark>close</v-icon>
+          </v-btn>
+        </v-toolbar>
         <v-form ref="form" v-model="valid" lazy-validation>
         <v-card-text>
           <v-container grid-list-md>
@@ -31,14 +44,28 @@
                   label="Email Address">
                 </v-text-field>
               </v-flex>
+              <div>
+                <v-btn small color="primary" dark @click.native="passordReset">Reset Password</v-btn>
+              </div>
+              <v-flex xs12 sm12 md12
+                v-if="showPasswordField">
+                <v-text-field
+                  v-model="password"
+                  :rules="[v => !!v || 'New Password is Required']"
+                  type = "text"
+                  append-icon="autorenew"
+                  @click:append="generate"
+                  label="New Password">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs3 offset-xs9 text-xs-right>
+                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                  Save <v-icon right dark>cloud_upload</v-icon>
+                </v-btn>
+              </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="save">Save</v-btn>
-        </v-card-actions>
       </v-form>
       </v-card>
     </v-dialog>
@@ -65,7 +92,7 @@
       <td class="text-xs-left">{{ props.item.name }}</td>
       <td class="text-xs-left">{{ props.item.email }}</td>
       <td class="justify-left layout px-0">
-            <v-btn
+          <v-btn
             outline
             small
             title="Edit"
@@ -108,8 +135,12 @@
       dialog: false,
       delete: false,
       saving: false,
+      size: 32,
+      characters: 'a-z,A-Z,0-9,#',
+      showPasswordField: false,
       search: '',
       query: '',
+      password: '',
       pagination: {
         page: 1,
         per_page: 0,
@@ -178,7 +209,29 @@
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
-
+      generate: function() {
+        let charactersArray = this.characters.split(',');  
+        let CharacterSet = '';
+        let password = '';
+        
+        if( charactersArray.indexOf('a-z') >= 0) {
+          CharacterSet += 'abcdefghijklmnopqrstuvwxyz';
+        }
+        if( charactersArray.indexOf('A-Z') >= 0) {
+          CharacterSet += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        }
+        if( charactersArray.indexOf('0-9') >= 0) {
+          CharacterSet += '0123456789';
+        }
+        if( charactersArray.indexOf('#') >= 0) {
+          CharacterSet += '![]{}()%&*$#^<>~@|';
+        }
+        
+        for(let i=0; i < this.size; i++) {
+          password += CharacterSet.charAt(Math.floor(Math.random() * CharacterSet.length));
+        }
+        this.password = password;
+      },
       deleteItem (item) {
         confirm('Are you sure you want to delete this user?') && (this.delete = true)
         if (this.delete) {
@@ -207,6 +260,17 @@
       resetDialogReferences() {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
+        this.showPasswordField = false
+        this.password = ''
+      },
+
+      passordReset () {
+        if (this.showPasswordField){
+          this.showPasswordField = false
+          this.password = ''
+        }else{
+          this.showPasswordField = true;
+        }
       },
 
       save () {
@@ -214,6 +278,10 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
+          if(this.showPasswordField){
+            this.editedItem.adminPasswordChange = true
+            this.editedItem.password = this.password
+          }
           apiCall({url: '/api/user/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
             Object.assign(this.user[this.editedIndex], this.editedItem)

@@ -2,7 +2,15 @@
   <div>
     <testrequest ref="testRequestForm"></testrequest>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn slot="activator" color="primary" dark class="mb-2">New Patient</v-btn>
+      <v-btn
+        outline
+        small
+        color="primary"
+        slot="activator"
+        flat>
+        New Patient
+        <v-icon right dark>playlist_add</v-icon>
+      </v-btn>
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
           <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
@@ -50,16 +58,16 @@
               <v-flex xs12 sm12 md12>
                 Gender
                 <v-radio-group v-if="editedIndex > -1"
-                  v-model="editedItem.gender.display" row
+                  v-model="editedItem.gender_id" row
                   >
-                  <v-radio label="Male" value="2"></v-radio>
-                  <v-radio label="Female" value="1"></v-radio>
+                  <v-radio label="Male" :value="1"></v-radio>
+                  <v-radio label="Female" :value="2"></v-radio>
                 </v-radio-group>
                 <v-radio-group v-if="editedIndex === -1"
                   v-model="editedItem.gender_id" row
                   >
-                  <v-radio label="Male" value="2"></v-radio>
-                  <v-radio label="Female" value="1"></v-radio>
+                  <v-radio label="Male" value="1"></v-radio>
+                  <v-radio label="Female" value="2"></v-radio>
                 </v-radio-group>
               </v-flex>
               <v-flex xs12 sm12 md12>
@@ -72,11 +80,11 @@
                 </v-text-field>
                 <v-date-picker v-show="calendar" v-model="editedItem.birth_date" :landscape="landscape" :reactive="reactive"></v-date-picker>
               </v-flex>
-               <v-flex xs3 offset-xs9 text-xs-right>
-              <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
-                Save <v-icon right dark>cloud_upload</v-icon>
-              </v-btn>
-               </v-flex>
+              <v-flex xs3 offset-xs9 text-xs-right>
+                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                  Save <v-icon right dark>cloud_upload</v-icon>
+                </v-btn>
+              </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
@@ -174,7 +182,7 @@
 <script>
   import apiCall from '../../utils/api'
   import testrequest from './testrequest'
-  import { EventBus } from './../../main.js';
+  import { EventBus } from './../../main.js'
 
   export default {
     name:'Patient',

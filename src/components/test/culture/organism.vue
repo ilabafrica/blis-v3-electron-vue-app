@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
-          <v-toolbar-title>Reject Specimen</v-toolbar-title>
+          <v-toolbar-title>Add Organism Isolated</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn round outline color="blue lighten-1" flat @click.native="close">
             Cancel
@@ -16,12 +16,13 @@
                 <v-layout wrap>
                   <v-flex xs12 sm12 md12>
                     <v-select
-                      v-bind:items="rejectionReasons"
-                      v-model="specimenRejection.rejectionReasonIds"
-                      label="Rejecion Reasons"
+                      :items="measureRanges"
+                      v-model="result.measure_range_id"
+                      overflow
                       item-text="display"
+                      :rules="[v => !!v || 'Isolated Organism by is Required']"
                       item-value="id"
-                      autocomplete multiple chips>
+                      label="Isolated Organism">
                     </v-select>
                   </v-flex>
                   <v-flex xs3 offset-xs9 text-xs-right>
@@ -39,23 +40,20 @@
 </template>
 
 <script>
-  import { EventBus } from './../../main.js'
-  import apiCall from '../../utils/api'
+  import { EventBus } from './../../../app.js'
+  import apiCall from '../../../utils/api'
   export default {
     data: () => ({
-      calendar: false,
-      landscape: true,
-      reactive: true,
       valid: true,
       dialog: false,
       saving: false,
-      specimenRejection: {
+      measureRanges: [],
+      measure: {},
+      result: {
         test_id: '',
-        specimen_id: '',
-        rejectionReasonIds: [],
+        measure_id: '',
+        measure_range_id: '',
       },
-      rejectionReasons: [],
-      test: {}
     }),
 
     watch: {
@@ -66,44 +64,38 @@
 
     methods: {
 
-      initialize () {
-        apiCall({url: '/api/rejectionreason', method: 'GET' })
+      modal (measureId,testId) {
+        this.result.test_id = testId;
+        this.result.measure_id = measureId;
+
+        apiCall({url: '/api/measure/'+measureId+'/measurerange', method: 'GET' })
           .then(resp => {
-            this.rejectionReasons = resp;
             console.log(resp)
+            this.measureRanges = resp;
+            this.dialog = true;
         }).catch(error => {
             console.log(error.response)
         })
       },
 
-      modal (test) {
-        this.initialize()
-        this.test = test;
-        this.specimenRejection.test_id = test.id;
-        this.specimenRejection.specimen_id = test.specimen_id;
-        this.dialog = true;
-      },
-
       close () {
         this.dialog = false
-
       },
 
-
       save () {
-            console.log('this.specimenRejection')
-            console.log(this.specimenRejection)
 
-          apiCall({url: '/api/test/specimenrejection', data: this.specimenRejection, method: 'POST' })
+        this.saving = true;
+
+        apiCall({url: '/api/result', data: this.result, method: 'POST' })
           .then(resp => {
             console.log(resp)
-            EventBus.$emit('update-test-list', resp);
-          })
+            EventBus.$emit('update-isolated-organism-list', resp);
+            this.dialog = false;
+        })
           .catch(error => {
             console.log(error.response)
-          })
+        })
         this.close()
-
       }
     }
   }

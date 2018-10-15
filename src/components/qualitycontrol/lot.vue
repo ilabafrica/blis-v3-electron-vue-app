@@ -1,11 +1,24 @@
 <template>
   <div>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
+      <v-btn
+        outline
+        small
+        color="primary"
+        slot="activator"
+        flat>
+        New Item
+        <v-icon right dark>playlist_add</v-icon>
+      </v-btn>
       <v-card>
-        <v-card-title>
-          <span class="headline">{{ formTitle }}</span>
-        </v-card-title>
+        <v-toolbar dark color="primary" class="elevation-0">
+          <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn round outline color="blue lighten-1" flat @click.native="close">
+            Cancel
+            <v-icon right dark>close</v-icon>
+          </v-btn>
+        </v-toolbar>
         <v-form ref="form" v-model="valid" lazy-validation>
         <v-card-text>
           <v-container grid-list-md>
@@ -44,14 +57,14 @@
                   label="Instrument"
                 ></v-select>
               </v-flex>
+              <v-flex xs3 offset-xs9 text-xs-right>
+                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                  Save <v-icon right dark>cloud_upload</v-icon>
+                </v-btn>
+              </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="save">Save</v-btn>
-        </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
@@ -77,14 +90,27 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{ props.item.number }}</td>
-        <td class="text-xs-left">{{ props.item.description }}</td>
         <td class="text-xs-left">{{ props.item.expiry }}</td>
         <td class="justify-left layout px-0">
-          <v-btn icon class="mx-0" @click="editItem(props.item)">
-            <v-icon color="teal">edit</v-icon>
+          <v-btn
+            outline
+            small
+            title="Edit"
+            color="teal"
+            flat
+            @click="editItem(props.item)">
+            Edit
+            <v-icon right dark>edit</v-icon>
           </v-btn>
-          <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-            <v-icon color="pink">delete</v-icon>
+          <v-btn
+            outline
+            small
+            title="Delete"
+            color="pink"
+            flat
+            @click="deleteItem(props.item)">
+            Delete
+            <v-icon right dark>delete</v-icon>
           </v-btn>
         </td>
       </template>
@@ -124,7 +150,6 @@
       },
       headers: [
         { text: 'Lot Number', value: 'number' },
-        { text: 'Description', value: 'description' },
         { text: 'Expiry Date', value: 'expiry' },
         { text: 'Actions', value: 'name', sortable: false }
       ],
@@ -243,7 +268,7 @@
 
           apiCall({url: '/api/lot/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
-            Object.assign(this.lot[this.editedIndex], this.editedItem)
+            Object.assign(this.lot[this.editedIndex], resp)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
@@ -257,7 +282,7 @@
 
           apiCall({url: '/api/lot', data: this.editedItem, method: 'POST' })
           .then(resp => {
-            this.lot.push(this.editedItem)
+            this.lot.push(resp)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
