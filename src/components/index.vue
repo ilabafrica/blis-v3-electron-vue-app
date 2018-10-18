@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app :class="{blis_bg:isAuthenticated}">
     <v-navigation-drawer v-if='isAuthenticated && isProfileLoaded' v-model="drawer" fixed app>
       <sidebar></sidebar>
     </v-navigation-drawer>

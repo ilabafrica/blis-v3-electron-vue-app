@@ -4,13 +4,22 @@
 ```
 npm install
 ```
+### Compiles and hot-reloads for development for vue_only
+```
+npm run serve
+```
 
-### Compiles and hot-reloads for development
+### Compiles and minifies for production for vue_only
+```
+npm run build
+```
+
+### Compiles and hot-reloads for development for Electron
 ```
 npm run serve:electron
 ```
 
-### Compiles and minifies for production
+### Compiles and minifies for production for Electron
 ```
 npm run build:electron
 ```
