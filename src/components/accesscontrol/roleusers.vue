@@ -48,6 +48,8 @@
 </template>
 <script>
   import apiCall from '../../utils/api'
+  import _ from 'lodash'
+  import Vue from 'vue'
 
   export default {
     name: 'RoleUser',
@@ -176,7 +178,9 @@
           })
           .then(response => {
             console.log(response)
-            this.roleUserIds.push(response.id);
+            let roleUserIds = this.roleUserIds
+            roleUserIds.push(response.id)
+            Vue.set(this,"roleUserIds",roleUserIds)
           })
           .catch(error => {
             console.log(error.response)

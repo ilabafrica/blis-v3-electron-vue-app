@@ -18,7 +18,6 @@
                     <v-select
                       :items="antibiotics"
                       v-model="editedItem.antibiotic_id"
-                      overflow
                       item-text="name"
                       item-value="id"
                       label="Antibiotic">
@@ -34,7 +33,6 @@
                     <v-select
                       :items="susceptibilityRanges"
                       v-model="editedItem.susceptibility_range_id"
-                      overflow
                       item-text="name"
                       item-value="id"
                       :rules="[v => !!v || 'Susceptibility is Required']"

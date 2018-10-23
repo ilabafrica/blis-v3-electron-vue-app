@@ -48,6 +48,7 @@
 </template>
 <script>
   import apiCall from '../../utils/api'
+  import _ from 'lodash';
 
   export default {
     name: 'Permissions',
