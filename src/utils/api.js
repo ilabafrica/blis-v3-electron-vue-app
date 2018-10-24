@@ -1,5 +1,5 @@
 import axios from 'axios'
-const base_url ="http://blis3.ilab"
+const base_url ="http://localhost:8000"
 const apiCall = ({url, data, method}) => new Promise((resolve, reject) => {
   console.log(url)
   url = base_url+url

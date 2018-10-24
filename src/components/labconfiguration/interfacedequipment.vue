@@ -1,5 +1,14 @@
 <template>
   <div>
+   <v-snackbar
+        v-model="snackbar"
+          
+        :color="color"
+        :timeout="6000"
+      :top="y === 'top'"
+      >
+        {{ message }}
+      </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -103,6 +112,9 @@
   export default {
     name:'InterfacedEquipment',
     data: () => ({
+
+      y: 'top',
+      color: 'success',
       valid: true,
       dialog: false,
       delete: false,
@@ -220,6 +232,9 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+
+             this.message = 'Instrument Updated Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -234,6 +249,9 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+
+             this.message = 'New Instrument Added Succesfully';
+             this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)

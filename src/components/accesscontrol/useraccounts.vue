@@ -1,5 +1,17 @@
 <template>
   <div>
+
+   <v-alert
+        v-model="alert"
+        
+        align-right
+        icon="check_circle"
+        transition="fade"
+
+        color="success"
+        dismissible>
+        {{message}}
+      </v-alert> 
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -288,6 +300,8 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.message = 'User Information Updated Succesfully';
+            this.alert = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -302,6 +316,8 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.message = 'New User Added Succesfully';
+            this.alert = true;
           })
           .catch(error => {
             console.log(error.response)

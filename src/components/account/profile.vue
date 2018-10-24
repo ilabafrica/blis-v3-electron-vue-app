@@ -279,7 +279,7 @@ export default {
           console.log(resp);
           this.editedItem = resp;
           if (resp.profile_picture == null) {
-            this.editedItem.profile_picture = "default-profile-picture.jpg";
+            this.editedItem.profile_picture = "default.png";
           }
         })
         .catch(error => {
@@ -351,7 +351,13 @@ export default {
             	this.alert = true;*/
         });
     },
-
+    editItem (item) {
+        this.editedIndex = this.user.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialog = true
+       
+       
+      },
     save() {
       if (this.password) {
         if (this.editedItem.confirmpassword != this.editedItem.newpassword) {
@@ -362,10 +368,7 @@ export default {
         } else {
           this.editedItem.passwordChange = true;
           apiCall({
-            url: "/api/user/" + this.editedItem.id,
-            data: this.editedItem,
-            method: "PUT"
-          })
+            url: "/api/user/" + this.editedItem.id,data: this.editedItem,method: 'PUT'})
             .then(resp => {
               console.log(resp);
               this.message = "Success";
@@ -379,15 +382,12 @@ export default {
         }
       } else {
         apiCall({
-          url: "/api/user/" + this.editedItem.id,
-          data: this.editedItem,
-          method: "PUT"
-        })
+          url: "/api/user/" + this.editedItem.id, data: this.editedItem, method: 'PUT'})
           .then(resp => {
             Object.assign(this.editedItem);
             console.log(resp);
             if (this.removePicture) {
-              this.editedItem.profile_picture = "default-profile-picture.jpg";
+              this.editedItem.profile_picture = "default.png";
               this.removePicture = false;
             }
             this.mainalert = true;

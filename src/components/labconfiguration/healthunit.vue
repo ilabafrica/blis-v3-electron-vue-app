@@ -1,5 +1,16 @@
 <template>
   <div>
+
+
+  <v-snackbar
+        v-model="snackbar"
+          
+        :color="color"
+        :timeout="6000"
+      :top="y === 'top'"
+      >
+        {{ message }}
+      </v-snackbar>
     <v-dialog v-model="dialog" max-width="400px">
       <v-btn
         outline
@@ -111,7 +122,11 @@
   export default {
     name:'HealthUnit',
     data: () => ({
+
+      y: 'top',
+      color: 'success',
       valid: true,
+      message: '',
       dialog: false,
       delete: false,
       saving: false,
@@ -231,6 +246,8 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+             this.message = 'Health Unit Updated Succesfully';
+             this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -245,6 +262,8 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+             this.message = 'Health Unit Added Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
