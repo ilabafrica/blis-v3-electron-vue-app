@@ -18,7 +18,6 @@
                     <v-select
                       :items="specimenTypes"
                       v-model="specimenCollection.specimen_type_id"
-                      overflow
                       item-text="name"
                       item-value="id"
                       label="Specimen Type">

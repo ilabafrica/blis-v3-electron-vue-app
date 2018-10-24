@@ -62,7 +62,6 @@
                 <v-select
                   :items="instruments"
                   v-model="editedItem.instrument_id"
-                  overflow
                   item-text="name"
                   item-value="id"
                   label="Instrument"

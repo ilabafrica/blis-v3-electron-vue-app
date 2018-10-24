@@ -21,6 +21,7 @@
             <v-avatar
               :size="45"
               color="grey lighten-4"
+              class="mr-2"
             >
               <img :src="'storage/profile_pictures/'+pic" alt="">
             </v-avatar>
