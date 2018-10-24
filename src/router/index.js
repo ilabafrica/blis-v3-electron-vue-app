@@ -33,6 +33,9 @@ import PatientReport from '../components/reports/patient/index'
 import PatientReportSingle from '../components/reports/patient/single'
 import ControlTest from '../components/qualitycontrol/controltest'
 import Profile from '../components/account/profile'
+import InventoryItem from '../components/inventory/item'
+import InventoryRequest from '../components/inventory/request'
+import InventorySupplier from '../components/inventory/supplier'
 
 
 Vue.use(Router)
@@ -184,6 +187,25 @@ export default new Router({
       path: '/qualitycontrol/lot',
       name: 'Lot',
       component: Lot,
+      beforeEnter: ifAuthenticated,
+    },
+    //Inventory
+    {
+      path: '/inventory/supplier',
+      name: 'Supplier',
+      component: InventorySupplier,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/inventory/item',
+      name: 'Item',
+      component: InventoryItem,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/inventory/request',
+      name: 'Request',
+      component: InventoryRequest,
       beforeEnter: ifAuthenticated,
     },
     // General Stats
