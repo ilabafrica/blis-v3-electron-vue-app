@@ -83,9 +83,14 @@
     </v-dialog>
     <v-dialog v-model="issueDialog" max-width="1200px">
       <v-card>
-        <v-card-title>
-          <span class="headline">Issue Stock Items</span>
-        </v-card-title>
+        <v-toolbar dark color="primary" class="elevation-0">
+          <v-toolbar-title>Issue Stock Items</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn round outline color="blue lighten-1" flat @click.native="resetIssueDialogReferences">
+            Cancel
+            <v-icon right dark>close</v-icon>
+          </v-btn>
+        </v-toolbar>
         <v-form ref="form" v-model="valid" lazy-validation>
         <v-card-text>
           <v-container grid-list-md>
@@ -174,17 +179,23 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="resetIssueDialogReferences">Cancel</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveIssueStock">Save</v-btn>
+          <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveIssueStock">
+              Save <v-icon right dark>cloud_upload</v-icon>
+            </v-btn>
         </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
     <v-dialog v-model="addStock" max-width="500px">
       <v-card>
-        <v-card-title>
-          <span class="headline">Receive New Medical Stock</span>
-        </v-card-title>
+        <v-toolbar dark color="primary" class="elevation-0">
+          <v-toolbar-title>Receive New Medical Stock</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn round outline color="blue lighten-1" flat @click.native="resetStockDialogReferences">
+            Cancel
+            <v-icon right dark>close</v-icon>
+          </v-btn>
+        </v-toolbar>
         <v-form ref="form" v-model="valid" lazy-validation>
         <v-card-text>
           <v-container grid-list-md>
@@ -231,7 +242,6 @@
                 <v-select
                   :items="suppliers"
                   v-model="stockItem.supplier_id"
-                  overflow
                   item-text="name"
                   item-value="id"
                   label="Supplier"
@@ -273,8 +283,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="resetStockDialogReferences">Cancel</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveStock">Save</v-btn>
+          <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveStock">
+              Save <v-icon right dark>cloud_upload</v-icon>
+            </v-btn>
         </v-card-actions>
         </v-form>
       </v-card>
