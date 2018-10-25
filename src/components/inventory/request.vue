@@ -1,69 +1,78 @@
 <template>
   <div>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn slot="activator" color="primary" dark class="mb-2">New Item Request</v-btn>
+      <v-btn slot="activator" color="primary" dark class="mb-2" outline>
+        New Item Request
+        <v-icon right dark>playlist_add</v-icon>
+      </v-btn>
       <v-card>
-        <v-card-title>
-          <span class="headline">{{ formTitle }}</span>
-        </v-card-title>
-        <v-form ref="form" v-model="valid" lazy-validation>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12 sm12 md12>
-                <v-overflow-btn
-                  :items="items"
-                  v-model="editedItem.item_id"
-                  item-text="name"
-                  item-value="id"
-                  label="Instrument"
-                ></v-overflow-btn>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.curr_bal"
-                  :rules="[v => !!v || 'Current Balance is Required']"
-                  label="Current Balance">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-overflow-btn
-                  :items="labsections"
-                  v-model="editedItem.lab_section_id"
-                  item-text="name"
-                  item-value="id"
-                  label="Lab Section"
-                ></v-overflow-btn>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.tests_done"
-                  :rules="[v => !!v || 'Tests Done is Required']"
-                  label="Tests Done">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.quantity_requested"
-                  :rules="[v => !!v || 'Quantity Requested. is Required']"
-                  label="Quantity Requested.">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.remarks"
-                  :rules="[v => !!v || 'Remarks is Required']"
-                  label="Remarks">
-                </v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
+        <v-toolbar dark color="primary" class="elevation-0">
+          <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="save">Save</v-btn>
-        </v-card-actions>
+          <v-btn round outline color="blue lighten-1" flat @click.native="close">
+            Cancel
+            <v-icon right dark>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-form ref="form" v-model="valid" lazy-validation>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12 sm12 md12>
+                  <v-select
+                    :items="items"
+                    v-model="editedItem.item_id"
+                    item-text="name"
+                    item-value="id"
+                    label="Instrument"
+                  ></v-select>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.curr_bal"
+                    :rules="[v => !!v || 'Current Balance is Required']"
+                    label="Current Balance">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-select
+                    :items="labsections"
+                    v-model="editedItem.lab_section_id"
+                    item-text="name"
+                    item-value="id"
+                    label="Lab Section"
+                  ></v-select>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.tests_done"
+                    :rules="[v => !!v || 'Tests Done is Required']"
+                    label="Tests Done">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.quantity_requested"
+                    :rules="[v => !!v || 'Quantity Requested. is Required']"
+                    label="Quantity Requested.">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.remarks"
+                    :rules="[v => !!v || 'Remarks is Required']"
+                    label="Remarks">
+                  </v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>          
+            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+              Save <v-icon right dark>cloud_upload</v-icon>
+            </v-btn>
+          </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
@@ -74,15 +83,11 @@
     >
       <v-card>
         <v-card-title class="headline">Request Details</v-card-title>
-
-        <v-card-text>
-          
+        <v-card-text>          
           Lab Section: {{editedItem}}
         </v-card-text>
-
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <v-btn
             color="green darken-1"
             flat="flat"
@@ -90,7 +95,6 @@
           >
             Disagree
           </v-btn>
-
           <v-btn
             color="green darken-1"
             flat="flat"
@@ -101,7 +105,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
     <v-card-title>
       Requests
       <v-spacer></v-spacer>
@@ -114,7 +117,6 @@
         hide-details>
       </v-text-field>
     </v-card-title>
-
     <v-data-table
       :headers="headers"
       :items="request"

@@ -20,32 +20,32 @@
           </v-btn>
         </v-toolbar>
         <v-form ref="form" v-model="valid" lazy-validation>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12 sm12>
-                <v-text-field
-                  v-model="editedItem.name"
-                  :rules="[v => !!v || 'Name is Required']"
-                  label="Name">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12>
-                <v-text-field
-                  v-model="editedItem.identifier"
-                  :rules="[v => !!v || 'Code is Required']"
-                  label="Code">
-                </v-text-field>
-              </v-flex>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12 sm12>
+                  <v-text-field
+                    v-model="editedItem.name"
+                    :rules="[v => !!v || 'Name is Required']"
+                    label="Name">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12>
+                  <v-text-field
+                    v-model="editedItem.identifier"
+                    :rules="[v => !!v || 'Code is Required']"
+                    label="Code">
+                  </v-text-field>
+                </v-flex>
                 <v-flex xs3 offset-xs9 text-xs-right>
-            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
-              Save <v-icon right dark>cloud_upload</v-icon>
-            </v-btn>
-          </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
+                  <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                    Save <v-icon right dark>cloud_upload</v-icon>
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
           </v-card-actions>
         </v-form>
       </v-card>

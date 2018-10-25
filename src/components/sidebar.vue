@@ -71,7 +71,7 @@
     </v-list-tile>
     <v-list-tile to="/test/index">
       <v-list-tile-action>
-        <v-icon>vertical_split</v-icon>
+        <v-icon>settings_input_component</v-icon>
       </v-list-tile-action>
       <v-list-tile-title>
           Tests
@@ -88,7 +88,7 @@
         <v-list-tile-title v-text="quality_control.label"></v-list-tile-title>
       </v-list-tile>
     </v-list-group>
-    <v-list-group prepend-icon="horizontal_split" no-action>
+    <v-list-group prepend-icon="line_weight" no-action>
       <v-list-tile slot="activator">
         <v-list-tile-title>Inventory</v-list-tile-title>
       </v-list-tile>
@@ -181,12 +181,12 @@
         {
           path: '/accesscontrol/permissions',
           label: 'Permissions',
-          icon: 'how_to_reg'
+          icon: 'visibility'
         },
         {
           path: '/accesscontrol/role',
           label: 'Role',
-          icon: 'ballot'
+          icon: 'contacts'
         },
         {
           path: '/accesscontrol/roleusers',
@@ -203,7 +203,7 @@
         {
           path: '/qualitycontrol/controltest',
           label: 'Tests',
-          icon: 'assessment'
+          icon: 'settings_input_component'
         },
       ],
       inventory: [

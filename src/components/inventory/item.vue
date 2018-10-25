@@ -1,74 +1,83 @@
 <template>
   <div>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
+      <v-btn slot="activator" color="primary" dark class="mb-2" outline>
+        New Item
+        <v-icon right dark>playlist_add</v-icon>
+      </v-btn>
       <v-card>
-        <v-card-title>
-          <span class="headline">{{ formTitle }}</span>
-        </v-card-title>
-        <v-form ref="form" v-model="valid" lazy-validation>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12 sm12 md12>
-                <v-overflow-btn
-                  :items="suppliers"
-                  v-model="editedItem.supplier_id"
-                  item-text="name"
-                  item-value="id"
-                  label="Supplier"
-                ></v-overflow-btn>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.name"
-                  :rules="[v => !!v || 'Name is Required']"
-                  label="Name">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.unit"
-                  :rules="[v => !!v || 'Unit is Required']"
-                  label="Unit">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.min"
-                  :rules="[v => !!v || 'Min. Level is Required']"
-                  label="Min. Level">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.max"
-                  :rules="[v => !!v || 'Max. Level is Required']"
-                  label="Max. Level">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.storage_req"
-                  :rules="[v => !!v || 'Storage Req. is Required']"
-                  label="Storage Req.">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.remarks"
-                  :rules="[v => !!v || 'Remarks is Required']"
-                  label="Remarks">
-                </v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
+        <v-toolbar dark color="primary" class="elevation-0">
+          <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="save">Save</v-btn>
-        </v-card-actions>
+          <v-btn round outline color="blue lighten-1" flat @click.native="close">
+            Cancel
+            <v-icon right dark>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-form ref="form" v-model="valid" lazy-validation>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12 sm12 md12>
+                  <v-select
+                    :items="suppliers"
+                    v-model="editedItem.supplier_id"
+                    item-text="name"
+                    item-value="id"
+                    label="Supplier"
+                  ></v-select>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.name"
+                    :rules="[v => !!v || 'Name is Required']"
+                    label="Name">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.unit"
+                    :rules="[v => !!v || 'Unit is Required']"
+                    label="Unit">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.min"
+                    :rules="[v => !!v || 'Min. Level is Required']"
+                    label="Min. Level">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.max"
+                    :rules="[v => !!v || 'Max. Level is Required']"
+                    label="Max. Level">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.storage_req"
+                    :rules="[v => !!v || 'Storage Req. is Required']"
+                    label="Storage Req.">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.remarks"
+                    :rules="[v => !!v || 'Remarks is Required']"
+                    label="Remarks">
+                  </v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+              Save <v-icon right dark>cloud_upload</v-icon>
+            </v-btn>
+          </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
