@@ -123,6 +123,7 @@
     name:'HealthUnit',
     data: () => ({
 
+      message:'',
       y: 'top',
       color: 'success',
       valid: true,

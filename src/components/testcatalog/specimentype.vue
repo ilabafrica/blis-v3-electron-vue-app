@@ -112,8 +112,8 @@
   export default {
     name: 'SpecimenType',
     data: () => ({
-
-       y: 'top',
+      message:'',
+      y: 'top',
       color: 'success',
       valid: true,
       dialog: false,

@@ -1,5 +1,15 @@
 <template>
   <div>
+
+      <v-snackbar
+        v-model="snackbar"
+          
+        :color="color"
+        :timeout="6000"
+      :top="y === 'top'"
+      >
+        {{ message }}
+      </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
@@ -72,6 +82,10 @@
 
   export default {
     data: () => ({
+
+      message:'',
+      y: 'top',
+      color: 'success',
       datePicker: false,
       landscape: true,
       reactive: true,
@@ -140,6 +154,8 @@
           .then(resp => {
             console.log(resp)
             EventBus.$emit('update-test-list', resp);
+              this.message = 'New Test Added  Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)

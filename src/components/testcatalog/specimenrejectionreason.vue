@@ -103,8 +103,8 @@
   export default {
     name: 'SpecimenRejectionReason',
     data: () => ({
-
-       y: 'top',
+      message:'',
+      y: 'top',
       color: 'success',
       valid: true,
       dialog: false,

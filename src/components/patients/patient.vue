@@ -205,8 +205,9 @@
     },
     data: () => ({
 
-       y: 'top',
-       color: 'success',
+      message:'',
+      y: 'top',
+      color: 'success',
       calendar: false,
       message: '',
       valid: true,

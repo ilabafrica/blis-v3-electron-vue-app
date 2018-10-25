@@ -121,8 +121,8 @@
   export default {
     name: 'Antibiotic',
     data: () => ({
-
-       y: 'top',
+      message:'',
+      y: 'top',
       color: 'success',
       valid: true,
       dialog: false,

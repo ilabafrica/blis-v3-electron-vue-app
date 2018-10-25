@@ -141,8 +141,8 @@
   export default {
     name:'Lot',
     data: () => ({
-
-       y: 'top',
+      message:'',
+      y: 'top',
       color: 'success',
       calendar: false,
       landscape: true,

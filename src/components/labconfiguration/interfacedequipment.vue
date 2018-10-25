@@ -112,7 +112,7 @@
   export default {
     name:'InterfacedEquipment',
     data: () => ({
-
+      message:'',
       y: 'top',
       color: 'success',
       valid: true,
