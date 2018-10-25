@@ -71,7 +71,7 @@
     </v-list-tile>
     <v-list-tile to="/test/index">
       <v-list-tile-action>
-        <v-icon>vertical_split</v-icon>
+        <v-icon>settings_input_component</v-icon>
       </v-list-tile-action>
       <v-list-tile-title>
           Tests
@@ -86,6 +86,17 @@
           <v-icon v-text="quality_control.icon"></v-icon>
         </v-list-tile-action>
         <v-list-tile-title v-text="quality_control.label"></v-list-tile-title>
+      </v-list-tile>
+    </v-list-group>
+    <v-list-group prepend-icon="line_weight" no-action>
+      <v-list-tile slot="activator">
+        <v-list-tile-title>Inventory</v-list-tile-title>
+      </v-list-tile>
+      <v-list-tile v-for="(inventory, i) in inventory" :key="i" :to="{path:inventory.path}">
+        <v-list-tile-action>
+          <v-icon v-text="inventory.icon"></v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title v-text="inventory.label"></v-list-tile-title>
       </v-list-tile>
     </v-list-group>
     <v-list-group prepend-icon="assessment" no-action>
@@ -170,12 +181,12 @@
         {
           path: '/accesscontrol/permissions',
           label: 'Permissions',
-          icon: 'how_to_reg'
+          icon: 'visibility'
         },
         {
           path: '/accesscontrol/role',
           label: 'Role',
-          icon: 'ballot'
+          icon: 'contacts'
         },
         {
           path: '/accesscontrol/roleusers',
@@ -192,7 +203,24 @@
         {
           path: '/qualitycontrol/controltest',
           label: 'Tests',
-          icon: 'assessment'
+          icon: 'settings_input_component'
+        },
+      ],
+      inventory: [
+        {
+          path: '/inventory/supplier',
+          label: 'Suppliers',
+          icon: 'folder'
+        },
+        {
+          path: '/inventory/item',
+          label: 'Items',
+          icon: 'widgets'
+        },
+        {
+          path: '/inventory/request',
+          label: 'Requests',
+          icon: 'launch'
         },
       ],
       stats: [

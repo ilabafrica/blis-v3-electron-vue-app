@@ -11,39 +11,37 @@
 	          </v-btn>
 	        </v-toolbar>
 	        <v-form ref="form" v-model="valid" lazy-validation>
-	        <v-card-text>
-	          <v-container grid-list-md>
-	            <v-layout wrap>
-	              <v-flex xs12 sm12 md12>
-	              	<img :src="imageUrl" height="150" v-if="imageUrl"/>
-	                <v-text-field
-	                  :rules="[v => !!v || 'File is required']"
-	                  label="Select Image"
-	                  @click='pickFile'
-	                  v-model='imageName'
-	                  prepend-icon='attach_file'>
-	                </v-text-field>
-	                <input
-										type="file"
-										style="display: none"
-										ref="image"
-										accept="image/*"
-										@change="onFilePicked"
-									>
-	              </v-flex>
-	               <v-flex xs3 offset-xs9 text-xs-right>
-	              <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="submitFile">
-	                Save <v-icon right dark>cloud_upload</v-icon>
-	              </v-btn>
-	               </v-flex>
-	            </v-layout>
-	          </v-container>
-	        </v-card-text>
-	        <v-card-actions>
-	        </v-card-actions>
+		        <v-card-text>
+		          <v-container grid-list-md>
+		            <v-layout wrap>
+		              <v-flex xs12 sm12 md12>
+		              	<img :src="imageUrl" height="150" v-if="imageUrl"/>
+		                <v-text-field
+		                  :rules="[v => !!v || 'File is required']"
+		                  label="Select Image"
+		                  @click='pickFile'
+		                  v-model='imageName'
+		                  prepend-icon='attach_file'>
+		                </v-text-field>
+		                <input
+											type="file"
+											style="display: none"
+											ref="image"
+											accept="image/*"
+											@change="onFilePicked"
+										>
+		              </v-flex>
+		              <v-flex xs3 offset-xs9 text-xs-right>
+			              <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="submitFile">
+			                Save <v-icon right dark>cloud_upload</v-icon>
+			              </v-btn>
+		              </v-flex>
+		            </v-layout>
+		          </v-container>
+		        </v-card-text>
 	        </v-form>
 	      </v-card>
-	    </v-dialog>
+	  </v-dialog>
     <v-tabs
       color="blue"
       dark
@@ -145,7 +143,7 @@
 										<v-btn flat color="blue" @click.native="removePic">Remove</v-btn>
 									</v-card-actions>
 								</v-card>
-							</v-flex>
+						</v-flex>
 					</v-layout>
         </v-card>
       </v-tab-item>
@@ -221,25 +219,20 @@
 													></v-text-field>
 												</v-flex>
 												<v-flex xs3 offset-xs9 text-xs-right>
-												<v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="savePassword">
-													Save <v-icon right dark>cloud_upload</v-icon>
-												</v-btn>
+													<v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="savePassword">
+														Save <v-icon right dark>cloud_upload</v-icon>
+													</v-btn>
 												</v-flex>
 											</v-layout>
 										</v-container>
 									</v-card-text>
-									<v-card-actions>
-									</v-card-actions>
 								</v-form>
-						</v-card>
-					</v-flex>
-				</v-layout>
-
+							</v-card>
+						</v-flex>
+					</v-layout>
         </v-card>
       </v-tab-item>
-    </v-tabs>
-
-  	
+    </v-tabs> 	
   </div>
 </template>
 <script>

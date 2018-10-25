@@ -1,23 +1,8 @@
 <template>
   <div>
-
-    <v-snackbar
-        v-model="snackbar"
-          
-        :color="color"
-        :timeout="6000"
-      :top="y === 'top'"
-      >
-        {{ message }}
-      </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn
-        outline
-        small
-        color="primary"
-        slot="activator"
-        flat>
-        New Specimen
+      <v-btn slot="activator" color="primary" dark class="mb-2" outline>
+        New Item
         <v-icon right dark>playlist_add</v-icon>
       </v-btn>
       <v-card>
@@ -30,30 +15,52 @@
           </v-btn>
         </v-toolbar>
         <v-form ref="form" v-model="valid" lazy-validation>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="editedItem.name"
-                  :rules="[v => !!v || 'Name is Required']"
-                  label="Name">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs3 offset-xs9 text-xs-right>
-                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
-                  Save <v-icon right dark>cloud_upload</v-icon>
-                </v-btn>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.name"
+                    :rules="[v => !!v || 'Name is Required']"
+                    label="Name">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.phone"
+                    :rules="[v => !!v || 'Phone is Required']"
+                    label="Phone">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.email"
+                    :rules="[v => !!v || 'Email Address is Required']"
+                    label="Email Address">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedItem.address"
+                    :rules="[v => !!v || 'Address is Required']"
+                    label="Address">
+                  </v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+              Save <v-icon right dark>cloud_upload</v-icon>
+            </v-btn>
+          </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
 
     <v-card-title>
-      Specimen Types
+      Suppliers
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -64,16 +71,18 @@
         hide-details>
       </v-text-field>
     </v-card-title>
+
     <v-data-table
       :headers="headers"
-      :items="specimentype"
+      :items="supplier"
       hide-actions
       class="elevation-1"
     >
       <template slot="items" slot-scope="props">
-        <td class="text-xs-left">{{ props.item.name }}</td>
+        <td>{{ props.item.name }}</td>
+        <td class="text-xs-left">{{ props.item.phone }}</td>
         <td class="justify-left layout px-0">
-             <v-btn
+          <v-btn
             outline
             small
             title="Edit"
@@ -83,10 +92,10 @@
             Edit
             <v-icon right dark>edit</v-icon>
           </v-btn>
-           <v-btn
+          <v-btn
             outline
             small
-            title="Edit"
+            title="Delete"
             color="pink"
             flat
             @click="deleteItem(props.item)">
@@ -110,11 +119,8 @@
 <script>
   import apiCall from '../../utils/api'
   export default {
-    name: 'SpecimenType',
+    name:'InventorySupplier',
     data: () => ({
-      message:'',
-      y: 'top',
-      color: 'success',
       valid: true,
       dialog: false,
       delete: false,
@@ -128,28 +134,33 @@
         visible: 10
       },
       headers: [
-        { text: 'Name', value: 'names' },
+        { text: 'Name', value: 'name' },
+        { text: 'Phone', value: 'phone' },
         { text: 'Actions', value: 'name', sortable: false }
       ],
-      specimentype: [],
+      supplier: [],
       editedIndex: -1,
       editedItem: {
-        names: '',
-        description: '',
+        name: '',
+        phone: '',
+        email: '',
+        address: '',
       },
       defaultItem: {
-        names: '',
-        description: '',
+        name: '',
+        phone: '',
+        email: '',
+        address: '',
       }
     }),
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'New Specimen' : 'Edit Specimen'
+        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
       },
 
       length: function() {
-        return Math.ceil(this.pagination.total / this.pagination.per_page);
+        return Math.ceil(this.pagination.total / 10);
       },
     },
 
@@ -172,11 +183,10 @@
             this.query = this.query+'&search='+this.search;
         }
 
-        apiCall({url: '/api/specimentype?' + this.query, method: 'GET' })
+        apiCall({url: '/supplier?' + this.query, method: 'GET' })
         .then(resp => {
           console.log(resp)
-          this.specimentype = resp.data;
-          this.pagination.per_page = resp.per_page;
+          this.supplier = resp.data;
           this.pagination.total = resp.total;
         })
         .catch(error => {
@@ -185,7 +195,7 @@
       },
 
       editItem (item) {
-        this.editedIndex = this.specimentype.indexOf(item)
+        this.editedIndex = this.supplier.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
@@ -195,9 +205,9 @@
         confirm('Are you sure you want to delete this item?') && (this.delete = true)
 
         if (this.delete) {
-          const index = this.specimentype.indexOf(item)
-          this.specimentype.splice(index, 1)
-          apiCall({url: '/api/specimentype/'+item.id, method: 'DELETE' })
+          const index = this.supplier.indexOf(item)
+          this.supplier.splice(index, 1)
+          apiCall({url: '/supplier/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
           })
@@ -228,14 +238,12 @@
         // update
         if (this.editedIndex > -1) {
 
-          apiCall({url: '/api/specimentype/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+          apiCall({url: '/supplier/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
-            Object.assign(this.specimentype[this.editedIndex], this.editedItem)
+            Object.assign(this.supplier[this.editedIndex], this.editedItem)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
-             this.message = 'Specimen Updated Succesfully';
-            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -244,14 +252,12 @@
         // store
         } else {
 
-          apiCall({url: '/api/specimentype', data: this.editedItem, method: 'POST' })
+          apiCall({url: '/supplier', data: this.editedItem, method: 'POST' })
           .then(resp => {
-            this.specimentype.push(this.editedItem)
+            this.supplier.push(this.editedItem)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
-             this.message = 'New Specimen Added Succesfully';
-            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
