@@ -28,7 +28,6 @@
                 <v-select
                   :items="lot"
                   v-model="editedItem.lot_id"
-                  overflow
                   item-text="number"
                   item-value="id"
                   label="Lot">
@@ -38,7 +37,6 @@
                 <v-select
                   :items="testTypes"
                   v-model="editedItem.test_type_id"
-                  overflow
                   item-text="name"
                   item-value="id"
                   label="Test Type"

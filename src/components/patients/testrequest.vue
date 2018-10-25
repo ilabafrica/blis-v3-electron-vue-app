@@ -1,5 +1,15 @@
 <template>
   <div>
+
+      <v-snackbar
+        v-model="snackbar"
+          
+        :color="color"
+        :timeout="6000"
+      :top="y === 'top'"
+      >
+        {{ message }}
+      </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
@@ -22,7 +32,7 @@
                       item-value="id"
                       :rules="[v => !!v || 'Visit Type is Required']"
                       label="Visit Type"
-                      overflow>
+                      >
                     </v-select>
                   </v-flex>
                   <v-flex xs12 sm12 md12>
@@ -32,8 +42,7 @@
                       item-text="name"
                       item-value="id"
                       :rules="[v => !!v || 'Location is Required']"
-                      label="Location"
-                      overflow>
+                      label="Location">
                     </v-select>
                   </v-flex>
                   <v-flex xs12 sm12 md12>
@@ -73,6 +82,10 @@
 
   export default {
     data: () => ({
+
+      message:'',
+      y: 'top',
+      color: 'success',
       datePicker: false,
       landscape: true,
       reactive: true,
@@ -102,7 +115,7 @@
       initialize () {
         apiCall({url: '/api/testtype?fetch=all', method: 'GET' })
           .then(resp => {
-            console.log(resp)
+            console.log("Test Types are: ",resp)
             this.testTypes = resp;
         }).catch(error => {
             console.log(error.response)
@@ -111,7 +124,7 @@
         apiCall({url: '/api/location', method: 'GET' })
           .then(resp => {
             this.locations = resp.data;
-            console.log(resp)
+            console.log("Locations are: ",resp)
         }).catch(error => {
             console.log(error.response)
         })
@@ -141,6 +154,8 @@
           .then(resp => {
             console.log(resp)
             EventBus.$emit('update-test-list', resp);
+              this.message = 'New Test Added  Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)

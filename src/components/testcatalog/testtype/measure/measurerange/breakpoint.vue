@@ -27,7 +27,6 @@
                 <v-select
                   :items="antibiotics"
                   v-model="editedItem.antibiotic_id"
-                  overflow
                   :rules="[v => !!v || 'Antibiotic is Required']"
                   item-text="name"
                   item-value="id"

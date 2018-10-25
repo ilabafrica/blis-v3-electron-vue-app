@@ -21,8 +21,7 @@
                       item-text="name"
                       item-value="id"
                       :rules="[v => !!v || 'Facility is Required']"
-                      label="Facility"
-                      overflow>
+                      label="Facility">
                     </v-select>
                   </v-flex>
                   <v-flex xs12 sm12 md12>

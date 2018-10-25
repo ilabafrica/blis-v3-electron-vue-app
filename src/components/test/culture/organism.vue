@@ -18,7 +18,6 @@
                     <v-select
                       :items="measureRanges"
                       v-model="result.measure_range_id"
-                      overflow
                       item-text="display"
                       :rules="[v => !!v || 'Isolated Organism by is Required']"
                       item-value="id"

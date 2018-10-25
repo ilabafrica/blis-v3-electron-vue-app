@@ -46,7 +46,6 @@
               <v-select
                 :items="testTypeCategories"
                 v-model="editedItem.test_type_category_id"
-                overflow
                 item-text="name"
                 item-value="id"
                 label="Lab Section"

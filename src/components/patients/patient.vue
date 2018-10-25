@@ -1,5 +1,19 @@
 <template>
   <div>
+
+ 
+
+
+
+       <v-snackbar
+        v-model="snackbar"
+          
+        :color="color"
+        :timeout="6000"
+      :top="y === 'top'"
+      >
+        {{ message }}
+      </v-snackbar>
     <testrequest ref="testRequestForm"></testrequest>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
@@ -190,7 +204,12 @@
       testrequest,
     },
     data: () => ({
+
+      message:'',
+      y: 'top',
+      color: 'success',
       calendar: false,
+      message: '',
       valid: true,
       dialog: false,
       delete: false,
@@ -260,6 +279,9 @@
 
     methods: {
 
+
+
+
       initialize () {
 
         this.query = 'page='+ this.pagination.page;
@@ -287,6 +309,8 @@
         this.editedIndex = this.patient.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
+       
+       
       },
 
       deleteItem (item) {
@@ -338,6 +362,8 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+             this.message = 'Patient Information Updated Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -352,6 +378,9 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.message = 'Patient Added Succesfully';
+            this.snackbar = true;
+
           })
           .catch(error => {
             console.log(error.response)

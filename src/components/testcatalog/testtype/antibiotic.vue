@@ -1,5 +1,15 @@
 <template>
   <div>
+
+     <v-snackbar
+        v-model="snackbar"
+          
+        :color="color"
+        :timeout="6000"
+      :top="y === 'top'"
+      >
+        {{ message }}
+      </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -10,6 +20,8 @@
         New Antibiotic
         <v-icon right dark>playlist_add</v-icon>
       </v-btn>
+
+
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
           <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
@@ -109,6 +121,9 @@
   export default {
     name: 'Antibiotic',
     data: () => ({
+      message:'',
+      y: 'top',
+      color: 'success',
       valid: true,
       dialog: false,
       delete: false,
@@ -228,6 +243,8 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.message = 'Antibiotic Updated Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -242,6 +259,8 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+              this.message = 'New Antibiotic Added Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)

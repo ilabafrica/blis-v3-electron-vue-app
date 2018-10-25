@@ -1,5 +1,16 @@
 <template>
   <div>
+
+
+    <v-snackbar
+        v-model="snackbar"
+          
+        :color="color"
+        :timeout="6000"
+      :top="y === 'top'"
+      >
+        {{ message }}
+      </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -51,7 +62,6 @@
                 <v-select
                   :items="instruments"
                   v-model="editedItem.instrument_id"
-                  overflow
                   item-text="name"
                   item-value="id"
                   label="Instrument"
@@ -131,6 +141,9 @@
   export default {
     name:'Lot',
     data: () => ({
+      message:'',
+      y: 'top',
+      color: 'success',
       calendar: false,
       landscape: true,
       reactive: true,
@@ -272,6 +285,8 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+              this.message = 'Lot Updated Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -286,6 +301,8 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.message = 'New Lot Added Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
