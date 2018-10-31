@@ -1,17 +1,23 @@
 <template>
-    <div>
+    <div class="container">
         <v-layout row wrap>
-            <p class="flex xs11" style="font-size:2rem; font-weight:100">Test Search (<small class="grey--text">{{total_tests}} Tests Matched</small>)</p>            
-            <v-btn icon @click="toggle_filter_options = !toggle_filter_options">
+            <p class="flex xs-8 md-10 lg-11" style="font-size:2rem; font-weight:100">Test Search (<small class="grey--text">{{total_tests}} Tests Matched</small>)</p>            
+            <v-btn class="flex xs-4 md-2 lg-1" flat round @click="toggle_filter_options = !toggle_filter_options">
+                Toggle Filters
                 <v-icon>{{ toggle_filter_options ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
             </v-btn>
         </v-layout>
         <v-slide-y-transition>
             <v-container v-show="toggle_filter_options">
-                <v-layout row wrap pl-4 pr-4 mt-4 style="border:1px solid #E3F2FD">
-                    <v-flex xs12 style="margin-top:-20px">
-                        <p class="blue lighten-5 pa-2">Created</p>
-                    </v-flex>
+                <v-layout row wrap pl-4 pr-4 mt-4>
+                    <v-toolbar dark color="blue lighten-3" class="elevation-0">
+                        <v-toolbar-title>Created</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn round outline color="white" flat @click.native="clearDateSection('created')">
+                            Reset Section
+                            <v-icon right dark>autorenew</v-icon>
+                        </v-btn>
+                    </v-toolbar>
                     <v-flex xs12 sm6 md4>
                         <v-menu
                             ref="picker_created_menu_after"
@@ -85,10 +91,15 @@
                         </v-menu>
                     </v-flex>
                 </v-layout>                
-                <v-layout row wrap pl-4 pr-4 mt-4 style="border:1px solid #E3F2FD">
-                    <v-flex xs12 style="margin-top:-20px">
-                        <p class="blue lighten-5 pa-2">Started</p>
-                    </v-flex>
+                <v-layout row wrap pl-4 pr-4 mt-4>
+                    <v-toolbar dark color="blue lighten-3" class="elevation-0">
+                        <v-toolbar-title>Started</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn round outline color="white" flat @click.native="clearDateSection('started')">
+                            Reset Section
+                            <v-icon right dark>autorenew</v-icon>
+                        </v-btn>
+                    </v-toolbar>
                     <v-flex xs12 sm6 md4>
                         <v-menu
                             ref="picker_started_menu_after"
@@ -162,10 +173,15 @@
                         </v-menu>
                     </v-flex>
                 </v-layout>                
-                <v-layout row wrap pl-4 pr-4 mt-4 style="border:1px solid #E3F2FD">
-                    <v-flex xs12 style="margin-top:-20px">
-                        <p class="blue lighten-5 pa-2">Completed</p>
-                    </v-flex>
+                <v-layout row wrap pl-4 pr-4 mt-4 >
+                    <v-toolbar dark color="blue lighten-3" class="elevation-0">
+                        <v-toolbar-title>Completed</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn round outline color="white" flat @click.native="clearDateSection('completed')">
+                            Reset Section
+                            <v-icon right dark>autorenew</v-icon>
+                        </v-btn>
+                    </v-toolbar>
                     <v-flex xs12 sm6 md4>
                         <v-menu
                             ref="picker_completed_menu_after"
@@ -239,29 +255,37 @@
                         </v-menu>
                     </v-flex>
                 </v-layout>                
-                <v-layout row wrap>
-                    <v-flex xs12 sm6 d-flex pa-4>
+                <v-layout row wrap pl-4 pr-4 mt-4 >
+                    <v-toolbar dark color="blue lighten-3" class="elevation-0">
+                        <v-toolbar-title>By Relations</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn round outline color="white" flat @click.native="resetDropDowns()">
+                            Reset Section
+                            <v-icon right dark>autorenew</v-icon>
+                        </v-btn>
+                    </v-toolbar>
+                    <v-flex xs12 sm6 d-flex pt-4 pr-2>
                         <v-select
                             :items="users"
                             label="Created By User"
                             outline v-model="user_id_filter"
                         ></v-select>
                     </v-flex>
-                    <v-flex xs12 sm6 d-flex pa-4>
+                    <v-flex xs12 sm6 d-flex pt-4 pr-2>
                         <v-select
                             :items="users"
                             label="Tested By User"
                             outline v-model="tested_by_filter"
                         ></v-select>
                     </v-flex>            
-                    <v-flex xs12 sm6 d-flex pa-4>
+                    <v-flex xs12 sm6 d-flex pt-4 pr-2>
                         <v-select
                             :items="locations"
                             label="By Location"
                             outline v-model="location_id_filter"
                         ></v-select>
                     </v-flex>
-                    <v-flex xs12 sm6 d-flex pa-4>
+                    <v-flex xs12 sm6 d-flex pt-4 pr-2>
                         <v-select
                             :items="categories"
                             label="By Category"
@@ -270,7 +294,14 @@
                     </v-flex>
                 </v-layout>
                 <v-flex>
-                    <v-btn @click.native="searching()" color="success">Search</v-btn>
+                    <v-btn round color="primary" @click.native="searching()">
+                        Search
+                        <v-icon right dark>search</v-icon>
+                    </v-btn>                    
+                    <v-btn round outline grey flat @click.native="resetAll()">
+                        Reset All
+                        <v-icon right dark>autorenew</v-icon>
+                    </v-btn>
                 </v-flex>
             </v-container>
         </v-slide-y-transition>
@@ -279,7 +310,7 @@
                 :headers="headers"
                 :items="tests"
                 hide-actions
-                class="elevation-1"
+                class="elevation-1  ma-4 flex"
             >
                 <template slot="items" slot-scope="props">
                     <tr>
@@ -306,7 +337,6 @@
 
 <script>
 import apiCall from "../../../utils/api";
-import Chart from "chart.js";
 import Vue from "vue";
 export default {
     name:'TestStatsType',
@@ -558,6 +588,25 @@ export default {
             })
         }
     },
+    clearDateSection(sectionTitle){
+        Vue.set(this.picker[sectionTitle], 'dates',{
+                after: null,
+                before: null,
+                at: null,
+            });
+    },
+    resetDropDowns(){
+        Vue.set(this,'user_id_filter',null)
+        Vue.set(this,'tested_by_filter',null)
+        Vue.set(this,'location_id_filter',null)
+        Vue.set(this,'category_id_filter',null)
+    },
+    resetAll(){
+        this.clearDateSection('created')
+        this.clearDateSection('started')
+        this.clearDateSection('completed')
+        this.resetDropDowns()
+    }
   }
 };
 </script>

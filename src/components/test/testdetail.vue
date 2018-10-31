@@ -13,9 +13,9 @@
         <v-card-text v-if="test.id">
           <p><span class="grey--text pa-2">Test Num: </span>{{test.id}}</p>
           <p><span class="grey--text pa-2">Patient: </span>{{test.encounter.patient.name.text}}</p>
-          <p><span class="grey--text pa-2">Specimen Type: </span>{{test.specimen.specimen_type.name}}</p>
-          <p><span class="grey--text pa-2"></span>{{test.id}}</p>
-          {{test}}
+          <p v-if="test.specimen"><span class="grey--text pa-2">Specimen Type: </span>{{test.specimen.specimen_type.name}}</p>
+          <p><span class="grey--text pa-2">Test Type: </span>{{test.test_type.name}}</p>
+          <p><span class="grey--text pa-2">Test Status: </span>{{test.test_status.name}}</p>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

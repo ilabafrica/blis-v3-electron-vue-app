@@ -11,7 +11,10 @@
           </v-btn>
         </v-toolbar>
         <v-card-text>
-        {{encounter}}
+          <p><span class="grey--text pa-2">Patient Name: </span>{{encounter.patient.name.family}}, {{encounter.patient.name.given}}</p>
+          <p><span class="grey--text pa-2">Patient Gender: </span>{{encounter.patient.gender.display}}</p>
+          <p><span class="grey--text pa-2">Date: </span>{{encounter.created_at}}</p>
+          <p><span class="grey--text pa-2">Number of Tests Requested: </span>{{encounter.tests.length||0}}</p>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -19,7 +22,6 @@
 </template>
 
 <script>
-  import apiCall from '../../utils/api'
   export default {
     data: () => ({
       calendar: false,
