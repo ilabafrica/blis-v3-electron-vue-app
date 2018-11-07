@@ -1,5 +1,6 @@
 <template>
   <div>
+    <TestTypeDetail ref="testTypeDetailForm"></TestTypeDetail>
     <v-layout row>
       <v-dialog v-model="dialog" max-width="500px">
         <v-btn
@@ -111,7 +112,7 @@
           <v-btn
             outline
             small
-            :to="{ name: 'TestTypeSpecimenType', params: { testTypeId:props.item.id} }"
+            :to="{ name: 'SpecimenType', params: { testTypeId:props.item.id} }"
             title="Specimen Types"
             color="green"
             flat
@@ -157,8 +158,12 @@
 </template>
 <script>
   import apiCall from '../../../utils/api'
+  import TestTypeDetail from './testtypedetail'
   export default {
     name: 'TestType',
+    components: {
+      TestTypeDetail,
+    },
     data: () => ({
       dialog: false,
       valid: true,
@@ -247,6 +252,11 @@
         .catch(error => {
           console.log(error.response)
         })
+      },
+
+      view (item) {
+        console.log(item)
+        this.$refs.testTypeDetailForm.modal(item);
       },
 
       editItem (item) {
