@@ -36,7 +36,10 @@ import Profile from '../components/account/profile'
 import InventoryItem from '../components/inventory/item'
 import InventoryRequest from '../components/inventory/request'
 import InventorySupplier from '../components/inventory/supplier'
-
+import BreakPoint from '../components/testcatalog/testtype/measure/measurerange/breakpoint'
+import MeasureRange from '../components/testcatalog/testtype/measure/measurerange/index'
+import TestTypeSpecimenType from '../components/testcatalog/testtype/specimentype'
+import MeasureTestType from '../components/testcatalog/testtype/measure/index'
 
 Vue.use(Router)
 
@@ -118,6 +121,30 @@ export default new Router({
       path: '/testcatalog/specimentype',
       name: 'SpecimenType',
       component: SpecimenType,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/testcatalog/testtype/:testTypeId/measure/:measureId/measurerange/:measureRangeId/breakpoint',
+      name: 'BreakPoint',
+      component: BreakPoint,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/testcatalog/testtype/:testTypeId/measure/:measureId/measurerange',
+      name: 'MeasureRange',
+      component: MeasureRange,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/testcatalog/testtype/:testTypeId/specimentype',
+      name: 'TestTypeSpecimenType',
+      component: TestTypeSpecimenType,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/testcatalog/testtype/:testTypeId/measure',
+      name: 'MeasureTestType',
+      component: MeasureTestType,
       beforeEnter: ifAuthenticated,
     },
     {

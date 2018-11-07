@@ -161,7 +161,7 @@
   import result from './result'
 
   export default {
-      name: 'Test',
+    name: 'Test',
       components: {
       specimencollection,
       result,

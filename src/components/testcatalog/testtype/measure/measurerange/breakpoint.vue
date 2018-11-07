@@ -106,7 +106,7 @@
             title="Edit"
             v-if="$can('manage_test_catalog')"
             color="teal"
-            @click="editItem(row.item)">
+            @click="editItem(props.item)">
             Edit
             <v-icon right dark>edit</v-icon>
           </v-btn>
@@ -117,7 +117,7 @@
             title="Edit"
             v-if="$can('manage_test_catalog')"
             color="pink"
-            @click="deleteItem(row.item)">
+            @click="deleteItem(props.item)">
             Delete
             <v-icon right dark>delete</v-icon>
           </v-btn>
@@ -129,6 +129,7 @@
 <script>
   import apiCall from '../../../../../utils/api'
   export default {
+    name: 'BreakPoint',
     data: () => ({
       landscape: true,
       reactive: true,
@@ -250,7 +251,6 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-
           apiCall({url: '/api/susceptibilitybreakpoint/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
             Object.assign(this.breakPoints[this.editedIndex], this.editedItem)
@@ -264,7 +264,7 @@
 
         // store
         } else {
-
+          this.editedItem.measure_range_id = this.$route.params.measureRangeId
           apiCall({url: '/api/susceptibilitybreakpoint', data: this.editedItem, method: 'POST' })
           .then(resp => {
             this.breakPoints.push(this.editedItem)

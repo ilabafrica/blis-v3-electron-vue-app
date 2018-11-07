@@ -56,7 +56,7 @@
             </v-text-field>
           </v-flex>
           <v-flex xs3 offset-xs9 text-xs-right>
-            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveMeasureRange">
               Save <v-icon right dark>cloud_upload</v-icon>
             </v-btn>
           </v-flex>
@@ -106,7 +106,7 @@
         Add New Range
       </v-btn>
       <v-btn
-        else
+        v-if="measure.measure_type.code != 'numeric'"
         color="info" dark @click="dialogAlphanumericRange = !dialogAlphanumericRange">
         Add New Range
       </v-btn>
@@ -123,6 +123,17 @@
             <td>{{row.item.low}}</td>
             <td>{{row.item.high}}</td>
             <td class="justify-left layout px-0">
+              <v-btn
+                outline
+                small
+                flat
+                title="Edit"
+                v-if="$can('manage_test_catalog')"
+                color="teal"
+                @click="editItem(row.item)">
+                Edit
+                <v-icon right dark>edit</v-icon>
+              </v-btn>
               <v-btn
                 outline
                 small
@@ -146,7 +157,7 @@
         <template slot="items" slot-scope="row">
           <tr :key="row.item.id">
             <td>{{row.item.display}}</td>
-            <td>{{row.item.interpretation_id}}</td>
+            <td>{{row.item.interpretation.name}}</td>
             <td class="justify-left layout px-0">
               <v-btn
                 outline
@@ -190,14 +201,13 @@
 </template>
 <script>
   import apiCall from '../../../../../utils/api'
-
   export default {
+    name: 'MeasureRange',
     data: () => ({
       dialog: false,
       dialogNumericRange: false,
       dialogAlphanumericRange: false,
       valid: true,
-      dialog: false,
       delete: false,
       measure: {},
       numerics:{
@@ -209,6 +219,8 @@
         low: '',
         high: '',
       },
+
+      editedIndex: -1,
 
       defaultNumerics:{
         measure_id: '',
@@ -347,32 +359,78 @@
 
       saveMeasureRange(){
 
-        if(this.measure.measure_type.code === 'numeric'){
-          this.numerics.measure_id = this.measureId
-          apiCall({url: '/api/measurerange', data: this.numerics, method: 'POST' })
-          .then(resp => {
-            this.measureRanges.push(this.numerics)
-            console.log('numerics');
-            console.log(this.numerics);
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
-          this.closeMeasureRangeDialog();
+        this.saving = true;
+        // update
+        if (this.editedIndex > -1) {
+          if(this.measure.measure_type.code === 'numeric'){
+            apiCall({url: '/api/measurerange/'+this.numerics.id, data: this.numerics, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.item[this.editedIndex], this.numerics)
+              console.log(resp)
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+            this.closeMeasureRangeDialog();
+            this.saving = false;
+          }else{
+            apiCall({url: '/api/measurerange/'+this.alphanumerics.id, data: this.alphanumerics, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.item[this.editedIndex], this.alphanumerics)
+              console.log(resp)
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+            this.closeAlphaMeasureRangeDialog();
+            this.saving = false;
+          }
+
+        //store
         }else{
-          this.alphanumerics.measure_id = this.measureId
-          apiCall({url: '/api/measurerange', data: this.alphanumerics, method: 'POST' })
-          .then(resp => {
-            this.measureRanges.push(this.alphanumerics)
-            console.log('alphanumerics');
-            console.log(this.alphanumerics);
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
-          this.closeAlphaMeasureRangeDialog();
+          if(this.measure.measure_type.code === 'numeric'){
+            this.numerics.measure_id = this.$route.params.measureId
+            apiCall({url: '/api/measurerange', data: this.numerics, method: 'POST' })
+            .then(resp => {
+              this.measureRanges.push(this.numerics)
+              console.log('numerics');
+              console.log(this.numerics);
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+            this.closeMeasureRangeDialog();
+          }else{
+            this.alphanumerics.measure_id = this.$route.params.measureId
+            console.log("alphanumerics")
+            console.log(this.alphanumerics)
+            apiCall({url: '/api/measurerange', data: this.alphanumerics, method: 'POST' })
+            .then(resp => {
+              this.measureRanges.push(this.alphanumerics)
+              console.log('alphanumerics');
+              console.log(this.alphanumerics);
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+            this.closeAlphaMeasureRangeDialog();
+          }
         }
-      }
+      },
+
+      editItem (item) {
+        if(this.measure.measure_type.code != 'numeric'){
+          console.log("item" + item)
+          this.editedIndex = 2
+          this.alphanumerics = Object.assign({}, item)
+          this.dialogAlphanumericRange = true
+        }else{
+          console.log("item" + item)
+          this.editedIndex = 2
+          this.numerics = Object.assign({}, item)
+          this.dialogNumericRange = true
+        }
+      },
     }
   }
 </script>

@@ -3,10 +3,66 @@
     <v-card-title>
       {{testType.name}}
     </v-card-title>
-
-      <v-btn color="info" dark @click.stop="dialogMeasure = true">
-        Add New Measure
-      </v-btn>
+    <v-layout row>
+      <v-dialog v-model="dialogMeasure" max-width="500px">
+        <v-btn
+          outline
+          small
+          color="primary"
+          slot="activator"
+          flat>
+          New Measure
+          <v-icon right dark>playlist_add</v-icon>
+        </v-btn>
+        <v-card>
+          <v-toolbar dark color="primary" class="elevation-0">
+            <v-toolbar-title>Measure</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn round outline color="blue lighten-1" flat @click.native="close">
+              Cancel
+              <v-icon right dark>close</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-card-text>
+            <v-flex xs12 sm12 md12>
+              <v-text-field
+                v-model="measurefield.name"
+                :rules="[v => !!v || 'Name is Required']"
+                label="Name">
+              </v-text-field>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-select
+                :items="measureTypes"
+                v-model="measurefield.measure_type_id"
+                item-text="name"
+                item-value="id"
+                label="Measure "
+              ></v-select>
+            </v-flex>            
+            <v-flex xs12 sm12 md12>
+              <v-text-field
+                v-model="measurefield.unit"
+                :rules="[v => !!v || 'Unit is Required']"
+                label="Unit">
+              </v-text-field>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-text-field
+                v-model="measurefield.description"
+                :rules="[v => !!v || 'Description is Required']"
+                label="Description">
+              </v-text-field>
+            </v-flex>
+            <v-flex xs3 offset-xs9 text-xs-right>
+              <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveMeasure">
+                Save <v-icon right dark>cloud_upload</v-icon>
+              </v-btn>
+            </v-flex>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </v-layout>
       <v-divider></v-divider>
       <v-layout child-flex>
         <v-data-table
@@ -91,9 +147,11 @@
         unit: '',
         description: '',
       },
+
       interpretation: [],
       measureTypes: [],
       measureRanges: [],
+      testTypes: [],
       testType: {},
       measures: [],
       
@@ -156,6 +214,15 @@
         .then(resp => {
           console.log(resp)
           this.measureTypes = resp;
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
+
+        apiCall({url: '/api/testtype?fetch=all', method: 'GET' })
+        .then(resp => {
+          console.log(resp)
+          this.testTypes = resp;
         })
         .catch(error => {
           console.log(error.response)

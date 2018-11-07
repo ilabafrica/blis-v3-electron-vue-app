@@ -23,8 +23,8 @@
 </template>
 <script>
   import apiCall from '../../../utils/api'
-
   export default {
+    name: 'TestTypeSpecimenType',
     data: () => ({
       testType: {},
       specimenTypes: [],
