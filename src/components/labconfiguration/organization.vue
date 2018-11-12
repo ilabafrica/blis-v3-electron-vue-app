@@ -115,7 +115,7 @@
     name: 'Organization',
     data: () => ({
 
-      
+      message:'',
       y: 'top',
       color: 'success',    
       valid: true,

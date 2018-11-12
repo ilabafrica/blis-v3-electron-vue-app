@@ -37,7 +37,8 @@
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.number"
-                  :rules="[v => !!v || 'Lot Number is Required']"
+                  :rules="[v => !!v || 'Lot Number is Required' ,
+                  v => /^[0-9]+$/.test(v)  || 'Lot Number should have numeric chars only']"
                   label="Lot Number">
                 </v-text-field>
               </v-flex>
