@@ -18,7 +18,7 @@
           <v-toolbar dark color="primary" class="elevation-0">
             <v-toolbar-title>Measure</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn round outline color="blue lighten-1" flat @click.native="close">
+            <v-btn round outline color="blue lighten-1" flat @click.native="closeMeasureDialogue">
               Cancel
               <v-icon right dark>close</v-icon>
             </v-btn>
@@ -121,7 +121,6 @@
       dialogNumericRange: false,
       dialogAlphanumericRange: false,
       valid: true,
-      dialog: false,
       delete: false,
       saving: false,
       updating: false,
@@ -183,19 +182,18 @@
     methods: {
 
       initialize () {
+        // get earger loaded test type
+        apiCall({url: '/api/testtype/'+parseInt(this.$route.params.testTypeId), method: 'GET' })
+          .then(resp => {
+            console.log('Test Type')
+            console.log(resp)
+            this.testType = resp;
 
-      // get earger loaded test type
-      apiCall({url: '/api/testtype/'+parseInt(this.$route.params.testTypeId), method: 'GET' })
-        .then(resp => {
-          console.log('Test Type')
-          console.log(resp)
-          this.testType = resp;
-
-          this.measures = resp.measures;
+            this.measures = resp.measures;
+          })
+          .catch(error => {
+            console.log(error.response)
         })
-        .catch(error => {
-          console.log(error.response)
-      })
 
         if (this.search != '') {
             this.query = this.query+'&search='+this.search;
@@ -308,35 +306,6 @@
           .catch(error => {
             console.log(error.response)
           })
-        }
-      },
-
-      saveMeasureRange(){
-
-        if(this.measureType === 'numeric'){
-          this.numerics.measure_id = this.measureId
-          apiCall({url: '/api/measurerange', data: this.numerics, method: 'POST' })
-          .then(resp => {
-            this.measureRanges.push(this.numerics)
-            console.log('numerics');
-            console.log(this.numerics);
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
-          this.closeMeasureRangeDialog();
-        }else{
-          this.alphanumerics.measure_id = this.measureId
-          apiCall({url: '/api/measurerange', data: this.alphanumerics, method: 'POST' })
-          .then(resp => {
-            this.measureRanges.push(this.alphanumerics)
-            console.log('alphanumerics');
-            console.log(this.alphanumerics);
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
-          this.closeAlphaMeasureRangeDialog();
         }
       }
     }

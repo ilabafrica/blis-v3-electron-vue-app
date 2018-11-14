@@ -157,7 +157,8 @@
         <template slot="items" slot-scope="row">
           <tr :key="row.item.id">
             <td>{{row.item.display}}</td>
-            <td>{{row.item.interpretation.name}}</td>
+            <td v-if="row.item.interpretation">{{row.item.interpretation.name}}</td>
+            <td v-else></td>
             <td class="justify-left layout px-0">
               <v-btn
                 outline
@@ -201,6 +202,7 @@
 </template>
 <script>
   import apiCall from '../../../../../utils/api'
+  import Vue from 'vue'
   export default {
     name: 'MeasureRange',
     data: () => ({
@@ -366,7 +368,7 @@
             apiCall({url: '/api/measurerange/'+this.numerics.id, data: this.numerics, method: 'PUT' })
             .then(resp => {
               Object.assign(this.item[this.editedIndex], this.numerics)
-              console.log(resp)
+              console.log("Numeric Measure type save response",resp)
             })
             .catch(error => {
               console.log(error.response)
@@ -377,7 +379,7 @@
             apiCall({url: '/api/measurerange/'+this.alphanumerics.id, data: this.alphanumerics, method: 'PUT' })
             .then(resp => {
               Object.assign(this.item[this.editedIndex], this.alphanumerics)
-              console.log(resp)
+              console.log("Alphanumeric measure type save response is ",resp)
             })
             .catch(error => {
               console.log(error.response)
@@ -392,8 +394,10 @@
             this.numerics.measure_id = this.$route.params.measureId
             apiCall({url: '/api/measurerange', data: this.numerics, method: 'POST' })
             .then(resp => {
-              this.measureRanges.push(this.numerics)
-              console.log('numerics');
+              console.log('numerics', resp);
+              let measureRanges = this.measure.measure_ranges
+              measureRanges.push(resp)
+              Vue.set(this.measure,"measure_ranges",measureRanges)
               console.log(this.numerics);
             })
             .catch(error => {
@@ -406,8 +410,10 @@
             console.log(this.alphanumerics)
             apiCall({url: '/api/measurerange', data: this.alphanumerics, method: 'POST' })
             .then(resp => {
-              this.measureRanges.push(this.alphanumerics)
-              console.log('alphanumerics');
+              console.log('alphanumerics ', resp);
+              let measureRanges = this.measure.measure_ranges
+              measureRanges.push(resp)
+              Vue.set(this.measure,"measure_ranges",measureRanges)
               console.log(this.alphanumerics);
             })
             .catch(error => {
