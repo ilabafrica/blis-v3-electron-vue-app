@@ -34,12 +34,11 @@
                   v-if="result.measure.measure_type.code === 'alphanumeric'"
                   :items="result.measure.measure_ranges"
                   v-model="inputs[result.measure.id]"
-                  value="inputs[result.measure.id]"
                   item-text="display"
                   item-value="id"
                   v-on:change="onChange(result.measure.id,'alphanumeric')"
                   :label="result.measure.name"
-                  overflow>
+                  >
                 </v-select>
               </v-flex>
               <v-flex xs3 offset-xs9 text-xs-right>
@@ -69,12 +68,11 @@
                   v-if="measure.measure_type.code === 'alphanumeric'"
                   :items="measure.measure_ranges"
                   v-model="inputs[measure.id]"
-                  value="inputs[measure.id]"
                   item-text="display"
                   item-value="id"
                   v-on:change="onChange(measure.id,'alphanumeric')"
                   :label="measure.name"
-                  overflow>
+                  >
                 </v-select>
               </v-flex>
               <v-flex xs3 offset-xs9 text-xs-right>
