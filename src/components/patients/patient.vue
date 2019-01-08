@@ -41,7 +41,7 @@
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.identifier"
-                  :rules="[v => !!v || 'Patient No. is Required']"
+                  :rules="[v => !!v  || 'Patient No. is Required']"
                   label="Patient No.">
                 </v-text-field>
               </v-flex>
@@ -53,7 +53,8 @@
                 </v-text-field>
                 <v-text-field v-if="editedIndex === -1"
                   v-model="editedItem.given"
-                  :rules="[v => !!v || 'Given Name is Required']"
+                  :rules="[v => !!v || 'Given Name is Required',
+                  v => /^[a-zA-Z]+$/.test(v)  || 'Name should have alphabetic chars only']"
                   label="Given Name">
                 </v-text-field>
               </v-flex>
@@ -65,7 +66,8 @@
                 </v-text-field>
                 <v-text-field v-if="editedIndex === -1"
                   v-model="editedItem.family"
-                  :rules="[v => !!v || 'Family Name is Required']"
+                  :rules="[v => !!v || 'Family Name is Required',,
+                  v => /^[a-zA-Z]+$/.test(v)  || 'Family Name should have alphabetic chars only']"
                   label="Family Name">
                 </v-text-field>
               </v-flex>

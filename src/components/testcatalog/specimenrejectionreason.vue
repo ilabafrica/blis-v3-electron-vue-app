@@ -37,7 +37,8 @@
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.display"
-                  :rules="[v => !!v || 'Name is Required']"
+                  :rules="[v => !!v || 'Name is Required',
+                  v => /^[a-zA-Z]+$/.test(v)  || 'Rejection Reason should have alphabetic chars only']"
                   label="Name">
                 </v-text-field>
               </v-flex>

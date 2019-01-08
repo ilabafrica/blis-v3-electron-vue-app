@@ -45,14 +45,15 @@
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.name"
-                  :rules="[v => !!v || 'Name is Required']"
+                  :rules="[v => !!v || 'Name is Required' ,
+                  v => /^[a-zA-Z]+$/.test(v)  || 'Name  should have alphabetic chars only']"
                   label="Name">
                 </v-text-field>
               </v-flex>
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.email"
-                  :rules="[v => !!v || 'Email is Required']"
+                  :rules="[v => !!v || 'Email is Required',v => /.+@.+/.test(v)  || 'Email not valid' ]"
                   label="Email Address">
                 </v-text-field>
               </v-flex>

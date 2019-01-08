@@ -1,13 +1,13 @@
 <template>
   <div>
 
-      <v-snackbar
+        <v-snackbar
         v-model="snackbar"
           
         :color="color"
         :timeout="6000"
-      :top="y === 'top'"
-      >
+        :top="y === 'top'"
+        >
         {{ message }}
       </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
@@ -43,7 +43,8 @@
               <v-flex xs12 sm6 md4>
                 <v-text-field
                   v-model="editedItem.name"
-                  :rules="[v => !!v || 'Name is Required']"
+                  :rules="[v => !!v || 'Name is Required',
+                  v => /^[a-zA-Z]+$/.test(v)  || 'Name should have alphabetic chars only']"
                   label="Name">
                 </v-text-field>
               </v-flex>

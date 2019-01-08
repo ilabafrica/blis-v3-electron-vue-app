@@ -11,8 +11,6 @@
         dismissible>
         {{message}}
       </v-alert>      
-
- 
       <Loading v-if='authLoading'/>
       <v-toolbar class="elevation-0">
         <v-toolbar-title>BLIS</v-toolbar-title>
@@ -72,15 +70,6 @@
     components: {
       Loading
     },
-
-      mounted () {
-    let self = this
-    window.addEventListener('keyup', function (event) {
-      if (event.keyCode === 13) {
-        self.login()
-      }
-    })
-  },
     data() {
       return {
         alert: false,
