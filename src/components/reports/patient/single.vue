@@ -70,9 +70,16 @@
 </template>
 
 <style scoped>
+    table{
+        width: 100%;
+    }
     th{
         background-color: #5c5c5c;
         color: white !important;
+        padding: 5px 12px;
+    }
+    td{
+        padding:5px 10px;
     }
     b{
         color: #5c5c5c;
@@ -83,6 +90,7 @@
 <script>
 import apiCall from "../../../utils/api";
 import Chart from "chart.js";
+import Vue from 'vue';
 export default {
    
   data: () => ({
