@@ -133,7 +133,8 @@
             title="Print"
             color="gray"
             flat
-            @click="report(props.item)">
+            v-if="props.item.specimen_id !=NULL"
+            @click="print(props.item.specimen_id)">
             Print
             <v-icon right dark>print</v-icon>
           </v-btn>
@@ -315,9 +316,8 @@
         this.$refs.testDetailForm.modal(test);
       },
 
-      report (test) {
-
-        apiCall({url: '/api/report/', method: 'GET' , data: 'PDF' })
+      print (item) {
+        apiCall({url: '/print-tracker/'+item, method: 'GET'})
           .then(resp => {})
           .catch(error => {
           console.log(error.response)
