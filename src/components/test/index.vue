@@ -317,8 +317,17 @@
       },
 
       print (item) {
-        apiCall({url: '/print-tracker/'+item, method: 'GET'})
-          .then(resp => {})
+        apiCall({url: '/print-tracker/'+item, method: 'GET',data:'PDF'})
+          .then(resp => {
+            console.log(resp)
+
+            let blob = new Blob([resp], { type: 'application/pdf' })
+              let link = document.createElement('a')
+            link.href = window.URL.createObjectURL(blob)
+            link.download = 'Results.pdf'
+            // link.click()
+            window.open(link)
+          })
           .catch(error => {
           console.log(error.response)
         })
