@@ -18,6 +18,7 @@
                     <v-select
                       :items="specimenTypes"
                       v-model="specimenCollection.specimen_type_id"
+                      v-on:change="onChange"
                       item-text="name"
                       item-value="id"
                       label="Specimen Type">
@@ -58,8 +59,17 @@
                       label="Collected by">
                     </v-text-field>
                   </v-flex>
+                  <v-flex xs12 sm12 md12>
+                    <v-select
+                      v-bind:items="testTypes"
+                      v-model="specimenCollection.testIds"
+                      label="Tests"
+                      item-text="name"
+                      item-value="id"
+                      autocomplete multiple chips>
+                    </v-select>
+                  </v-flex>
                 </v-layout>
-                Select Relevant Test
                 <v-layout row wrap>
                   <v-flex
                   xs6 sm6 md6
@@ -101,6 +111,7 @@
       dialog: false,
       saving: false,
       specimenTypes: [],
+      testTypes: [],
       encounter: {},
       tests: {},
       specimenCollection: {
@@ -135,6 +146,21 @@
         .catch(error => {
           console.log(error.response)
         })
+
+      },
+
+      onChange: function (){
+        var self = this
+           apiCall({url: '/api/specimentype/specimencollection/'+self.specimenCollection.specimen_type_id, method: 'GET' })
+            .then(function (response) {
+              console.log('response')
+              console.log(response)
+              self.testTypes = response[0].test_types
+              console.log(self.testTypes)
+            })
+            .catch(function (error) {
+              console.log(error);
+            });    
       },
 
       isSpecimenCompartible (test) {

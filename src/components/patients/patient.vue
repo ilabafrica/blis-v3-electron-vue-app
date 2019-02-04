@@ -1,13 +1,7 @@
 <template>
   <div>
-
- 
-
-
-
        <v-snackbar
-        v-model="snackbar"
-          
+        v-model="snackbar"   
         :color="color"
         :timeout="6000"
       :top="y === 'top'"
