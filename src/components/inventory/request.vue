@@ -179,6 +179,7 @@
 </template>
 <script>
   import apiCall from '../../utils/api'
+  import Vue from 'vue'
   export default {
     name:'InventoryRequest',
     data: () => ({
@@ -350,8 +351,7 @@
 
           apiCall({url: '/request', data: this.editedItem, method: 'POST' })
           .then(resp => {
-            this.item.push(this.editedItem)
-            console.log(resp)
+            this.request.push(resp)
             this.resetDialogReferences();
             this.saving = false;
           })

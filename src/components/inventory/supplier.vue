@@ -118,6 +118,7 @@
 </template>
 <script>
   import apiCall from '../../utils/api'
+  import Vue from 'vue'
   export default {
     name:'InventorySupplier',
     data: () => ({
@@ -241,6 +242,7 @@
           apiCall({url: '/supplier/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
             Object.assign(this.supplier[this.editedIndex], this.editedItem)
+            Vue.set(this,"supplier", supplier)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
