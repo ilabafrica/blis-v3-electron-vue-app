@@ -317,8 +317,10 @@
       },
 
       print (item) {
-        apiCall({url: '/print-tracker/'+item, method: 'GET'})
-          .then(resp => {})
+        apiCall({url: '/print-tracker/'+item, method: 'GET',data:'PDF'})
+          .then(resp => {
+            console.log(resp)
+          })
           .catch(error => {
           console.log(error.response)
         })
