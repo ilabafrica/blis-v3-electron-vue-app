@@ -43,7 +43,7 @@
                 ></v-select>
               </v-flex>
               <v-flex xs3 offset-xs9 text-xs-right>
-                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="createControlTest">
+                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="createControlTest" :loading="loading">
                   Save <v-icon right dark>cloud_upload</v-icon>
                 </v-btn>
               </v-flex>
@@ -116,6 +116,7 @@
       result,
     },
     data: () => ({
+      loading: false,
       valid: true,
       dialog: false,
       delete: false,
@@ -271,6 +272,7 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
+          this.loading = true
           apiCall({url: '/api/controltest/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
             console.log('resp')
@@ -279,14 +281,16 @@
             Object.assign(this.controlTests[this.editedIndex], resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
 
         // store
         } else {
-
+          this.loading = true
           apiCall({url: '/api/controltest', data: this.editedItem, method: 'POST' })
           .then(resp => {
             this.controlTests.push(resp)
@@ -294,8 +298,10 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
         }

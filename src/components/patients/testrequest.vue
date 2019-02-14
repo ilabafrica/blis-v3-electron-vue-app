@@ -63,7 +63,7 @@
                     </v-select>
                   </v-flex>
                   <v-flex xs3 offset-xs9 text-xs-right>
-                    <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                    <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
                       Save <v-icon right dark>cloud_upload</v-icon>
                     </v-btn>
                   </v-flex>
@@ -82,7 +82,7 @@
 
   export default {
     data: () => ({
-
+      loading: false,
       message:'',
       y: 'top',
       color: 'success',
@@ -149,15 +149,17 @@
       },
 
       save () {
-
+          this.loading = true
           apiCall({url: '/api/patient/testrequest', data: this.testRequest, method: 'POST' })
           .then(resp => {
+            this.loading = false
             console.log(resp)
             EventBus.$emit('update-test-list', resp);
               this.message = 'New Test Added  Succesfully';
             this.snackbar = true;
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
         this.close()

@@ -81,17 +81,13 @@
                 </v-radio-group>
               </v-flex>
               <v-flex xs12 sm12 md12>
-                <v-text-field
-                  readonly
-                  v-model="editedItem.birth_date"
-                  :rules="[v => !!v || 'Date of Birth is Required']"
-                  label="Date of Birth"
-                  @click="showCalendar()">
-                </v-text-field>
-                <v-date-picker v-show="calendar" v-model="editedItem.birth_date" :landscape="landscape" :reactive="reactive"></v-date-picker>
+                <v-menu>
+                  <v-text-field :rules="[v => !!v || 'Date of Birth is Required']" :value="editedItem.birth_date" slot="activator" label="Date of Birth"></v-text-field>
+                  <v-date-picker v-model="editedItem.birth_date"></v-date-picker>
+                </v-menu>
               </v-flex>
               <v-flex xs3 offset-xs9 text-xs-right>
-                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
                   Save <v-icon right dark>cloud_upload</v-icon>
                 </v-btn>
               </v-flex>
@@ -200,11 +196,10 @@
       testrequest,
     },
     data: () => ({
-
+      loading: false,
       message:'',
       y: 'top',
       color: 'success',
-      calendar: false,
       message: '',
       valid: true,
       dialog: false,
@@ -297,10 +292,6 @@
         })
       },
 
-      showCalendar(){
-        this.calendar = true
-      },
-
       editItem (item) {
         this.editedIndex = this.patient.indexOf(item)
         this.editedItem = Object.assign({}, item)
@@ -351,9 +342,10 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-
+          this.loading = true
           apiCall({url: '/api/patient/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
+            this.loading = false
             Object.assign(this.patient[this.editedIndex], this.editedItem)
             console.log(resp)
             this.resetDialogReferences();
@@ -362,14 +354,16 @@
             this.snackbar = true;
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
 
         // store
         } else {
-
+          this.loading = true
           apiCall({url: '/api/patient', data: this.editedItem, method: 'POST' })
           .then(resp => {
+            this.loading = false
             this.patient.push(this.editedItem)
             console.log(resp)
             this.resetDialogReferences();
@@ -379,6 +373,7 @@
 
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
         }

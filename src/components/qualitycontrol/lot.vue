@@ -50,15 +50,11 @@
                 </v-text-field>
               </v-flex>
               <v-flex xs12 sm12 md12>
-                <v-text-field
-                  readonly
-                  v-model="editedItem.expiry"
-                  :rules="[v => !!v || 'Expiry Date is Required']"
-                  label="Expiry Date"
-                  @click="showCalendar()">
-                </v-text-field>
+                <v-menu>
+                  <v-text-field :rules="[v => !!v || 'Expiry Date is Required']" :value="editedItem.expiry" slot="activator" label="Expiry Date"></v-text-field>
+                  <v-date-picker v-model="editedItem.expiry"></v-date-picker>
+                </v-menu>
               </v-flex>
-              <v-date-picker v-show="calendar" v-model="editedItem.expiry" :landscape="landscape" :reactive="reactive"></v-date-picker>
               <v-flex xs12 sm12 md12>
                 <v-select
                   :items="instruments"
@@ -69,7 +65,7 @@
                 ></v-select>
               </v-flex>
               <v-flex xs3 offset-xs9 text-xs-right>
-                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
                   Save <v-icon right dark>cloud_upload</v-icon>
                 </v-btn>
               </v-flex>
@@ -142,10 +138,10 @@
   export default {
     name:'Lot',
     data: () => ({
+      loading: false,
       message:'',
       y: 'top',
       color: 'success',
-      calendar: false,
       landscape: true,
       reactive: true,
       instruments: [],
@@ -232,10 +228,6 @@
         })
       },
 
-      showCalendar(){
-        this.calendar = true
-      },
-
       editItem (item) {
         this.editedIndex = this.lot.indexOf(item)
         this.editedItem = Object.assign({}, item)
@@ -279,7 +271,7 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-
+          this.loading = true
           apiCall({url: '/api/lot/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
             Object.assign(this.lot[this.editedIndex], resp)
@@ -288,14 +280,16 @@
             this.saving = false;
               this.message = 'Lot Updated Succesfully';
             this.snackbar = true;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
 
         // store
         } else {
-
+          this.loading = true
           apiCall({url: '/api/lot', data: this.editedItem, method: 'POST' })
           .then(resp => {
             this.lot.push(resp)
@@ -304,9 +298,11 @@
             this.saving = false;
             this.message = 'New Lot Added Succesfully';
             this.snackbar = true;
+            this.loading = false
           })
           .catch(error => {
             console.log(error.response)
+            this.loading = false
           })
         }
         this.close()

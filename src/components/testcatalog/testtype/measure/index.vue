@@ -55,7 +55,7 @@
               </v-text-field>
             </v-flex>
             <v-flex xs3 offset-xs9 text-xs-right>
-              <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveMeasure">
+              <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveMeasure" :loading="loading">
                 Save <v-icon right dark>cloud_upload</v-icon>
               </v-btn>
             </v-flex>
@@ -116,6 +116,7 @@
 
   export default {
     data: () => ({
+      loading: false,
       dialog: false,
       dialogMeasure: false,
       dialogNumericRange: false,
@@ -280,21 +281,23 @@
         this.savingMeasure = true;
         // update
         if (this.updatingMeasure) {
-
+          this.loading = true
           apiCall({url: '/api/measure/'+this.measurefield.id, data: this.measurefield, method: 'PUT' })
           .then(resp => {
             Object.assign(this.measures[this.itemIndex], this.measurefield)
             console.log(resp)
             this.closeMeasureDialogue();
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
 
         //store
         } else {
         this.measurefield.test_type_id = this.testType.id;
-
+          this.loading = true
           apiCall({url: '/api/measure', data: this.measurefield, method: 'POST' })
           .then(resp => {
             this.measures.push(this.measurefield)
@@ -302,8 +305,10 @@
             console.log(resp)
             
             this.closeMeasureDialogue();
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
         }

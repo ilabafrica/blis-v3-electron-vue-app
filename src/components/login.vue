@@ -37,7 +37,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" round :disabled="!valid" @click="login">
+        <v-btn color="primary" round :disabled="!valid" @click="login" :loading="loading">
           Login
         </v-btn>
       </v-card-actions>
@@ -72,6 +72,7 @@
     },
     data() {
       return {
+        loading: false,
         alert: false,
         valid: true,
         message: '',
@@ -86,9 +87,11 @@
     methods: {
       login () {
         if (this.$refs.form.validate()) {
+          this.loading = true
           const { username, password } = this
           this.$store.dispatch(AUTH_REQUEST, { username, password })
           .then((response) => {
+            this.loading = false
             this.$router.push('/')
           }).catch((response) => {
             console.log(response)

@@ -65,7 +65,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
               Save <v-icon right dark>cloud_upload</v-icon>
             </v-btn>
           </v-card-actions>
@@ -101,14 +101,10 @@
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm12 md12>
-                  <v-text-field
-                      readonly
-                      v-model="editedStockItem.expiry_date"
-                      :rules="[v => !!v || 'Expiry Date is Required']"
-                      label="Expiry Date"
-                      @click="showStockExpiryEditCalendar()">
-                    </v-text-field>
-                    <v-date-picker v-show="stock_edit_expiry_calendar" v-model="editedStockItem.expiry_date" :landscape="landscape" :reactive="reactive"></v-date-picker>
+                  <v-menu>
+                    <v-text-field :rules="[v => !!v || 'Expiry Date is Required']" :value="editedStockItem.expiry_date" slot="activator" label="Expiry Date"></v-text-field>
+                    <v-date-picker v-model="editedStockItem.expiry_date"></v-date-picker>
+                  </v-menu>
                 </v-flex>
                 <v-flex xs12 sm12 md12>
                   <v-text-field
@@ -141,14 +137,10 @@
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm12 md12>
-                    <v-text-field
-                      readonly
-                      v-model="editedStockItem.date_received"
-                      :rules="[v => !!v || 'Date Received is Required']"
-                      label="Date Received"
-                      @click="showStockEditCalendar()">
-                    </v-text-field>
-                    <v-date-picker v-show="stock_edit_calendar" v-model="editedStockItem.date_received" :landscape="landscape" :reactive="reactive"></v-date-picker>
+                  <v-menu>
+                    <v-text-field :rules="[v => !!v || 'Date Received is Required']" :value="editedStockItem.date_received" slot="activator" label="Date Received"></v-text-field>
+                    <v-date-picker v-model="editedStockItem.date_received"></v-date-picker>
+                  </v-menu>
                   </v-flex>
                 <v-flex xs12 sm12 md12>
                   <v-text-field
@@ -162,7 +154,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveUpdateStock">
+            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveUpdateStock" :loading="loading">
               Save <v-icon right dark>cloud_upload</v-icon>
             </v-btn>
           </v-card-actions>
@@ -219,14 +211,10 @@
                     </v-text-field>
                   </v-flex>
                   <v-flex xs6 sm6 md6>
-                    <v-text-field
-                      readonly
-                      v-model="requestItem.date_issued"
-                      :rules="[v => !!v || 'Date Signed Out is Required']"
-                      label="Date Signed Out"
-                      @click="showIssueCalendar()">
-                    </v-text-field>
-                    <v-date-picker v-show="issue_calendar" v-model="requestItem.date_issued" :landscape="landscape" :reactive="reactive"></v-date-picker>
+                    <v-menu>
+                      <v-text-field :rules="[v => !!v || 'Date Issued is Required']" :value="requestItem.date_issued" slot="activator" label="Date Issued"></v-text-field>
+                      <v-date-picker v-model="requestItem.date_issued"></v-date-picker>
+                    </v-menu>
                   </v-flex>
                   <v-flex xs6 sm6 md6>
                     <v-text-field
@@ -263,7 +251,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="resetIssueDialogReferences">Cancel</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveIssueStock">Save</v-btn>
+          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveIssueStock" :loading="loading">Save</v-btn>
         </v-card-actions>
         </v-form>
       </v-card>
@@ -299,14 +287,10 @@
                 </v-text-field>
               </v-flex>
               <v-flex xs12 sm12 md12>
-                <v-text-field
-                  readonly
-                  v-model="stockItem.expiry_date"
-                  :rules="[v => !!v || 'Expiry Date is Required']"
-                  label="Expiry Date"
-                  @click="showExpCalendar()">
-                </v-text-field>
-                <v-date-picker v-show="expiry_calendar" v-model="stockItem.expiry_date" :landscape="landscape" :reactive="reactive"></v-date-picker>
+                <v-menu>
+                  <v-text-field :rules="[v => !!v || 'Expiry Date is Required']" :value="stockItem.expiry_date" slot="activator" label="Expiry Date"></v-text-field>
+                  <v-date-picker v-model="stockItem.expiry_date"></v-date-picker>
+                </v-menu>
               </v-flex>
               <v-flex xs12 sm12 md12>
                 <v-text-field
@@ -339,14 +323,10 @@
                 </v-text-field>
               </v-flex>
               <v-flex xs12 sm12 md12>
-                <v-text-field
-                  readonly
-                  v-model="stockItem.date_received"
-                  :rules="[v => !!v || 'Date Received is Required']"
-                  label="Date Received"
-                  @click="showRecCalendar()">
-                </v-text-field>
-                <v-date-picker v-show="rec_calendar" v-model="stockItem.date_received" :landscape="landscape" :reactive="reactive"></v-date-picker>
+                <v-menu>
+                  <v-text-field :rules="[v => !!v || 'Date Received is Required']" :value="stockItem.date_received" slot="activator" label="Date Received"></v-text-field>
+                  <v-date-picker v-model="stockItem.date_received"></v-date-picker>
+                </v-menu>
               </v-flex>
               <v-flex xs12 sm12 md12>
                 <v-text-field
@@ -361,7 +341,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="resetStockDialogReferences">Cancel</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveStock">Save</v-btn>
+          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveStock" :loading="loading">Save</v-btn>
         </v-card-actions>
         </v-form>
       </v-card>
@@ -495,11 +475,7 @@
   export default {
     name:'InventoryItem',
     data: () => ({
-      expiry_calendar: false,
-      rec_calendar: false,
-      issue_calendar: false,
-      stock_edit_calendar: false,
-      stock_edit_expiry_calendar: false,
+      loading: false,
       valid: true,
       dialog: false,
       stockdialog: false,
@@ -685,26 +661,6 @@
         })
       },
 
-      showExpCalendar(){
-        this.expiry_calendar = true
-      },
-
-      showRecCalendar(){
-        this.rec_calendar = true
-      },
-
-      showIssueCalendar(){
-        this.issue_calendar = true
-      },
-
-      showStockEditCalendar(){
-        this.stock_edit_calendar = true
-      },
-
-      showStockExpiryEditCalendar(){
-        this.stock_edit_expiry_calendar = true
-      },
-
       editItem (item) {
         this.editedIndex = this.item.indexOf(item)
         this.editedItem = Object.assign({}, item)
@@ -802,32 +758,35 @@
       },
 
       save () {
-
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-
+          this.loading = true
           apiCall({url: '/item/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
             Object.assign(this.item[this.editedIndex], this.editedItem)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
 
         // store
         } else {
-
+          this.loading = true
           apiCall({url: '/item', data: this.editedItem, method: 'POST' })
           .then(resp => {
             this.item.push(this.editedItem)
             this.resetDialogReferences();
             this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
         }
@@ -836,15 +795,17 @@
       },
 
       saveUpdateStock () {
-
+        this.loading = true
         apiCall({url: '/stock/'+this.editedStockItem.id, data: this.editedStockItem, method: 'PUT' })
         .then(resp => {
           Object.assign(this.stock[this.editedStockIndex], this.editedStockItem)
           console.log(resp)
           this.resetDialogReferences();
           this.saving = false;
+          this.loading = false
         })
         .catch(error => {
+          this.loading = false
           console.log(error.response)
         })
 
@@ -853,26 +814,32 @@
       },
 
       saveStock () {
+        this.loading = true
         apiCall({url: '/stock', data: this.stockItem, method: 'POST' })
           .then(resp => {
             this.stock.push(this.stockItem)
             console.log(resp)
             this.resetStockDialogReferences();
             //this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
         })
       },
 
       saveIssueStock () {
+        this.loading = true
         apiCall({url: '/issueStock', data: this.requestItem, method: 'POST' })
           .then(resp => {
             console.log(resp)
             this.resetIssueDialogReferences();
             //this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
         })
       }

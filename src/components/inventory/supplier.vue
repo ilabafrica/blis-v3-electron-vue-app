@@ -51,7 +51,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
               Save <v-icon right dark>cloud_upload</v-icon>
             </v-btn>
           </v-card-actions>
@@ -122,6 +122,7 @@
   export default {
     name:'InventorySupplier',
     data: () => ({
+      loading: false,
       valid: true,
       dialog: false,
       delete: false,
@@ -238,7 +239,7 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-
+          this.loading = true
           apiCall({url: '/supplier/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
             Object.assign(this.supplier[this.editedIndex], this.editedItem)
@@ -246,22 +247,26 @@
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
 
         // store
         } else {
-
+          this.loading = true
           apiCall({url: '/supplier', data: this.editedItem, method: 'POST' })
           .then(resp => {
             this.supplier.push(this.editedItem)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
         }
