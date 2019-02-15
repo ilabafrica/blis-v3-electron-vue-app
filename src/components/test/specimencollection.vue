@@ -24,32 +24,16 @@
                     </v-select>
                   </v-flex>
                   <v-flex xs12 sm12 md12>
-                    <v-text-field
-                      readonly
-                      v-model="specimenCollection.time_collected"
-                      :rules="[v => !!v || 'Time Collected is Required']"
-                      label="Time Collected"
-                      @click="datePicker.time_collected = true">
-                    </v-text-field>
-                    <v-date-picker
-                      v-show="datePicker.time_collected"
-                      v-model="specimenCollection.time_collected"
-                      :landscape="landscape" :reactive="reactive">
-                    </v-date-picker>
+                    <v-menu>
+                      <v-text-field :rules="[v => !!v || 'Time Collected is Required']" :value="specimenCollection.time_collected" slot="activator" label="Time Collected"></v-text-field>
+                      <v-date-picker v-model="specimenCollection.time_collected"></v-date-picker>
+                    </v-menu>
                   </v-flex>
                   <v-flex xs12 sm12 md12>
-                    <v-text-field
-                      readonly
-                      v-model="specimenCollection.time_received"
-                      :rules="[v => !!v || 'Time Received is Required']"
-                      label="Time Received"
-                      @click="datePicker.time_received = true">
-                    </v-text-field>
-                    <v-date-picker
-                      v-show="datePicker.time_received"
-                      v-model="specimenCollection.time_received"
-                      :landscape="landscape" :reactive="reactive">
-                    </v-date-picker>
+                    <v-menu>
+                      <v-text-field :rules="[v => !!v || 'Time Received is Required']" :value="specimenCollection.time_received" slot="activator" label="Time Received"></v-text-field>
+                      <v-date-picker v-model="specimenCollection.time_received"></v-date-picker>
+                    </v-menu>
                   </v-flex>
                   <v-flex xs12 sm12 md12>
                     <v-text-field
@@ -59,7 +43,7 @@
                     </v-text-field>
                   </v-flex>
                   <v-flex xs3 offset-xs9 text-xs-right>
-                    <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                    <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
                       Save <v-icon right dark>cloud_upload</v-icon>
                     </v-btn>
                   </v-flex>
@@ -81,6 +65,7 @@
         time_collected: false,
         time_received: false,
       },
+      loading: false,
       landscape: true,
       reactive: true,
       valid: true,
@@ -117,7 +102,7 @@
       },
 
       save () {
-
+        this.loading = true
         this.saving = true;
 
         apiCall({url: '/api/test/specimencollection', data: this.specimenCollection, method: 'POST' })
@@ -125,9 +110,11 @@
           console.log(resp)
           EventBus.$emit('update-test-list', resp);
           this.saving = false;
+          this.loading = false
         })
         .catch(error => {
           console.log(error.response)
+          this.loading = false
         })
 
         this.close()

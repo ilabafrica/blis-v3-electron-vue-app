@@ -56,7 +56,7 @@
             </v-text-field>
           </v-flex>
           <v-flex xs3 offset-xs9 text-xs-right>
-            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveMeasureRange">
+            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveMeasureRange" :loading="loading">
               Save <v-icon right dark>cloud_upload</v-icon>
             </v-btn>
           </v-flex>
@@ -89,7 +89,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn color="primary" flat @click.stop="closeAlphaMeasureRangeDialog">Close</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveMeasureRange">Save</v-btn>
+          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveMeasureRange" :loading="loading">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -206,6 +206,7 @@
   export default {
     name: 'MeasureRange',
     data: () => ({
+      loading: false,
       dialog: false,
       dialogNumericRange: false,
       dialogAlphanumericRange: false,
@@ -365,23 +366,29 @@
         // update
         if (this.editedIndex > -1) {
           if(this.measure.measure_type.code === 'numeric'){
+            this.loading = true
             apiCall({url: '/api/measurerange/'+this.numerics.id, data: this.numerics, method: 'PUT' })
             .then(resp => {
               Object.assign(this.item[this.editedIndex], this.numerics)
               console.log("Numeric Measure type save response",resp)
+              this.loading = false
             })
             .catch(error => {
+              this.loading = false
               console.log(error.response)
             })
             this.closeMeasureRangeDialog();
             this.saving = false;
           }else{
+            this.loading = true
             apiCall({url: '/api/measurerange/'+this.alphanumerics.id, data: this.alphanumerics, method: 'PUT' })
             .then(resp => {
               Object.assign(this.item[this.editedIndex], this.alphanumerics)
               console.log("Alphanumeric measure type save response is ",resp)
+              this.loading = false
             })
             .catch(error => {
+              this.loading = false
               console.log(error.response)
             })
             this.closeAlphaMeasureRangeDialog();
@@ -391,6 +398,7 @@
         //store
         }else{
           if(this.measure.measure_type.code === 'numeric'){
+            this.loading = true
             this.numerics.measure_id = this.$route.params.measureId
             apiCall({url: '/api/measurerange', data: this.numerics, method: 'POST' })
             .then(resp => {
@@ -398,13 +406,16 @@
               let measureRanges = this.measure.measure_ranges
               measureRanges.push(resp)
               Vue.set(this.measure,"measure_ranges",measureRanges)
+              this.loading = false
               console.log(this.numerics);
             })
             .catch(error => {
+              this.loading = false
               console.log(error.response)
             })
             this.closeMeasureRangeDialog();
           }else{
+            this.loading = true
             this.alphanumerics.measure_id = this.$route.params.measureId
             console.log("alphanumerics")
             console.log(this.alphanumerics)
@@ -414,9 +425,11 @@
               let measureRanges = this.measure.measure_ranges
               measureRanges.push(resp)
               Vue.set(this.measure,"measure_ranges",measureRanges)
+              this.loading = false
               console.log(this.alphanumerics);
             })
             .catch(error => {
+              this.loading = false
               console.log(error.response)
             })
             this.closeAlphaMeasureRangeDialog();

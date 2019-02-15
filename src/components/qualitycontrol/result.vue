@@ -43,7 +43,7 @@
                 </v-select>
               </v-flex>
               <v-flex xs3 offset-xs9 text-xs-right>
-                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
                   Save <v-icon right dark>cloud_upload</v-icon>
                 </v-btn>
               </v-flex>
@@ -78,7 +78,7 @@
                 </v-select>
               </v-flex>
               <v-flex xs3 offset-xs9 text-xs-right>
-                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
                   Save <v-icon right dark>cloud_upload</v-icon>
                 </v-btn>
               </v-flex>
@@ -96,6 +96,7 @@
   import apiCall from '../../utils/api'
   export default {
     data: () => ({
+      loading: false,
       dialog: false,
       valid: true,
       saving: false,
@@ -166,6 +167,7 @@
        },
 
       save () {
+        this.loading = true
         apiCall({url: '/api/controlresult', data: this.results, method: 'POST' })
           .then(resp => {
             console.log('resp')
@@ -174,10 +176,11 @@
             EventBus.$emit('update-control-test-list', resp);
 
             this.inputs = [];
-
+            this.loading = false
             this.dialog = false;
         })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
         })
       }

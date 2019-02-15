@@ -24,21 +24,21 @@
       class="elevation-1">
       <template slot="items" slot-scope="props">
         <td>{{ props.item.created_at }}</td>
-        <td class="text-xs-right">
+        <td class="text-xs">
           <div v-if="props.item.encounter.patient.name">
             {{ props.item.encounter.patient.name.text }}
           </div>
             ({{ getGender(props.item.encounter.patient.gender.code) }},
             {{ getAge(props.item.encounter.patient.birth_date) }})
         </td>
-        <td class="text-xs-right">
+        <td class="text-xs">
           <div v-if="props.item.specimen">
             {{ props.item.specimen.specimen_type.name }}
           </div>
         </td>
-        <td class="text-xs-right">{{ props.item.test_type.name }}</td>
-        <td class="text-xs-right">{{ props.item.encounter.identifier }}</td>
-        <td class="text-xs-right">{{ props.item.test_status.name }}</td>
+        <td class="text-xs">{{ props.item.test_type.name }}</td>
+        <td class="text-xs">{{ props.item.encounter.identifier }}</td>
+        <td class="text-xs">{{ props.item.test_status.name }}</td>
         <td class="justify-left layout px-0">
           <v-btn
             outline

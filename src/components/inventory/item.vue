@@ -19,15 +19,6 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12 sm12 md12>
-                  <v-select
-                    :items="suppliers"
-                    v-model="editedItem.supplier_id"
-                    item-text="name"
-                    item-value="id"
-                    label="Supplier"
-                  ></v-select>
-                </v-flex>
-                <v-flex xs12 sm12 md12>
                   <v-text-field
                     v-model="editedItem.name"
                     :rules="[v => !!v || 'Name is Required']"
@@ -74,7 +65,96 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
+              Save <v-icon right dark>cloud_upload</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="stockdialog" max-width="500px">
+      <v-card>
+        <v-toolbar dark color="primary" class="elevation-0">
+          <v-toolbar-title>Edit Stock Entry</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn round outline color="blue lighten-1" flat @click.native="close">
+            Cancel
+            <v-icon right dark>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-form ref="form" v-model="valid" lazy-validation>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedStockItem.lot_no"
+                    :rules="[v => !!v || 'Lot no. is Required']"
+                    label="Lot No.">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedStockItem.batch_no"
+                    :rules="[v => !!v || 'Batch no. is Required']"
+                    label="Batch No.">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-menu>
+                    <v-text-field :rules="[v => !!v || 'Expiry Date is Required']" :value="editedStockItem.expiry_date" slot="activator" label="Expiry Date"></v-text-field>
+                    <v-date-picker v-model="editedStockItem.expiry_date"></v-date-picker>
+                  </v-menu>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedStockItem.manufacturer"
+                    :rules="[v => !!v || 'Manufacturer is Required']"
+                    label="Manufacturer">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-select
+                  :items="suppliers"
+                  v-model="editedStockItem.supplier_id"
+                  item-text="name"
+                  item-value="id"
+                  label="Supplier"
+                ></v-select>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedStockItem.quantity_supplied"
+                    :rules="[v => !!v || 'Quantity Supplied is Required']"
+                    label="Quantity Supplied">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedStockItem.cost_per_unit"
+                    :rules="[v => !!v || 'Cost per Unit is Required']"
+                    label="Cost per Unit">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-menu>
+                    <v-text-field :rules="[v => !!v || 'Date Received is Required']" :value="editedStockItem.date_received" slot="activator" label="Date Received"></v-text-field>
+                    <v-date-picker v-model="editedStockItem.date_received"></v-date-picker>
+                  </v-menu>
+                  </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-text-field
+                    v-model="editedStockItem.remarks"
+                    :rules="[v => !!v || 'Remarks is Required']"
+                    label="Remarks">
+                  </v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveUpdateStock" :loading="loading">
               Save <v-icon right dark>cloud_upload</v-icon>
             </v-btn>
           </v-card-actions>
@@ -131,14 +211,10 @@
                     </v-text-field>
                   </v-flex>
                   <v-flex xs6 sm6 md6>
-                    <v-text-field
-                      readonly
-                      v-model="requestItem.date_issued"
-                      :rules="[v => !!v || 'Date Signed Out is Required']"
-                      label="Date Signed Out"
-                      @click="showIssueCalendar()">
-                    </v-text-field>
-                    <v-date-picker v-show="issue_calendar" v-model="requestItem.date_issued" :landscape="landscape" :reactive="reactive"></v-date-picker>
+                    <v-menu>
+                      <v-text-field :rules="[v => !!v || 'Date Issued is Required']" :value="requestItem.date_issued" slot="activator" label="Date Issued"></v-text-field>
+                      <v-date-picker v-model="requestItem.date_issued"></v-date-picker>
+                    </v-menu>
                   </v-flex>
                   <v-flex xs6 sm6 md6>
                     <v-text-field
@@ -175,7 +251,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="resetIssueDialogReferences">Cancel</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveIssueStock">Save</v-btn>
+          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveIssueStock" :loading="loading">Save</v-btn>
         </v-card-actions>
         </v-form>
       </v-card>
@@ -211,14 +287,10 @@
                 </v-text-field>
               </v-flex>
               <v-flex xs12 sm12 md12>
-                <v-text-field
-                  readonly
-                  v-model="stockItem.expiry_date"
-                  :rules="[v => !!v || 'Expiry Date is Required']"
-                  label="Expiry Date"
-                  @click="showExpCalendar()">
-                </v-text-field>
-                <v-date-picker v-show="expiry_calendar" v-model="stockItem.expiry_date" :landscape="landscape" :reactive="reactive"></v-date-picker>
+                <v-menu>
+                  <v-text-field :rules="[v => !!v || 'Expiry Date is Required']" :value="stockItem.expiry_date" slot="activator" label="Expiry Date"></v-text-field>
+                  <v-date-picker v-model="stockItem.expiry_date"></v-date-picker>
+                </v-menu>
               </v-flex>
               <v-flex xs12 sm12 md12>
                 <v-text-field
@@ -231,7 +303,6 @@
                 <v-select
                   :items="suppliers"
                   v-model="stockItem.supplier_id"
-                  overflow
                   item-text="name"
                   item-value="id"
                   label="Supplier"
@@ -252,14 +323,10 @@
                 </v-text-field>
               </v-flex>
               <v-flex xs12 sm12 md12>
-                <v-text-field
-                  readonly
-                  v-model="stockItem.date_received"
-                  :rules="[v => !!v || 'Date Received is Required']"
-                  label="Date Received"
-                  @click="showRecCalendar()">
-                </v-text-field>
-                <v-date-picker v-show="rec_calendar" v-model="stockItem.date_received" :landscape="landscape" :reactive="reactive"></v-date-picker>
+                <v-menu>
+                  <v-text-field :rules="[v => !!v || 'Date Received is Required']" :value="stockItem.date_received" slot="activator" label="Date Received"></v-text-field>
+                  <v-date-picker v-model="stockItem.date_received"></v-date-picker>
+                </v-menu>
               </v-flex>
               <v-flex xs12 sm12 md12>
                 <v-text-field
@@ -274,7 +341,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="resetStockDialogReferences">Cancel</v-btn>
-          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveStock">Save</v-btn>
+          <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveStock" :loading="loading">Save</v-btn>
         </v-card-actions>
         </v-form>
       </v-card>
@@ -311,7 +378,7 @@
                 title="Edit"
                 color="teal"
                 flat
-                @click="editItem(props.item)">
+                @click="editStockItem(props.item)">
                 Edit
                 <v-icon right dark>edit</v-icon>
               </v-btn>
@@ -408,11 +475,10 @@
   export default {
     name:'InventoryItem',
     data: () => ({
-      expiry_calendar: false,
-      rec_calendar: false,
-      issue_calendar: false,
+      loading: false,
       valid: true,
       dialog: false,
+      stockdialog: false,
       issueDialog: false,
       delete: false,
       saving: false,
@@ -462,6 +528,7 @@
       stock: [],
       request: [],
       editedIndex: -1,
+      editedStockIndex: -1,
       requestItem: {
         stock_id: '',
         request_id: '',
@@ -506,7 +573,6 @@
         remarks: '',
       },
       editedItem: {
-        supplier_id: '',
         name: '',
         unit: '',
         min: '',
@@ -515,14 +581,35 @@
         remarks: '',
       },
       defaultItem: {
-        supplier_id: '',
         name: '',
         unit: '',
         min: '',
         max: '',
         storage_req: '',
         remarks: '',
-      }
+      },
+      editedStockItem: {
+        lot_no: '',
+        batch_no: '',
+        expiry_date: '',
+        manufacturer: '',
+        supplier_id: '',
+        quantity_supplied: '',
+        cost_per_unit: '',
+        date_received: '',
+        remarks: '',
+      },
+      defaultStockItem: {
+        lot_no: '',
+        batch_no: '',
+        expiry_date: '',
+        manufacturer: '',
+        supplier_id: '',
+        quantity_supplied: '',
+        cost_per_unit: '',
+        date_received: '',
+        remarks: '',
+      },
     }),
 
     computed: {
@@ -574,22 +661,16 @@
         })
       },
 
-      showExpCalendar(){
-        this.expiry_calendar = true
-      },
-
-      showRecCalendar(){
-        this.rec_calendar = true
-      },
-
-      showIssueCalendar(){
-        this.issue_calendar = true
-      },
-
       editItem (item) {
         this.editedIndex = this.item.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
+      },
+
+      editStockItem (item){
+        this.editedStockIndex = this.stock.indexOf(item)
+        this.editedStockItem = Object.assign({}, item)
+        this.stockdialog = true
       },
 
       itemStock(item){
@@ -640,7 +721,7 @@
         if (this.delete) {
           const index = this.item.indexOf(item)
           this.item.splice(index, 1)
-          apiCall({url: '/api/item/'+item.id, method: 'DELETE' })
+          apiCall({url: '/item/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
           })
@@ -653,6 +734,7 @@
 
       close () {
         this.dialog = false
+        this.stockdialog = false
 
         // if not saving reset dialog references to datatables
         if (!this.saving) {
@@ -676,33 +758,35 @@
       },
 
       save () {
-
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-
+          this.loading = true
           apiCall({url: '/item/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
             Object.assign(this.item[this.editedIndex], this.editedItem)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
 
         // store
         } else {
-
+          this.loading = true
           apiCall({url: '/item', data: this.editedItem, method: 'POST' })
           .then(resp => {
             this.item.push(this.editedItem)
-            console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
         }
@@ -710,27 +794,52 @@
 
       },
 
+      saveUpdateStock () {
+        this.loading = true
+        apiCall({url: '/stock/'+this.editedStockItem.id, data: this.editedStockItem, method: 'PUT' })
+        .then(resp => {
+          Object.assign(this.stock[this.editedStockIndex], this.editedStockItem)
+          console.log(resp)
+          this.resetDialogReferences();
+          this.saving = false;
+          this.loading = false
+        })
+        .catch(error => {
+          this.loading = false
+          console.log(error.response)
+        })
+
+        this.close()
+
+      },
+
       saveStock () {
+        this.loading = true
         apiCall({url: '/stock', data: this.stockItem, method: 'POST' })
           .then(resp => {
             this.stock.push(this.stockItem)
             console.log(resp)
             this.resetStockDialogReferences();
             //this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
         })
       },
 
       saveIssueStock () {
+        this.loading = true
         apiCall({url: '/issueStock', data: this.requestItem, method: 'POST' })
           .then(resp => {
             console.log(resp)
             this.resetIssueDialogReferences();
             //this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
         })
       }

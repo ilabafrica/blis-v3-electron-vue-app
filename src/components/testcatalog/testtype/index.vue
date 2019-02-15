@@ -61,7 +61,7 @@
               </v-checkbox>
             </v-flex>
             <v-flex xs3 offset-xs9 text-xs-right>
-              <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveTestType">
+              <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="saveTestType" :loading="loading">
                 Save <v-icon right dark>cloud_upload</v-icon>
               </v-btn>
             </v-flex>
@@ -166,6 +166,7 @@
       TestTypeDetail,
     },
     data: () => ({
+      loading: false,
       dialog: false,
       valid: true,
       delete: false,
@@ -300,28 +301,33 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
+          this.loading = true
           apiCall({url: '/api/testtype/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
             Object.assign(this.testTypes[this.editedIndex], resp)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.loading = false
 
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
 
         // store
         } else {
-
+          this.loading = true
           apiCall({url: '/api/testtype', data: this.editedItem, method: 'POST' })
           .then(resp => {
             this.testTypes.push(resp)
             this.resetDialogReferences();
             this.saving = false;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
         }

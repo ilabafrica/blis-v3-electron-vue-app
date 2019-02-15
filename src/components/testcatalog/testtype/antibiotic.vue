@@ -49,7 +49,7 @@
                 </v-text-field>
               </v-flex>
               <v-flex xs3 offset-xs9 text-xs-right>
-                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">
+                <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
                   Save <v-icon right dark>cloud_upload</v-icon>
                 </v-btn>
               </v-flex>
@@ -121,6 +121,7 @@
   export default {
     name: 'Antibiotic',
     data: () => ({
+      loading: false,
       message:'',
       y: 'top',
       color: 'success',
@@ -236,7 +237,7 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-
+          this.loading = true
           apiCall({url: '/api/antibiotic/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
             Object.assign(this.antibiotics[this.editedIndex], this.editedItem)
@@ -245,14 +246,16 @@
             this.saving = false;
             this.message = 'Antibiotic Updated Succesfully';
             this.snackbar = true;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
 
         // store
         } else {
-
+          this.loading = true
           apiCall({url: '/api/antibiotic', data: this.editedItem, method: 'POST' })
           .then(resp => {
             this.antibiotics.push(this.editedItem)
@@ -261,8 +264,10 @@
             this.saving = false;
               this.message = 'New Antibiotic Added Succesfully';
             this.snackbar = true;
+            this.loading = false
           })
           .catch(error => {
+            this.loading = false
             console.log(error.response)
           })
         }
