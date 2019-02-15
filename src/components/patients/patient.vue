@@ -111,69 +111,41 @@
         hide-details>
       </v-text-field>
     </v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="patient"
-      hide-actions
-      class="elevation-1"
-    >
-      <template slot="items" slot-scope="props">
-        <td>{{ props.item.identifier }}</td>
-        <td class="text-xs-left">
-          {{ props.item.name.given }}
-          {{ props.item.name.family }}
-        </td>
-        <td class="text-xs-left">{{ props.item.gender.display }}</td>
-        <td class="text-xs-left">{{ props.item.birth_date }}</td>
-        <td class="justify-left layout px-0">
-          <v-btn
-            outline
-            small
-            title="Edit"
-            color="blue"
-            flat
-            v-if="$can('request_test')"
-            @click="requestTest(props.item)">
+    <v-layout row wrap>
+    <v-flex md4  v-for="patient in patient" :key="patient.id">
+      <div class="blis_patient_card">
+        <div class="blis_patient_card_top_button">
+          <v-btn outline round small title="View Patient History" color="green" v-if="$can('view_reports')" :to="{name:'patient_reports_single', params:{id:patient.id}}">
+            <v-icon dark>list_alt</v-icon>
+          </v-btn>
+        </div>
+        <p class="blis_patient_card_main_heading">{{ patient.name.given }} {{ patient.name.family }}</p>
+        <p class="blis_patient_card_small_text">{{ patient.gender.display }}</p>
+        <p class="blis_patient_card_title">Identifier</p>
+        <p class="blis_patient_card_description">{{ patient.identifier }}</p>
+        <p class="blis_patient_card_title">Date of Birth</p>
+        <p class="blis_patient_card_description">{{patient.birth_date}}</p>
+        <p class="blis_patient_card_title"></p>
+        <p class="blis_patient_card_description"></p>
+        <p class="blis_patient_card_title"></p>
+        <p class="blis_patient_card_description"></p>
+        <div class="blis_patient_card_footer">
+          <v-btn class="blis_patient_card_button" small title="Edit" color="secondary" round v-if="$can('request_test')" @click="requestTest(patient)">
+            <v-icon left dark>add_circle</v-icon>
             New Test
-            <v-icon right dark>playlist_add</v-icon>
           </v-btn>
-          <v-btn
-            outline
-            small
-            title="View Patient History"
-            color="green"
-            flat
-            v-if="$can('view_reports')"
-            :to="{name:'patient_reports_single', params:{id:props.item.id}}">
-            <!-- user new view_patient_report -->
-            Report
-            <v-icon right dark>list_alt</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Edit"
-            color="teal"
-            flat
-            v-if="$can('manage_patients')"
-            @click="editItem(props.item)">
-            Edit
-            <v-icon right dark>edit</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Edit"
-            color="pink"
-            flat
-            v-if="$can('manage_patients')"
-            @click="deleteItem(props.item)">
-            Delete
-            <v-icon right dark>delete</v-icon>
-          </v-btn>
-        </td>
-      </template>
-    </v-data-table>
+          <div class="blis_patient_card_footer_right">
+            <v-btn outline fab title="Edit" color="info" small v-if="$can('manage_patients')" @click="editItem(patient)">
+              <v-icon dark>edit</v-icon>
+            </v-btn>
+            <v-btn outline fab title="Edit" color="warn" small v-if="$can('manage_patients')" @click="deleteItem(patient)">
+              <v-icon dark>delete</v-icon>
+            </v-btn>
+          </div>
+        </div>
+      </div>
+    </v-flex>
+    </v-layout>
     <div class="text-xs-center">
       <v-pagination
         :length="length"
@@ -185,6 +157,65 @@
     </div>
   </div>
 </template>
+<style>
+  .blis_patient_card{
+    background:white;
+    border-right:6px solid green;
+    width: 90%;
+    margin:5%;
+    height: 280px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    padding:20px;
+    position: relative;
+  }
+  .blis_patient_card_top_button{
+    position: absolute !important;
+    top:5px;
+    right:10px;
+  }
+  .blis_patient_card_main_heading{
+    font-size: 24px;
+    margin:0px;
+  }
+  .blis_patient_card_small_text{
+    font-size: 14px;
+  }
+  .blis_patient_card_title{
+    font-size: 13px;
+    margin:2px;
+    color: #AFAFAF;
+  }
+  .blis_patient_card_description{
+    font-size: 13px;
+    color: #737373;
+  }
+  .blis_patient_card_button{
+    margin: 0px !important;
+    padding: 5px 20px 5px 5px !important;
+    width: auto;
+    height: auto !important;
+  }
+  .blis_patient_card_button .v-btn__content{
+    text-transform: capitalize;
+    font-weight: 400;
+  }
+  .blis_patient_card_footer{
+    position: absolute;
+    bottom:0px;
+    width:100%;
+    padding-bottom: 20px;
+  }
+  .blis_patient_card_footer_right{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+  }
+  .blis_patient_card_footer_right button{
+    margin-bottom: 0px;
+  }
+</style>
+
 <script>
   import apiCall from '../../utils/api'
   import testrequest from './testrequest'
@@ -239,27 +270,22 @@
 
       }
     }),
-
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'New Patient' : 'Edit Patient Details'
       },
-
       length: function() {
         return Math.ceil(this.pagination.total / this.pagination.per_page);
       },
     },
-
     watch: {
       dialog (val) {
         val || this.close()
       }
     },
-
     created () {
       this.initialize()
     },
-
     mounted() {
       // Listen for the update-patient-list event and its payload.
       EventBus.$on('update-patient-list', data => {
@@ -269,17 +295,11 @@
     },
 
     methods: {
-
-
-
-
       initialize () {
-
         this.query = 'page='+ this.pagination.page;
         if (this.search != '') {
             this.query = this.query+'&search='+this.search;
         }
-
         apiCall({url: '/api/patient?' + this.query, method: 'GET' })
         .then(resp => {
           console.log(resp)
@@ -296,14 +316,9 @@
         this.editedIndex = this.patient.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
-       
-       
       },
-
       deleteItem (item) {
-
         confirm('Are you sure you want to delete this item?') && (this.delete = true)
-
         if (this.delete) {
           const index = this.patient.indexOf(item)
           this.patient.splice(index, 1)
@@ -315,29 +330,22 @@
             console.log(error.response)
           })
         }
-
       },
-
       close () {
         this.dialog = false
-
         // if not saving reset dialog references to datatables
         if (!this.saving) {
           this.resetDialogReferences();
         }
       },
-
       resetDialogReferences() {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       },
-
       requestTest (patient) {
         this.$refs.testRequestForm.modal(patient);
       },
-
       save () {
-
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
