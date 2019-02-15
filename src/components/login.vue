@@ -97,6 +97,7 @@
             console.log(response)
             this.message = 'Wrong email or password';
             this.alert = true;
+            this.loading = false
           });
         }
       }
