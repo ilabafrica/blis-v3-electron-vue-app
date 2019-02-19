@@ -79,6 +79,13 @@
         time_collected: '',
         collected_by: '',
         time_received: '',
+      },
+      defaultItem: {
+        test_id: '',
+        specimen_type_id: '',
+        time_collected: '',
+        collected_by: '',
+        time_received: '',
       }
     }),
 
@@ -99,25 +106,31 @@
 
       close () {
         this.dialog = false
+        this.resetDialogReferences()
+      },
+
+      resetDialogReferences() {
+        this.specimenCollection = Object.assign({}, this.defaultItem)
       },
 
       save () {
-        this.loading = true
-        this.saving = true;
+        if(this.$refs.form.validate()){
+          this.loading = true
+          this.saving = true;
 
-        apiCall({url: '/api/test/specimencollection', data: this.specimenCollection, method: 'POST' })
-        .then(resp => {
-          console.log(resp)
-          EventBus.$emit('update-test-list', resp);
-          this.saving = false;
-          this.loading = false
-        })
-        .catch(error => {
-          console.log(error.response)
-          this.loading = false
-        })
-
-        this.close()
+          apiCall({url: '/api/test/specimencollection', data: this.specimenCollection, method: 'POST' })
+          .then(resp => {
+            console.log(resp)
+            EventBus.$emit('update-test-list', resp);
+            this.saving = false;
+            this.loading = false
+          })
+          .catch(error => {
+            console.log(error.response)
+            this.loading = false
+          })
+          this.close()
+        }
       }
     }
   }

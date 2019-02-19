@@ -226,44 +226,47 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/instrument/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.instrument[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/instrument/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.instrument[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
 
-             this.message = 'Instrument Updated Succesfully';
-            this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+               this.message = 'Instrument Updated Succesfully';
+              this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/api/instrument', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.instrument.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/instrument', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.instrument.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
 
-             this.message = 'New Instrument Added Succesfully';
-             this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+               this.message = 'New Instrument Added Succesfully';
+               this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       }
     }
   }

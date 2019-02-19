@@ -27,6 +27,7 @@
               <v-flex xs12 sm12 md12>
                 <v-select
                   :items="lot"
+                  :rules="[v => !!v  || 'Lot is Required']"
                   v-model="editedItem.lot_id"
                   item-text="number"
                   item-value="id"
@@ -36,6 +37,7 @@
               <v-flex xs12 sm12 md12>
                 <v-select
                   :items="testTypes"
+                  :rules="[v => !!v  || 'Test Type is Required']"
                   v-model="editedItem.test_type_id"
                   item-text="name"
                   item-value="id"
@@ -272,41 +274,44 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/controltest/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            console.log('resp')
-            console.log(resp)
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/controltest/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              console.log('resp')
+              console.log(resp)
 
-            Object.assign(this.controlTests[this.editedIndex], resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+              Object.assign(this.controlTests[this.editedIndex], resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/api/controltest', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.controlTests.push(resp)
-            console.log('resp')
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/controltest', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.controlTests.push(resp)
+              console.log('resp')
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       },
 
     }

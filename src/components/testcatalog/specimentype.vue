@@ -229,42 +229,46 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/specimentype/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.specimentype[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-             this.message = 'Specimen Updated Succesfully';
-            this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/specimentype/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.specimentype[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+               this.message = 'Specimen Updated Succesfully';
+              this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
 
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/api/specimentype', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.specimentype.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-             this.message = 'New Specimen Added Succesfully';
-            this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/specimentype', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.specimentype.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+               this.message = 'New Specimen Added Succesfully';
+              this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       }
     }
   }

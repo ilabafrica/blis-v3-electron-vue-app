@@ -1,10 +1,7 @@
 <template>
   <div>
-
-
     <v-snackbar
         v-model="snackbar"
-          
         :color="color"
         :timeout="6000"
       :top="y === 'top'"
@@ -58,6 +55,7 @@
               <v-flex xs12 sm12 md12>
                 <v-select
                   :items="instruments"
+                  :rules="[v => !!v || 'instrument is Required']"
                   v-model="editedItem.instrument_id"
                   item-text="name"
                   item-value="id"
@@ -271,42 +269,46 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/lot/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.lot[this.editedIndex], resp)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-              this.message = 'Lot Updated Succesfully';
-            this.snackbar = true;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/lot/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.lot[this.editedIndex], resp)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+                this.message = 'Lot Updated Succesfully';
+              this.snackbar = true;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
 
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/api/lot', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.lot.push(resp)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.message = 'New Lot Added Succesfully';
-            this.snackbar = true;
-            this.loading = false
-          })
-          .catch(error => {
-            console.log(error.response)
-            this.loading = false
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/lot', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.lot.push(resp)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.message = 'New Lot Added Succesfully';
+              this.snackbar = true;
+              this.loading = false
+            })
+            .catch(error => {
+              console.log(error.response)
+              this.loading = false
+            })
+            this.close()
+          }
         }
-        this.close()
-
       }
     }
   }

@@ -1,7 +1,5 @@
 <template>
   <div>
-
-
     <v-snackbar
         v-model="snackbar"
           
@@ -212,43 +210,46 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/rejectionreason/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.rejectionReasons[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-            this.message = 'Specimen Reject Reason Updated Succesfully';
-            this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/rejectionreason/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.rejectionReasons[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+              this.message = 'Specimen Reject Reason Updated Succesfully';
+              this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/api/rejectionreason', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.rejectionReasons.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-            this.message = 'New Specimen Reject Reason Added Succesfully';
-            this.snackbar = true;
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/rejectionreason', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.rejectionReasons.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+              this.message = 'New Specimen Reject Reason Added Succesfully';
+              this.snackbar = true;
 
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       }
     }
   }

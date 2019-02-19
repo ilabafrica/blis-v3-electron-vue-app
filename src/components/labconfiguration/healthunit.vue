@@ -240,42 +240,45 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/location/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            this.loading = false
-            Object.assign(this.locations[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-             this.message = 'Health Unit Updated Succesfully';
-             this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/location/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              this.loading = false
+              Object.assign(this.locations[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+               this.message = 'Health Unit Updated Succesfully';
+               this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/api/location', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.loading = false
-            this.locations.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-             this.message = 'Health Unit Added Succesfully';
-            this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/location', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.loading = false
+              this.locations.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+               this.message = 'Health Unit Added Succesfully';
+              this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       }
     }
   }

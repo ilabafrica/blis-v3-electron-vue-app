@@ -35,7 +35,7 @@
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.identifier"
-                  :rules="[v => !!v  || 'Patient No. is Required']"
+                  :rules="[v => v.length >=1  || 'Patient No. is Required']"
                   label="Patient No.">
                 </v-text-field>
               </v-flex>
@@ -330,7 +330,6 @@
       resetDialogReferences() {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
-        this.calendar = false
       },
 
       requestTest (patient) {
@@ -342,42 +341,47 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/patient/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            this.loading = false
-            Object.assign(this.patient[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-             this.message = 'Patient Information Updated Succesfully';
-            this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/patient/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              this.loading = false
+              Object.assign(this.patient[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+               this.message = 'Patient Information Updated Succesfully';
+              this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/api/patient', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.loading = false
-            this.patient.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.message = 'Patient Added Succesfully';
-            this.snackbar = true;
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/patient', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.loading = false
+              this.patient.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.message = 'Patient Added Succesfully';
+              this.snackbar = true;
 
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
+        
 
       }
     }

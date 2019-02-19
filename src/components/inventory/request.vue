@@ -21,6 +21,7 @@
                 <v-flex xs12 sm12 md12>
                   <v-select
                     :items="items"
+                    :rules="[v => !!v || 'Instrument is Required']"
                     v-model="editedItem.item_id"
                     item-text="name"
                     item-value="id"
@@ -37,6 +38,7 @@
                 <v-flex xs12 sm12 md12>
                   <v-select
                     :items="labsections"
+                    :rules="[v => !!v || 'Lab Section is Required']"
                     v-model="editedItem.lab_section_id"
                     item-text="name"
                     item-value="id"
@@ -82,27 +84,18 @@
       max-width="500"
     >
       <v-card>
-        <v-card-title class="headline">Request Details</v-card-title>
-        <v-card-text>          
-          Lab Section: {{editedItem}}
-        </v-card-text>
-        <v-card-actions>
+        <v-toolbar dark color="primary" class="elevation-0">
+          <v-toolbar-title>Request Details</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn
-            color="green darken-1"
-            flat="flat"
-            @click="dialog = false"
-          >
-            Disagree
+          <v-btn round outline color="blue lighten-1" flat @click.native="detailsdialog = false">
+            Cancel
+            <v-icon right dark>close</v-icon>
           </v-btn>
-          <v-btn
-            color="green darken-1"
-            flat="flat"
-            @click="dialog = false"
-          >
-            Agree
-          </v-btn>
-        </v-card-actions>
+        </v-toolbar>
+        <v-card-text> 
+        <p><span class="grey--text pa-2">Lab Section: </span>{{editedItem.lab.name}}</p>      
+          
+        </v-card-text>
       </v-card>
     </v-dialog>
     <v-card-title>
@@ -334,33 +327,34 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-
-          apiCall({url: '/request/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.request[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            apiCall({url: '/request/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.request[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-
-          apiCall({url: '/request', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.request.push(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            apiCall({url: '/request', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.request.push(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       }
     }
   }
