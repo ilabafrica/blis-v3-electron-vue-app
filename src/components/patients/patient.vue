@@ -10,15 +10,6 @@
       </v-snackbar>
     <testrequest ref="testRequestForm"></testrequest>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn
-        outline
-        small
-        color="primary"
-        slot="activator"
-        flat>
-        New Patient
-        <v-icon right dark>playlist_add</v-icon>
-      </v-btn>
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
           <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
@@ -100,41 +91,41 @@
       </v-card>
     </v-dialog>
     <v-card-title>
-      Patients
+      <p class="blis_page_title">
+        Patients
+      </p>
+      <v-btn small color="primary" class="blis_card_button" @click="newItem">
+        <v-icon left dark>add_circle</v-icon>
+        New Patient
+      </v-btn>
       <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Search"
-        single-line
-        v-on:keyup.enter="initialize"
-        hide-details>
+      <v-text-field class="blis_search" v-model="search" append-icon="search" label="Search" single-line v-on:keyup.enter="initialize" hide-details>
       </v-text-field>
     </v-card-title>
     <v-layout row wrap>
     <v-flex md4  v-for="patient in patient" :key="patient.id">
-      <div class="blis_patient_card">
-        <div class="blis_patient_card_top_button">
-          <v-btn outline round small title="View Patient History" color="green" v-if="$can('view_reports')" :to="{name:'patient_reports_single', params:{id:patient.id}}">
-            <v-icon dark>list_alt</v-icon>
+      <div class="blis_card">
+        <div class="blis_card_top_right">
+          <v-btn outline fab small title="View History" color="green" v-if="$can('view_reports')" @click="toPatientHistory">
+            <v-icon dark>description</v-icon>
           </v-btn>
         </div>
-        <p class="blis_patient_card_main_heading">{{ patient.name.given }} {{ patient.name.family }}</p>
-        <p class="blis_patient_card_small_text">{{ patient.gender.display }}</p>
-        <p class="blis_patient_card_title">Identifier</p>
-        <p class="blis_patient_card_description">{{ patient.identifier }}</p>
-        <p class="blis_patient_card_title">Date of Birth</p>
-        <p class="blis_patient_card_description">{{patient.birth_date}}</p>
-        <p class="blis_patient_card_title"></p>
-        <p class="blis_patient_card_description"></p>
-        <p class="blis_patient_card_title"></p>
-        <p class="blis_patient_card_description"></p>
-        <div class="blis_patient_card_footer">
-          <v-btn class="blis_patient_card_button" small title="Edit" color="secondary" round v-if="$can('request_test')" @click="requestTest(patient)">
+        <p class="blis_card_main_heading">{{ patient.name.given }} {{ patient.name.family }}</p>
+        <p class="blis_card_small_text">{{ patient.gender.display }}</p>
+        <p class="blis_card_title">Identifier</p>
+        <p class="blis_card_description">{{ patient.identifier }}</p>
+        <p class="blis_card_title">Date of Birth</p>
+        <p class="blis_card_description">{{patient.birth_date}}</p>
+        <p class="blis_card_title"></p>
+        <p class="blis_card_description"></p>
+        <p class="blis_card_title"></p>
+        <p class="blis_card_description"></p>
+        <div class="blis_card_footer">
+          <v-btn class="blis_card_button" small title="Edit" color="secondary" round v-if="$can('request_test')" @click="requestTest(patient)">
             <v-icon left dark>add_circle</v-icon>
             New Test
           </v-btn>
-          <div class="blis_patient_card_footer_right">
+          <div class="blis_card_footer_right">
             <v-btn outline fab title="Edit" color="info" small v-if="$can('manage_patients')" @click="editItem(patient)">
               <v-icon dark>edit</v-icon>
             </v-btn>
@@ -158,68 +149,13 @@
   </div>
 </template>
 <style>
-  .blis_patient_card{
-    background:white;
-    border-right:6px solid green;
-    width: 90%;
-    margin:5%;
-    height: 280px;
-    border-radius: 20px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    padding:20px;
-    position: relative;
-  }
-  .blis_patient_card_top_button{
-    position: absolute !important;
-    top:5px;
-    right:10px;
-  }
-  .blis_patient_card_main_heading{
-    font-size: 24px;
-    margin:0px;
-  }
-  .blis_patient_card_small_text{
-    font-size: 14px;
-  }
-  .blis_patient_card_title{
-    font-size: 13px;
-    margin:2px;
-    color: #AFAFAF;
-  }
-  .blis_patient_card_description{
-    font-size: 13px;
-    color: #737373;
-  }
-  .blis_patient_card_button{
-    margin: 0px !important;
-    padding: 5px 20px 5px 5px !important;
-    width: auto;
-    height: auto !important;
-  }
-  .blis_patient_card_button .v-btn__content{
-    text-transform: capitalize;
-    font-weight: 400;
-  }
-  .blis_patient_card_footer{
-    position: absolute;
-    bottom:0px;
-    width:100%;
-    padding-bottom: 20px;
-  }
-  .blis_patient_card_footer_right{
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-  }
-  .blis_patient_card_footer_right button{
-    margin-bottom: 0px;
-  }
 </style>
 
 <script>
   import apiCall from '../../utils/api'
   import testrequest from './testrequest'
   import { EventBus } from './../../main.js'
+  import Vue from 'vue'
 
   export default {
     name:'Patient',
@@ -311,7 +247,12 @@
           console.log(error.response)
         })
       },
-
+      toPatientHistory(){
+          to="{name:'patient_reports_single', params:{id:patient.id}}"
+      },
+      newItem(){
+        Vue.set(this,"dialog",true);
+      },
       editItem (item) {
         this.editedIndex = this.patient.indexOf(item)
         this.editedItem = Object.assign({}, item)
