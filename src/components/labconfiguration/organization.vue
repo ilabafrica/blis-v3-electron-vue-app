@@ -228,43 +228,46 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/organization/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            this.loading = false
-            Object.assign(this.organization[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.message = 'Facility Updated Succesfully';
-            this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/organization/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              this.loading = false
+              Object.assign(this.organization[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.message = 'Facility Updated Succesfully';
+              this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/api/organization', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.loading = false
-            this.organization.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/organization', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.loading = false
+              this.organization.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
 
-             this.message = 'Health Facility Added Succesfully';
-             this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+               this.message = 'Health Facility Added Succesfully';
+               this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       }
     }
   }

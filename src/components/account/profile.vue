@@ -24,12 +24,12 @@
 		                  prepend-icon='attach_file'>
 		                </v-text-field>
 		                <input
-											type="file"
-											style="display: none"
-											ref="image"
-											accept="image/*"
-											@change="onFilePicked"
-										>
+							type="file"
+							style="display: none"
+							ref="image"
+							accept="image/*"
+							@change="onFilePicked"
+						>
 		              </v-flex>
 		              <v-flex xs3 offset-xs9 text-xs-right>
 			              <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="submitFile">

@@ -239,39 +239,42 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/supplier/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.supplier[this.editedIndex], this.editedItem)
-            Vue.set(this,"supplier", supplier)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/supplier/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.supplier[this.editedIndex], this.editedItem)
+              Vue.set(this,"supplier", supplier)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/supplier', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.supplier.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/supplier', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.supplier.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       }
     }
   }

@@ -167,22 +167,24 @@
        },
 
       save () {
-        this.loading = true
-        apiCall({url: '/api/controlresult', data: this.results, method: 'POST' })
-          .then(resp => {
-            console.log('resp')
-            console.log(resp)
+        if(this.$refs.form.validate()){
+          this.loading = true
+          apiCall({url: '/api/controlresult', data: this.results, method: 'POST' })
+            .then(resp => {
+              console.log('resp')
+              console.log(resp)
 
-            EventBus.$emit('update-control-test-list', resp);
+              EventBus.$emit('update-control-test-list', resp);
 
-            this.inputs = [];
-            this.loading = false
-            this.dialog = false;
-        })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-        })
+              this.inputs = [];
+              this.loading = false
+              this.dialog = false;
+          })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+          })
+        }
       }
     }
   }

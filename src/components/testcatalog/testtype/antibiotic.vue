@@ -237,41 +237,46 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/antibiotic/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.antibiotics[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.message = 'Antibiotic Updated Succesfully';
-            this.snackbar = true;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/antibiotic/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.antibiotics[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.message = 'Antibiotic Updated Succesfully';
+              this.snackbar = true;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/api/antibiotic', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.antibiotics.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-              this.message = 'New Antibiotic Added Succesfully';
-            this.snackbar = true;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/antibiotic', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.antibiotics.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+                this.message = 'New Antibiotic Added Succesfully';
+              this.snackbar = true;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
+        
 
       }
     }

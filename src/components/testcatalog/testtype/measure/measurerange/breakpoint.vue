@@ -252,39 +252,42 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/susceptibilitybreakpoint/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.breakPoints[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/susceptibilitybreakpoint/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.breakPoints[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+              this.close()
+            })
+          }
         // store
         } else {
-          this.loading = true
-          this.editedItem.measure_range_id = this.$route.params.measureRangeId
-          apiCall({url: '/api/susceptibilitybreakpoint', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.breakPoints.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            this.editedItem.measure_range_id = this.$route.params.measureRangeId
+            apiCall({url: '/api/susceptibilitybreakpoint', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.breakPoints.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       }
     }
   }

@@ -21,6 +21,7 @@
               <v-icon right dark>close</v-icon>
             </v-btn>
           </v-toolbar>
+          <v-form ref="form" v-model="valid" lazy-validation>
           <v-card-text>
             <v-flex xs12 sm12 md12>
               <v-text-field
@@ -66,6 +67,7 @@
               </v-btn>
             </v-flex>
           </v-card-text>
+        </v-form>
         </v-card>
       </v-dialog>
     </v-layout>
@@ -301,37 +303,41 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/api/testtype/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.testTypes[this.editedIndex], resp)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/testtype/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.testTypes[this.editedIndex], resp)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
 
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/api/testtype', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.testTypes.push(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/testtype', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.testTypes.push(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
       },
     }
   }

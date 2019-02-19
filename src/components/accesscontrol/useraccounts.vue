@@ -1,17 +1,14 @@
 <template>
   <div>
 
-   <v-alert
+   <v-snackbar
         v-model="alert"
-        
-        align-right
-        icon="check_circle"
-        transition="fade"
-
-        color="success"
-        dismissible>
+        :color="color"
+        :timeout="6000"
+      :top="y === 'top'"
+      >
         {{message}}
-      </v-alert> 
+     </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -291,40 +288,43 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          if(this.showPasswordField){
-            this.editedItem.adminPasswordChange = true
-            this.editedItem.password = this.password
+          if(this.$refs.form.validate()){
+            if(this.showPasswordField){
+              this.editedItem.adminPasswordChange = true
+              this.editedItem.password = this.password
+            }
+            apiCall({url: '/api/user/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.user[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.message = 'User Information Updated Succesfully';
+              this.alert = true;
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+            this.close()
           }
-          apiCall({url: '/api/user/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.user[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.message = 'User Information Updated Succesfully';
-            this.alert = true;
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
-
         // store
         } else {
-
-          apiCall({url: '/api/user', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.user.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.message = 'New User Added Succesfully';
-            this.alert = true;
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            apiCall({url: '/api/user', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.user.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.message = 'New User Added Succesfully';
+              this.alert = true;
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
       }
     },
   }

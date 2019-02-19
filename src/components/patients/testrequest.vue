@@ -101,6 +101,14 @@
         practitioner_name: '',
         encounter_class_id: '',
         testTypeIds: [],
+      },
+      defaultItem: {
+        patient_id: '',
+        bed_no: '',
+        location_id: '',
+        practitioner_name: '',
+        encounter_class_id: '',
+        testTypeIds: [],
       }
     }),
 
@@ -148,21 +156,28 @@
         this.dialog = false
       },
 
+      resetDialogReferences() {
+        this.testRequest = Object.assign({}, this.defaultItem)
+      },
+
       save () {
-          this.loading = true
-          apiCall({url: '/api/patient/testrequest', data: this.testRequest, method: 'POST' })
-          .then(resp => {
-            this.loading = false
-            console.log(resp)
-            EventBus.$emit('update-test-list', resp);
+        if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/patient/testrequest', data: this.testRequest, method: 'POST' })
+            .then(resp => {
+              this.loading = false
+              console.log(resp)
+              EventBus.$emit('update-test-list', resp);
               this.message = 'New Test Added  Succesfully';
-            this.snackbar = true;
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-        this.close()
+              this.snackbar = true;
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+          this.close()
+          this.resetDialogReferences()
+        }
       }
     }
   }

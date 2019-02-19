@@ -23,7 +23,7 @@
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-              <v-flex xs12 sm6 md4>
+              <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.name"
                   :rules="[v => !!v || 'Name is Required']"
@@ -185,34 +185,35 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-
-          apiCall({url: '/api/role/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.roles[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            apiCall({url: '/api/role/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.roles[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-
-          apiCall({url: '/api/role', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.roles.push(this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            apiCall({url: '/api/role', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.roles.push(this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       }
     }
   }

@@ -303,6 +303,7 @@
                 <v-select
                   :items="suppliers"
                   v-model="stockItem.supplier_id"
+                  :rules="[v => !!v || 'Supplier is Required']"
                   item-text="name"
                   item-value="id"
                   label="Supplier"
@@ -761,87 +762,94 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          this.loading = true
-          apiCall({url: '/item/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.item[this.editedIndex], this.editedItem)
-            console.log(resp)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/item/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.item[this.editedIndex], this.editedItem)
+              console.log(resp)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         // store
         } else {
-          this.loading = true
-          apiCall({url: '/item', data: this.editedItem, method: 'POST' })
-          .then(resp => {
-            this.item.push(this.editedItem)
-            this.resetDialogReferences();
-            this.saving = false;
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/item', data: this.editedItem, method: 'POST' })
+            .then(resp => {
+              this.item.push(this.editedItem)
+              this.resetDialogReferences();
+              this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+            this.close()
+          }
         }
-        this.close()
-
       },
 
       saveUpdateStock () {
-        this.loading = true
-        apiCall({url: '/stock/'+this.editedStockItem.id, data: this.editedStockItem, method: 'PUT' })
-        .then(resp => {
-          Object.assign(this.stock[this.editedStockIndex], this.editedStockItem)
-          console.log(resp)
-          this.resetDialogReferences();
-          this.saving = false;
-          this.loading = false
-        })
-        .catch(error => {
-          this.loading = false
-          console.log(error.response)
-        })
-
-        this.close()
-
+        if(this.$refs.form.validate()){
+          this.loading = true
+          apiCall({url: '/stock/'+this.editedStockItem.id, data: this.editedStockItem, method: 'PUT' })
+          .then(resp => {
+            Object.assign(this.stock[this.editedStockIndex], this.editedStockItem)
+            console.log(resp)
+            this.resetDialogReferences();
+            this.saving = false;
+            this.loading = false
+          })
+          .catch(error => {
+            this.loading = false
+            console.log(error.response)
+          })
+          this.close()
+        }
       },
 
       saveStock () {
-        this.loading = true
-        apiCall({url: '/stock', data: this.stockItem, method: 'POST' })
-          .then(resp => {
-            this.stock.push(this.stockItem)
-            console.log(resp)
-            this.resetStockDialogReferences();
-            //this.saving = false;
-            this.loading = false
+        if(this.$refs.form.validate()){
+          this.loading = true
+          apiCall({url: '/stock', data: this.stockItem, method: 'POST' })
+            .then(resp => {
+              this.stock.push(this.stockItem)
+              console.log(resp)
+              this.resetStockDialogReferences();
+              //this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
           })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-        })
+          }
       },
 
       saveIssueStock () {
-        this.loading = true
-        apiCall({url: '/issueStock', data: this.requestItem, method: 'POST' })
-          .then(resp => {
-            console.log(resp)
-            this.resetIssueDialogReferences();
-            //this.saving = false;
-            this.loading = false
+        if(this.$refs.form.validate()){
+          this.loading = true
+          apiCall({url: '/issueStock', data: this.requestItem, method: 'POST' })
+            .then(resp => {
+              console.log(resp)
+              this.resetIssueDialogReferences();
+              //this.saving = false;
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
           })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-        })
+        }
       }
     }
   }

@@ -10,6 +10,7 @@
             <v-icon right dark>close</v-icon>
           </v-btn>
         </v-toolbar>
+        <v-form ref="form" v-model="valid" lazy-validation>
         <v-card-text>
             <v-flex xs12 sm12 d-flex>
             <v-select
@@ -61,6 +62,7 @@
             </v-btn>
           </v-flex>
         </v-card-text>
+      </v-form>
       </v-card>
     </v-dialog>
 
@@ -69,6 +71,7 @@
         <v-card-title>
           Range Details
         </v-card-title>
+        <v-form ref="form" v-model="valid" lazy-validation>
         <v-card-text>
           <v-flex xs12 sm12 md12>
             <v-text-field
@@ -87,6 +90,7 @@
             ></v-select>
           </v-flex>
         </v-card-text>
+      </v-form>
         <v-card-actions>
           <v-btn color="primary" flat @click.stop="closeAlphaMeasureRangeDialog">Close</v-btn>
           <v-btn color="blue darken-1" :disabled="!valid" flat @click.native="saveMeasureRange" :loading="loading">Save</v-btn>
@@ -365,75 +369,83 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
-          if(this.measure.measure_type.code === 'numeric'){
-            this.loading = true
-            apiCall({url: '/api/measurerange/'+this.numerics.id, data: this.numerics, method: 'PUT' })
-            .then(resp => {
-              Object.assign(this.item[this.editedIndex], this.numerics)
-              console.log("Numeric Measure type save response",resp)
-              this.loading = false
-            })
-            .catch(error => {
-              this.loading = false
-              console.log(error.response)
-            })
-            this.closeMeasureRangeDialog();
-            this.saving = false;
-          }else{
-            this.loading = true
-            apiCall({url: '/api/measurerange/'+this.alphanumerics.id, data: this.alphanumerics, method: 'PUT' })
-            .then(resp => {
-              Object.assign(this.item[this.editedIndex], this.alphanumerics)
-              console.log("Alphanumeric measure type save response is ",resp)
-              this.loading = false
-            })
-            .catch(error => {
-              this.loading = false
-              console.log(error.response)
-            })
-            this.closeAlphaMeasureRangeDialog();
-            this.saving = false;
-          }
+            if(this.measure.measure_type.code === 'numeric'){
+              if(this.$refs.form.validate()){
+                this.loading = true
+                apiCall({url: '/api/measurerange/'+this.numerics.id, data: this.numerics, method: 'PUT' })
+                .then(resp => {
+                  Object.assign(this.item[this.editedIndex], this.numerics)
+                  console.log("Numeric Measure type save response",resp)
+                  this.loading = false
+                })
+                .catch(error => {
+                  this.loading = false
+                  console.log(error.response)
+                })
+                this.closeMeasureRangeDialog();
+                this.saving = false;
+              }
+            }else{
+              if(this.$refs.form.validate()){
+                this.loading = true
+                apiCall({url: '/api/measurerange/'+this.alphanumerics.id, data: this.alphanumerics, method: 'PUT' })
+                .then(resp => {
+                  Object.assign(this.item[this.editedIndex], this.alphanumerics)
+                  console.log("Alphanumeric measure type save response is ",resp)
+                  this.loading = false
+                })
+                .catch(error => {
+                  this.loading = false
+                  console.log(error.response)
+                })
+                this.closeAlphaMeasureRangeDialog();
+                this.saving = false;
+              }
+            }
 
         //store
         }else{
-          if(this.measure.measure_type.code === 'numeric'){
-            this.loading = true
-            this.numerics.measure_id = this.$route.params.measureId
-            apiCall({url: '/api/measurerange', data: this.numerics, method: 'POST' })
-            .then(resp => {
-              console.log('numerics', resp);
-              let measureRanges = this.measure.measure_ranges
-              measureRanges.push(resp)
-              Vue.set(this.measure,"measure_ranges",measureRanges)
-              this.loading = false
-              console.log(this.numerics);
-            })
-            .catch(error => {
-              this.loading = false
-              console.log(error.response)
-            })
-            this.closeMeasureRangeDialog();
-          }else{
-            this.loading = true
-            this.alphanumerics.measure_id = this.$route.params.measureId
-            console.log("alphanumerics")
-            console.log(this.alphanumerics)
-            apiCall({url: '/api/measurerange', data: this.alphanumerics, method: 'POST' })
-            .then(resp => {
-              console.log('alphanumerics ', resp);
-              let measureRanges = this.measure.measure_ranges
-              measureRanges.push(resp)
-              Vue.set(this.measure,"measure_ranges",measureRanges)
-              this.loading = false
-              console.log(this.alphanumerics);
-            })
-            .catch(error => {
-              this.loading = false
-              console.log(error.response)
-            })
-            this.closeAlphaMeasureRangeDialog();
-          }
+            if(this.measure.measure_type.code === 'numeric'){
+              if(this.$refs.form.validate()){
+                this.loading = true
+                this.numerics.measure_id = this.$route.params.measureId
+                apiCall({url: '/api/measurerange', data: this.numerics, method: 'POST' })
+                .then(resp => {
+                  console.log('numerics', resp);
+                  let measureRanges = this.measure.measure_ranges
+                  measureRanges.push(resp)
+                  Vue.set(this.measure,"measure_ranges",measureRanges)
+                  this.loading = false
+                  console.log(this.numerics);
+                })
+                .catch(error => {
+                  this.loading = false
+                  console.log(error.response)
+                })
+                this.closeMeasureRangeDialog();
+              }
+            }else{
+              if(this.$refs.form.validate()){
+                this.loading = true
+                this.alphanumerics.measure_id = this.$route.params.measureId
+                console.log("alphanumerics")
+                console.log(this.alphanumerics)
+                apiCall({url: '/api/measurerange', data: this.alphanumerics, method: 'POST' })
+                .then(resp => {
+                  console.log('alphanumerics ', resp);
+                  let measureRanges = this.measure.measure_ranges
+                  measureRanges.push(resp)
+                  Vue.set(this.measure,"measure_ranges",measureRanges)
+                  this.loading = false
+                  console.log(this.alphanumerics);
+                })
+                .catch(error => {
+                  this.loading = false
+                  console.log(error.response)
+                })
+                this.closeAlphaMeasureRangeDialog();
+              }
+            }
         }
       },
 

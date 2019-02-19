@@ -18,6 +18,7 @@
                     <v-select
                       :items="specimenTypes"
                       v-model="specimenCollection.specimen_type_id"
+                      :rules="[v => !!v || 'Specimen Type is Required']"
                       v-on:change="onChange"
                       item-text="name"
                       item-value="id"
@@ -166,21 +167,22 @@
       },
 
       save () {
-        this.loading = true
-        this.saving = true;
+        if(this.$refs.form.validate()){
+          this.loading = true
+          this.saving = true;
 
-        apiCall({url: '/api/encounter/specimencollection', data: this.specimenCollection, method: 'POST' })
-        .then(resp => {
-          console.log(resp)
-          this.saving = false;
-          this.loading = false
-        })
-        .catch(error => {
-          this.loading = false
-          console.log(error.response)
-        })
-
-        this.close()
+          apiCall({url: '/api/encounter/specimencollection', data: this.specimenCollection, method: 'POST' })
+          .then(resp => {
+            console.log(resp)
+            this.saving = false;
+            this.loading = false
+          })
+          .catch(error => {
+            this.loading = false
+            console.log(error.response)
+          })
+          this.close()
+        }
       }
     }
   }

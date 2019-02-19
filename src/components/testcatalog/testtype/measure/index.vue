@@ -23,6 +23,7 @@
               <v-icon right dark>close</v-icon>
             </v-btn>
           </v-toolbar>
+          <v-form ref="form" v-model="valid" lazy-validation>
           <v-card-text>
             <v-flex xs12 sm12 md12>
               <v-text-field
@@ -35,6 +36,7 @@
               <v-select
                 :items="measureTypes"
                 v-model="measurefield.measure_type_id"
+                :rules="[v => !!v || 'Measure Type is Required']"
                 item-text="name"
                 item-value="id"
                 label="Measure "
@@ -60,6 +62,7 @@
               </v-btn>
             </v-flex>
           </v-card-text>
+        </v-form>
         </v-card>
       </v-dialog>
     </v-layout>
@@ -171,7 +174,7 @@
     },
 
     watch: {
-      dialog (val) {
+      dialogMeasure (val) {
         val || this.close()
       }
     },
@@ -252,6 +255,15 @@
         }
       },
 
+      close () {
+        this.dialogMeasure = false
+
+        // if not saving reset dialog references to datatables
+        if (!this.saving) {
+          this.resetMeasureDialogReferences();
+        }
+      },
+
       closeMeasureDialogue () {
         this.dialogMeasure=false
         this.updatingMeasure = false
@@ -281,36 +293,41 @@
         this.savingMeasure = true;
         // update
         if (this.updatingMeasure) {
-          this.loading = true
-          apiCall({url: '/api/measure/'+this.measurefield.id, data: this.measurefield, method: 'PUT' })
-          .then(resp => {
-            Object.assign(this.measures[this.itemIndex], this.measurefield)
-            console.log(resp)
-            this.closeMeasureDialogue();
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
-
+          if(this.$refs.form.validate()){
+            this.loading = true
+            apiCall({url: '/api/measure/'+this.measurefield.id, data: this.measurefield, method: 'PUT' })
+            .then(resp => {
+              Object.assign(this.measures[this.itemIndex], this.measurefield)
+              console.log(resp)
+              this.closeMeasureDialogue();
+              this.resetMeasureDialogReferences()
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+          }
         //store
         } else {
-        this.measurefield.test_type_id = this.testType.id;
-          this.loading = true
-          apiCall({url: '/api/measure', data: this.measurefield, method: 'POST' })
-          .then(resp => {
-            this.measures.push(this.measurefield)
-            console.log('resp')
-            console.log(resp)
-            
-            this.closeMeasureDialogue();
-            this.loading = false
-          })
-          .catch(error => {
-            this.loading = false
-            console.log(error.response)
-          })
+          if(this.$refs.form.validate()){
+            this.measurefield.test_type_id = this.testType.id;
+            this.loading = true
+            apiCall({url: '/api/measure', data: this.measurefield, method: 'POST' })
+            .then(resp => {
+              this.measures.push(this.measurefield)
+              console.log('resp')
+              console.log(resp)
+              
+              this.closeMeasureDialogue();
+              this.resetMeasureDialogReferences()
+              this.loading = false
+            })
+            .catch(error => {
+              this.loading = false
+              console.log(error.response)
+            })
+          }
         }
       }
     }
