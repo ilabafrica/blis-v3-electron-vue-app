@@ -15,6 +15,7 @@ import Measure from '../components/testcatalog/testtype/measure'
 import SpecimenRejectionReason from '../components/testcatalog/specimenrejectionreason'
 import Antibiotic from '../components/testcatalog/testtype/antibiotic'
 import UserAccounts from '../components/accesscontrol/useraccounts'
+import ThirdPartyApps from '../components/accesscontrol/thirdpartyapps'
 import Permissions from '../components/accesscontrol/permissions'
 import Role from '../components/accesscontrol/role'
 import RoleUser from '../components/accesscontrol/roleusers'
@@ -172,6 +173,12 @@ export default new Router({
       beforeEnter: ifAuthenticated,
     },
     // Access Control
+    {
+      path: '/accesscontrol/thirdpartyapps',
+      name: 'ThirdPartyApps',
+      component: ThirdPartyApps,
+      beforeEnter: ifAuthenticated,
+    },
     {
       path: '/accesscontrol/useraccounts',
       name: 'UserAccount',
