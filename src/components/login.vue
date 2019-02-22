@@ -36,7 +36,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" round :disabled="!valid" @click="login" :loading="loading">
+              <v-btn color="success" round :disabled="!valid" @click="login" :loading="loading">
                 Login
                 <v-icon right dark>check_circle</v-icon>
               </v-btn>
