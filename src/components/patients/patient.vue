@@ -8,6 +8,14 @@
       >
         {{ message }}
       </v-snackbar>
+    <v-dialog v-model="loadingDialog.loading" hide-overlay persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text>
+          {{ loadingDialog.message }}
+          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <testrequest ref="testRequestForm"></testrequest>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
@@ -164,6 +172,10 @@
     },
     data: () => ({
       loading: false,
+      loadingDialog: {
+        loading: false,
+        message: ""
+      },
       message:'',
       y: 'top',
       color: 'success',
@@ -231,10 +243,15 @@
     },
 
     methods: {
+      loadingMethod(load, message="") {
+        this.loadingDialog.loading = load;
+        this.loadingDialog.message = message
+      },
       initialize () {
+        this.loadingMethod(true, "Fetching All Patients")
         this.query = 'page='+ this.pagination.page;
         if (this.search != '') {
-            this.query = this.query+'&search='+this.search;
+            this.query = '&search='+this.search;
         }
         apiCall({url: '/api/patient?' + this.query, method: 'GET' })
         .then(resp => {
@@ -242,9 +259,11 @@
           this.patient = resp.data;
           this.pagination.total = resp.total;
           this.pagination.per_page = resp.per_page;
+          this.loadingMethod(false)
         })
         .catch(error => {
           console.log(error.response)
+          this.loadingMethod(false)
         })
       },
       toPatientHistory(){
@@ -261,14 +280,19 @@
       deleteItem (item) {
         confirm('Are you sure you want to delete this item?') && (this.delete = true)
         if (this.delete) {
+          this.loadingMethod(true, "Deleting Patient")
           const index = this.patient.indexOf(item)
           this.patient.splice(index, 1)
           apiCall({url: '/api/patient/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Patient Deleted Succesfully';
+            this.snackbar = true;
+            this.loadingMethod(false)
           })
           .catch(error => {
             console.log(error.response)
+            this.loadingMethod(false)
           })
         }
       },
@@ -290,6 +314,7 @@
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
+          this.loadingMethod(true, "Updating Patient")
           if(this.$refs.form.validate()){
             this.loading = true
             apiCall({url: '/api/patient/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
@@ -299,17 +324,20 @@
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
-               this.message = 'Patient Information Updated Succesfully';
+              this.message = 'Patient Information Updated Succesfully';
               this.snackbar = true;
+              this.loadingMethod(false)
             })
             .catch(error => {
               this.loading = false
               console.log(error.response)
+              this.loadingMethod(false)
             })
             this.close()
           }
         // store
         } else {
+          // this.loadingMethod(true, "Adding Patient")
           if(this.$refs.form.validate()){
             this.loading = true
             apiCall({url: '/api/patient', data: this.editedItem, method: 'POST' })
@@ -321,11 +349,12 @@
               this.saving = false;
               this.message = 'Patient Added Succesfully';
               this.snackbar = true;
-
+              this.loadingMethod(false)
             })
             .catch(error => {
               this.loading = false
               console.log(error.response)
+              this.loadingMethod(false)
             })
             this.close()
           }
