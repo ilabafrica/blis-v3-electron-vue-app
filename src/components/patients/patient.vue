@@ -124,10 +124,6 @@
         <p class="blis_card_description">{{ patient.identifier }}</p>
         <p class="blis_card_title">Date of Birth</p>
         <p class="blis_card_description">{{patient.birth_date}}</p>
-        <p class="blis_card_title"></p>
-        <p class="blis_card_description"></p>
-        <p class="blis_card_title"></p>
-        <p class="blis_card_description"></p>
         <div class="blis_card_footer">
           <v-btn class="blis_card_button" small title="Edit" color="secondary" round v-if="$can('request_test')" @click="requestTest(patient)">
             <v-icon left dark>add_circle</v-icon>
@@ -248,6 +244,7 @@
         this.loadingDialog.message = message
       },
       initialize () {
+        
         this.loadingMethod(true, "Fetching All Patients")
         this.query = 'page='+ this.pagination.page;
         if (this.search != '') {

@@ -5,19 +5,55 @@
     <specimenrejection ref="specimenRejectionForm"></specimenrejection>
     <referral ref="referralForm"></referral>
     <testdetail ref="testDetailForm"></testdetail>
+    <v-dialog v-model="loadingDialog.loading" hide-overlay persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text>
+          {{ loadingDialog.message }}
+          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-card-title>
-      Tests
+      <p class="blis_page_title">
+        Tests
+      </p>
       <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Search"
-        single-line
-        v-on:keyup.enter="initialize"
-        hide-details>
-      </v-text-field>
+      <v-layout wrap>
+        <v-flex xs12>
+          <v-text-field
+            class="blis_search"
+            v-model="search"
+            append-icon="search"
+            label="Search"
+            single-line
+            v-on:keyup.enter="initialize"
+            hide-details>
+          </v-text-field>
+        </v-flex>
+        <v-flex xs12>
+          <v-layout style="margin-top: 10px;" align-start justify-end row fill-height>
+            <v-btn-toggle class="blis_search">
+              <v-btn @click="filterStatus(0)" color="secondary" flat>
+                <span>All</span>
+              </v-btn>
+              <v-btn @click="filterStatus(2)" color="#2196F3" flat>
+                <span>Started</span>
+              </v-btn>
+              <v-btn @click="filterStatus(1)" color="#FF9800" flat>
+                <span>Pending</span>
+              </v-btn>
+              <v-btn @click="filterStatus(3)" color="#2F0074" flat>
+                <span>Completed</span>
+              </v-btn>
+              <v-btn @click="filterStatus(4)" color="#4CAF50" flat>
+                <span>Verified</span>
+              </v-btn>
+            </v-btn-toggle>
+          </v-layout>
+        </v-flex>
+      </v-layout>
     </v-card-title>
-    <v-data-table
+    <!-- <v-data-table
       :headers="headers"
       :items="tests"
       hide-actions
@@ -140,7 +176,84 @@
           </v-btn>
         </td>
       </template>
-    </v-data-table>
+    </v-data-table> -->
+
+    <v-layout row wrap>
+      <v-flex md4 v-for="test in tests" :key="test.id">
+        <div class="blis_card" v-bind:style="{ 'border-right-color': test.status_color}">
+          <div class="blis_card_top_right">
+            <v-btn outline fab small title="Print" color="primaryb" v-if="test.specimen_id !=NULL" @click="print(test.specimen_id)">
+              <v-icon dark>print</v-icon>
+            </v-btn>
+          </div>
+          <p class="blis_card_main_heading">{{ test.encounter.patient.name.given }} {{ test.encounter.patient.name.family }}</p>
+          <p class="blis_card_small_text">
+            ({{ getGender(test.encounter.patient.gender.code) }},
+              {{ getAge(test.encounter.patient.birth_date) }})
+          </p>
+          <p class="blis_card_title">Test</p>
+          <p class="blis_card_description">{{ test.test_type.name }}</p>
+          <p class="blis_card_title">Visit</p>
+          <p class="blis_card_description" v-if="test.encounter.identifier">{{ test.encounter.identifier }}</p>
+          <p class="blis_card_description" v-else>No Visits</p>
+          <v-layout>
+            <v-flex>
+              <p class="blis_card_title">Specimen</p>
+              <p class="blis_card_description" v-if="test.specimen">
+                {{ test.specimen.specimen_type.name }}
+              </p>
+              <p class="blis_card_description" v-else>No Specimen</p>
+            </v-flex>
+            <v-flex>
+              <v-btn class="blis_card_button" small title="New Test" color="error" round v-if="(test.test_status.code === 'started' || test.test_status.code === 'pending') && test.test_status.test_phase.code === 'analytical' && !test.specimen_rejection && $can('reject_test_specimen')" @click="rejectSpecimen(test)">
+                <v-icon left dark>cancel</v-icon>
+                Reject
+              </v-btn>
+            </v-flex>
+          </v-layout>
+          <p class="blis_card_title">Physician</p>
+          <p class="blis_card_description">{{ test.requested_by }}</p>
+          <p class="blis_card_title">Ordered</p>
+          <p class="blis_card_description">{{ test.created_at }}</p>
+          <div class="blis_card_footer">
+            <v-btn outline fab title="Details" color="success" small @click="detail(test)">
+              <v-icon dark>visibility</v-icon>
+            </v-btn>
+            <v-btn outline fab title="Edit" color="accent" small v-if="!test.specimen_rejection && test.test_status.code === 'completed' && $can('enter_test_result')" @click="enterResults(test)">
+              <v-icon dark>edit</v-icon>
+            </v-btn>
+            <div class="blis_card_footer_right">
+              <v-btn class="blis_card_button" small title="Verify" color="secondary" round v-if="test.test_status.code === 'completed' && $can('verify_test_result')"
+              @click="detail(test)">
+                <v-icon left>check_circle_outline</v-icon>
+                Verify
+              </v-btn>
+              <v-btn class="blis_card_button" small title="Collect" color="primary" round v-if="!test.specimen && $can('accept_test_specimen')"
+              @click="collectSpecimen(test)">
+                <v-icon left>gradient</v-icon>
+                Collect
+              </v-btn>
+              <v-btn dark class="blis_card_button" small title="Start" color="blue" round v-if="!test.specimen_rejection && test.specimen && !test.specimen.referral && test.test_status.code === 'pending' && $can('start_test')"
+              @click="start(test)">
+                <v-icon left>play_arrow</v-icon>
+                Start
+              </v-btn>
+              <v-btn dark class="blis_card_button" small title="Enter" color="blue" round v-if="!test.specimen_rejection && test.test_status.code === 'started' && $can('enter_test_result')"
+              @click="enterResults(test)">
+                <v-icon left>library_books</v-icon>
+                Enter
+              </v-btn>
+              <v-btn dark class="blis_card_button" small title="Refer" color="amber" round v-if="test.test_status.code === 'pending' && test.specimen && !test.specimen.referral && $can('refer_test_specimen')"
+              @click="refer(test)">
+                <v-icon left>arrow_forward</v-icon>
+                Refer
+              </v-btn>
+            </div>
+          </div>
+        </div>
+      </v-flex>
+    </v-layout>
+
     <div class="text-xs-center">
       <v-pagination
         :length="length"
@@ -160,6 +273,9 @@
   import testdetail from './testdetail'
   import referral from './referral'
   import result from './result'
+import { resolve } from 'url';
+import { log } from 'util';
+
 
   export default {
     name: 'Test',
@@ -173,7 +289,12 @@
     data: () => ({
       search: '',
       query: '',
+      status_id: '',
       editedIndex: -1,
+      loadingDialog: {
+        loading: false,
+        message: ""
+      },
       pagination: {
         page: 1,
         per_page: 0,
@@ -202,6 +323,12 @@
     watch: {
       dialog (val) {
         val || this.close()
+      },
+      tests: {
+        handler(val){
+					this.testStatusColor(val)
+        },
+        deep: true
       }
     },
 
@@ -218,24 +345,93 @@
     },
 
     methods: {
+      loadingMethod(load, message="") {
+        this.loadingDialog.loading = load;
+        this.loadingDialog.message = message
+      },
 
-      initialize () {
+      filterStatus (statusID) {
+        let filteredData = []
+        this.initialize()
+        .then((data) => {
+          if (!(statusID == 0)) {
+            for (var i = 0; i < data.length; i++) {
+              console.log(data[i]);
+              if (data[i].test_status_id == statusID) {
+                filteredData.push(data[i])
+              }
+            }
+            this.tests = filteredData;
+            console.log(filteredData);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      },
 
+      async initialize () {
+
+        this.loadingMethod(true, "Fetching All Tests")
         this.query = 'page='+ this.pagination.page;
         if (this.search != '') {
-            this.query = this.query+'&search='+this.search;
+            this.query = '&search='+this.search;
         }
+        // if (this.status_id != '') {
+        //     this.query = '&search='+this.search;
+        // }
 
-        apiCall({url: '/api/test?' + this.query, method: 'GET' })
-        .then(resp => {
-          console.log(resp)
+        let resp = null
+
+        try {
+          resp = await apiCall({url: '/api/test?' + this.query, method: 'GET' })
+          console.log(resp);
           this.tests = resp.data;
+          this.loadingMethod(false)
           this.pagination.per_page = resp.per_page;
           this.pagination.total = resp.total;
-        })
-        .catch(error => {
+        } catch (error) {
+          this.loadingMethod(false)
           console.log(error.response)
-        })
+        }
+
+        return resp.data
+      },
+
+      testStatusColor (data) {
+				if (this.editedIndex != -1) {
+					console.log("one data updated");
+					Object.assign(this.tests[this.editedIndex], {
+						"status_color": this.checkStatus(data[this.editedIndex].test_status_id)
+					})
+				} else {
+					console.log("all data updated");
+					for (var i = 0; i < data.length; i++) {
+          data[i]["status_color"] = this.checkStatus(data[i].test_status_id);
+        }	
+				}
+			},
+
+      checkStatus (id) {
+        if (id == 1) {
+          // Pending
+          return "#FF9800"
+        }
+        else if (id == 2) {
+          // Started
+          return "#2196F3"
+        }
+        else if (id == 3) {
+          // Completed
+          return "#2F0074"
+        }
+        else if (id == 4) {
+          // Verified
+          return "#4CAF50"
+        }
+        else {
+          return ""
+        }
       },
 
       getAge (birthday) {
@@ -264,28 +460,33 @@
 
       start (test) {
         this.editedIndex = this.tests.indexOf(test)
-
+        this.loadingMethod(false, "Starting Test")
         apiCall({url: '/api/test/start/' + test.id, method: 'GET' })
         .then(resp => {
           console.log(resp)
+          // Vue.set(this,tests,resp)
           Object.assign(this.tests[this.editedIndex], resp)
+          this.loadingMethod(false)
         })
         .catch(error => {
           console.log(error.response)
+          this.loadingMethod(false)
         })
 
       },
 
       verify (test) {
         this.editedIndex = this.tests.indexOf(test)
-
+        this.loadingMethod(false, "Verifying Test")
         apiCall({url: '/api/test/verify/' + test.id, method: 'GET' })
         .then(resp => {
           console.log(resp)
           Object.assign(this.tests[this.editedIndex], resp)
+          this.loadingMethod(false)
         })
         .catch(error => {
           console.log(error.response)
+          this.loadingMethod(false)
         })
       },
 
@@ -309,6 +510,7 @@
 
       refer (test) {
         this.editedIndex = this.tests.indexOf(test)
+        console.log(test);
         this.$refs.referralForm.modal(test);
       },
 
