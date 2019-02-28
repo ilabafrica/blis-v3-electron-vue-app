@@ -321,13 +321,13 @@ export default new Router({
     },
     //EMR Interface
     {
-      path: '/emr/testtypemapping/:testTypeId',
+      path: '/emr/testtypemapping',
       name: 'EMRTestTypeMapping',
       component: EMRTestTypeMapping,
       beforeEnter: ifAuthenticated,
     },
     {
-      path: '/emr/testresultmapping',
+      path: '/emr/testresultmapping/:emrTestTypeAliasId/:measureId',
       name: 'EMRResultMapping',
       component: EMRResultMapping,
       beforeEnter: ifAuthenticated,

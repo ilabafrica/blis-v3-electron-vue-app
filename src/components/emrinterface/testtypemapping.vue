@@ -1,5 +1,6 @@
 <template>
   <div>
+    <mapmeasureranges ref="mapMeasureRangesForm"></mapmeasureranges>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn slot="activator" color="primary" dark class="mb-2" outline>
         New Item
@@ -91,9 +92,20 @@
       class="elevation-1"
     >
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.name }}</td>
-        <td class="text-xs-left">{{ props.item.phone }}</td>
+        <td>{{ props.item.client_id }}</td>
+        <td>{{ props.item.emr_alias }}</td>
+        <td class="text-xs-left">{{ props.item.test_type.name }}</td>
         <td class="justify-left layout px-0">
+          <v-btn
+            outline
+            small
+            title="Measures"
+            color="info"
+            flat
+            @click="mapMeasureRanges(props.item.test_type)">
+            Measures
+            <v-icon right dark>tune</v-icon>
+          </v-btn>
           <v-btn
             outline
             small
@@ -130,9 +142,13 @@
 </template>
 <script>
   import apiCall from '../../utils/api'
-  import Vue from 'vue'
+  // import Vue from 'vue'
+  import mapmeasureranges from './mapmeasureranges'
   export default {
     name:'EMRTestTypeMapping',
+    components: {
+      mapmeasureranges,
+    },
     data: () => ({
       loading: false,
       valid: true,
@@ -147,8 +163,9 @@
       },
       headers: [
         { text: 'Client Id', value: 'client_id' },
+        { text: 'EMR Alias', value: 'emr_alias' },
         { text: 'Test Type', value: 'test_type_id' },
-        { text: 'EMR Alias', value: 'emr_alias', sortable: false }
+        { text: 'Actions', value: 'emr_alias', sortable: false }
       ],
       testTypeMappings: [],
       testTypes: [],
@@ -207,7 +224,7 @@
         })
 
         // test types
-        apiCall({url: '/api/testtypes', method: 'GET' })
+        apiCall({url: '/api/testtype?fetch=1', method: 'GET' })
         .then(resp => {
           console.log(resp)
           this.testTypes = resp;
@@ -217,8 +234,9 @@
         })
 
         // clients
-        apiCall({url: '/api/clients', method: 'GET' })
+        apiCall({url: '/api/emrclients', method: 'GET' })
         .then(resp => {
+          console.log('clients')
           console.log(resp)
           this.clients = resp;
         })
@@ -260,6 +278,12 @@
         }
       },
 
+      mapMeasureRanges (testType) {
+        // :to="{path:'/emr/testresultmapping/'+props.item.test_type_id}"
+        console.log('mapMeasureRanges')
+        this.$refs.mapMeasureRangesForm.modal(testType);
+      },
+
       resetDialogReferences() {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
@@ -272,8 +296,7 @@
         if (this.editedIndex > -1) {
           if(this.$refs.form.validate()){
             this.loading = true
-            // apiCall({url: '/maptesttypestore/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-            apiCall({url: '/api/maptesttypestore/', data: this.editedItem, method: 'PUT' })
+            apiCall({url: '/api/maptesttypestore', data: this.editedItem, method: 'POST' })
             .then(resp => {
               // let testTypeMapping = resp
               Object.assign(this.testTypeMappings[this.editedIndex], this.editedItem)

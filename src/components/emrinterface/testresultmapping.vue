@@ -19,13 +19,6 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12 sm12 md12>
-                  <v-text-field
-                    v-model="editedItem.emr_test_type_alias_id"
-                    :rules="[v => !!v || 'EMR Test Type Alias is Required']"
-                    label="EMR Test Type Alias">
-                  </v-text-field>
-                </v-flex>
-                <v-flex xs12 sm12 md12>
                   <v-select
                     :items="measureRanges"
                     :rules="[v => !!v  || 'Measure Range is Required']"
@@ -56,29 +49,18 @@
     </v-dialog>
 
     <v-card-title>
-      Suppliers
+      Measures
     </v-card-title>
 
     <v-data-table
       :headers="headers"
-      :items="supplier"
+      :items="testResultMappings"
       hide-actions
       class="elevation-1"
     >
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.name }}</td>
-        <td class="text-xs-left">{{ props.item.phone }}</td>
-        <td class="justify-left layout px-0">
-          <v-btn
-            outline
-            small
-            title="Edit"
-            color="teal"
-            flat
-            @click="editItem(props.item)">
-            Edit
-            <v-icon right dark>edit</v-icon>
-          </v-btn>
+        <td>{{ props.item.emr_alias }}</td>
+        <td class="text-xs-left">{{ props.item.measure_range.display }}</td>
           <v-btn
             outline
             small
@@ -96,7 +78,6 @@
 </template>
 <script>
   import apiCall from '../../utils/api'
-  import Vue from 'vue'
   export default {
     name:'EMRResultMapping',
     data: () => ({
@@ -106,7 +87,7 @@
       delete: false,
       saving: false,
       headers: [
-        { text: 'EMR Test Type Alias', value: 'emr_test_type_alias_id' },
+        { text: 'EMR Alias', value: 'emr_test_type_alias_id' },
         { text: 'Measure Range', value: 'measure_range_id' },
         { text: 'EMR Alias', value: 'emr_alias', sortable: false }
       ],
@@ -144,11 +125,24 @@
     methods: {
 
       initialize () {
+
         // results mappings
-        apiCall({url: '/api/mapresultget/'+this.$route.params.testTypeId, method: 'GET' })
+        apiCall({url: '/api/mapresultget/'+this.$route.params.emrTestTypeAliasId, method: 'GET' })
         .then(resp => {
+          console.log('listings mapresultget')
           console.log(resp)
-          this.testResultMappings = resp.data;
+          this.testResultMappings = resp;
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
+
+        // measure ranges
+        apiCall({url: '/api/measure/'+this.$route.params.measureId, method: 'GET' })
+        .then(resp => {
+          console.log('listings mapresultget measure ranges')
+          console.log(resp.measure_ranges)
+          this.measureRanges = resp.measure_ranges;
         })
         .catch(error => {
           console.log(error.response)
@@ -160,15 +154,6 @@
         this.editedItem = Object.assign({}, item)
         this.dialog = true
 
-        // measureRanges
-        /*apiCall({url: '/api/measure/'+this.$route.params.measureId+'/measurerange', method: 'GET' })
-        .then(resp => {
-          console.log(resp)
-          this.measureRanges = resp;
-        })
-        .catch(error => {
-          console.log(error.response)
-        })*/
       },
 
       deleteItem (item) {
@@ -178,7 +163,7 @@
         if (this.delete) {
           const index = this.testResultMappings.indexOf(item)
           this.testResultMappings.splice(index, 1)
-          apiCall({url: '/api/mapresultdestroy/'+item.id, method: 'DELETE' })
+          apiCall({url: '/api/mapresultdestroy/'+item.id, method: 'GET' })
           .then(resp => {
             console.log(resp)
           })
@@ -205,45 +190,23 @@
 
       save () {
 
+        this.editedItem.emr_test_type_alias_id = this.$route.params.emrTestTypeAliasId
         this.saving = true;
-        // update
-        if (this.editedIndex > -1) {
-          if(this.$refs.form.validate()){
-            this.loading = true
-            apiCall({url: '/api/mapresultstore/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
-            .then(resp => {
-              // let testResultMapping = resp
-              Object.assign(this.testResultMappings[this.editedIndex], this.editedItem)
-              // Vue.set(this,"testResultMappings", testResultMappings)
-              console.log(resp)
-              this.resetDialogReferences();
-              this.saving = false;
-              this.loading = false
-            })
-            .catch(error => {
-              this.loading = false
-              console.log(error.response)
-            })
-            this.close()
-          }
-        // store
-        } else {
-          if(this.$refs.form.validate()){
-            this.loading = true
-            apiCall({url: '/api/mapresultstore', data: this.editedItem, method: 'POST' })
-            .then(resp => {
-              this.testResultMappings.push(this.editedItem)
-              console.log(resp)
-              this.resetDialogReferences();
-              this.saving = false;
-              this.loading = false
-            })
-            .catch(error => {
-              this.loading = false
-              console.log(error.response)
-            })
-            this.close()
-          }
+        if(this.$refs.form.validate()){
+          this.loading = true
+          apiCall({url: '/api/mapresultstore', data: this.editedItem, method: 'POST' })
+          .then(resp => {
+            this.testResultMappings.push(this.editedItem)
+            console.log(resp)
+            this.resetDialogReferences();
+            this.saving = false;
+            this.loading = false
+          })
+          .catch(error => {
+            this.loading = false
+            console.log(error.response)
+          })
+          this.close()
         }
       }
     }
