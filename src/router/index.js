@@ -41,6 +41,8 @@ import BreakPoint from '../components/testcatalog/testtype/measure/measurerange/
 import MeasureRange from '../components/testcatalog/testtype/measure/measurerange/index'
 import TestTypeSpecimenType from '../components/testcatalog/testtype/specimentype'
 import MeasureTestType from '../components/testcatalog/testtype/measure/index'
+import EMRTestTypeMapping from '../components/emrinterface/testtypemapping'
+import EMRResultMapping from '../components/emrinterface/testresultmapping'
 
 Vue.use(Router)
 
@@ -315,6 +317,19 @@ export default new Router({
       path: '/qualitycontrol/controltest',
       name: 'ControlTest',
       component: ControlTest,
+      beforeEnter: ifAuthenticated,
+    },
+    //EMR Interface
+    {
+      path: '/emr/testtypemapping',
+      name: 'EMRTestTypeMapping',
+      component: EMRTestTypeMapping,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/emr/testresultmapping/:emrTestTypeAliasId/:measureId',
+      name: 'EMRResultMapping',
+      component: EMRResultMapping,
       beforeEnter: ifAuthenticated,
     },
   ],
