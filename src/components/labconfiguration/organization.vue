@@ -1,16 +1,14 @@
 <template>
   <div>
-
-
-  <v-snackbar
-        v-model="snackbar"
-          
-        :color="color"
-        :timeout="6000"
+    <v-snackbar
+      v-model="snackbar"
+        
+      :color="color"
+      :timeout="6000"
       :top="y === 'top'"
-      >
-        {{ message }}
-      </v-snackbar>
+    >
+      {{ message }}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -115,6 +113,7 @@
     name: 'Organization',
     data: () => ({
       loading: false,
+      snackbar: false,
       message:'',
       y: 'top',
       color: 'success',    
@@ -253,6 +252,7 @@
             apiCall({url: '/api/organization', data: this.editedItem, method: 'POST' })
             .then(resp => {
               this.loading = false
+              this.editedItem.id = resp.id
               this.organization.push(this.editedItem)
               console.log(resp)
               this.resetDialogReferences();

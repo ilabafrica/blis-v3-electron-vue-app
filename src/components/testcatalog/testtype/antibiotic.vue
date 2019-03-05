@@ -1,13 +1,11 @@
 <template>
   <div>
-
-     <v-snackbar
-        v-model="snackbar"
-          
-        :color="color"
-        :timeout="6000"
+    <v-snackbar
+      v-model="snackbar"    
+      :color="color"
+      :timeout="6000"
       :top="y === 'top'"
-      >
+    >
         {{ message }}
       </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
@@ -20,8 +18,6 @@
         New Antibiotic
         <v-icon right dark>playlist_add</v-icon>
       </v-btn>
-
-
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
           <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
@@ -126,6 +122,7 @@
       y: 'top',
       color: 'success',
       valid: true,
+      snackbar: false,
       dialog: false,
       delete: false,
       saving: false,
@@ -261,7 +258,7 @@
             this.loading = true
             apiCall({url: '/api/antibiotic', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.antibiotics.push(this.editedItem)
+              this.antibiotics.push(resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;

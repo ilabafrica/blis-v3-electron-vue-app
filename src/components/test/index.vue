@@ -133,7 +133,7 @@
             title="Print"
             color="gray"
             flat
-            v-if="props.item.specimen_id !=NULL"
+            v-if="props.item.specimen_id != null"
             @click="print(props.item.specimen_id)">
             Print
             <v-icon right dark>print</v-icon>

@@ -15,14 +15,14 @@
               <v-container grid-list-md>
                 <v-layout wrap>
                   <v-flex xs12 sm12 md12>
-                    <v-select
+                    <v-autocomplete
                       v-bind:items="rejectionReasons"
                       v-model="specimenRejection.rejectionReasonIds"
                       label="Rejecion Reasons"
                       item-text="display"
                       item-value="id"
-                      autocomplete multiple chips>
-                    </v-select>
+                      multiple chips>
+                    </v-autocomplete>
                   </v-flex>
                   <v-flex xs3 offset-xs9 text-xs-right>
                     <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">

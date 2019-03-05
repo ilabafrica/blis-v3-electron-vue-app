@@ -275,8 +275,8 @@
             this.editedItem.measure_range_id = this.$route.params.measureRangeId
             apiCall({url: '/api/susceptibilitybreakpoint', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.breakPoints.push(this.editedItem)
               console.log(resp)
+              this.breakPoints.push(resp)
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
