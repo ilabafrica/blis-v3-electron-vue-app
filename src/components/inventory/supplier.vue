@@ -262,7 +262,7 @@
             this.loading = true
             apiCall({url: '/supplier', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.supplier.push(this.editedItem)
+              this.supplier.push(resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;

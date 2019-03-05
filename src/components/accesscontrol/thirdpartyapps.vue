@@ -1,7 +1,7 @@
 <template>
   <div>
    <v-snackbar
-        v-model="alert"
+        v-model="snackbar"
         :color="color"
         :timeout="6000"
       :top="y === 'top'"
@@ -34,7 +34,7 @@
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.username"
-                  :rules="[v = !!v || 'Username is Required']"
+                  :rules="[v => !!v || 'Username is Required']"
                   label="Username">    
                 </v-text-field>
               </v-flex>
@@ -56,7 +56,6 @@
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.password"
-                  :rules="[v => !!v || 'New Password is Required']"
                   type = "text"
                   append-icon="autorenew"
                   @click:append="generate"
@@ -220,11 +219,15 @@
   export default {
     name:'UserAccounts',
     data: () => ({
+      snackbar: false,
       valid: true,
       dialog: false,
       delete: false,
       saving: false,
+      message: '',
       size: 32,
+      y: 'top',
+      color: 'success',
       characters: 'a-z,A-Z,0-9,#',
       search: '',
       query: '',
@@ -253,7 +256,9 @@
         access_password: '',
         client_name: '',
         client_id: '',
-        client_secret: ''
+        client_secret: '',
+        emr: '',
+        access: ''
       },
       defaultItem: {
         username: '',
@@ -265,7 +270,9 @@
         access_password: '',
         client_name: '',
         client_id: '',
-        client_secret: ''
+        client_secret: '',
+        emr: '',
+        access: ''
       }
     }),
     created () {
@@ -378,7 +385,7 @@
               this.resetDialogReferences();
               this.saving = false;
               this.message = 'Third Party Application Information Updated Succesfully';
-              this.alert = true;
+              this.snackbar = true;
             })
             .catch(error => {
               console.log(error.response)
@@ -390,12 +397,12 @@
           if(this.$refs.form.validate()){
             apiCall({url: '/api/emrclientregistration', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.tpas.push(this.editedItem)
+              this.tpas.push(resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
               this.message = 'New Third Party Application Added Succesfully';
-              this.alert = true;
+              this.snackbar = true;
             })
             .catch(error => {
               console.log(error.response)

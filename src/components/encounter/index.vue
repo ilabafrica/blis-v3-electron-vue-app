@@ -21,20 +21,20 @@
       class="elevation-1">
       <template slot="items" slot-scope="props">
         <td>{{ props.item.created_at }}</td>
-        <td class="text-xs-right">
+        <td class="text-xs-left">
             {{ props.item.patient.identifier }}
         </td>
-        <td class="text-xs-right">
+        <td class="text-xs-left">
             {{ props.item.patient.ulin }}
         </td>
-        <td class="text-xs-right">
+        <td class="text-xs-left">
           <div v-if="props.item.patient.name">
             {{ props.item.patient.name.text }}
           </div>
             ({{ getGender(props.item.patient.gender.code) }},
             {{ getAge(props.item.patient.birth_date) }})
         </td>
-        <td class="text-xs-right">{{ props.item.encounter_class }}</td>
+        <td class="text-xs-left">{{ props.item.encounter_class }}</td>
         <td class="justify-left layout px-0">
               <v-btn
                 outline

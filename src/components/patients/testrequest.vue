@@ -53,14 +53,15 @@
                     </v-text-field>
                   </v-flex>
                   <v-flex xs12 sm12 md12>
-                    <v-select
+                    <v-autocomplete
                       v-bind:items="testTypes"
                       v-model="testRequest.testTypeIds"
                       label="Tests"
                       item-text="name"
                       item-value="id"
-                      autocomplete multiple chips>
-                    </v-select>
+                      multiple chips
+                      :rules="[value => !!value || 'A test is Required']">
+                    </v-autocomplete>
                   </v-flex>
                   <v-flex xs3 offset-xs9 text-xs-right>
                     <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save" :loading="loading">
@@ -86,6 +87,7 @@
       message:'',
       y: 'top',
       color: 'success',
+      snackbar: false,
       datePicker: false,
       landscape: true,
       reactive: true,

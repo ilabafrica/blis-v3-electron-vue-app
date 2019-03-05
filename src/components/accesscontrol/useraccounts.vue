@@ -1,14 +1,13 @@
 <template>
   <div>
-
-   <v-snackbar
-        v-model="alert"
-        :color="color"
-        :timeout="6000"
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
       :top="y === 'top'"
       >
-        {{message}}
-     </v-snackbar>
+      {{message}}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -35,7 +34,7 @@
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.username"
-                  :rules="[v = !!v || 'Username is Required']"
+                  :rules="[v => !!v || 'Username is Required']"
                   label="Username">    
                 </v-text-field>
               </v-flex>
@@ -143,9 +142,13 @@
     data: () => ({
       valid: true,
       dialog: false,
+      snackbar: false,
+      message: '',
       delete: false,
       saving: false,
       size: 32,
+      y: 'top',
+      color: 'success',
       characters: 'a-z,A-Z,0-9,#',
       showPasswordField: false,
       search: '',
@@ -300,7 +303,7 @@
               this.resetDialogReferences();
               this.saving = false;
               this.message = 'User Information Updated Succesfully';
-              this.alert = true;
+              this.snackbar = true;
             })
             .catch(error => {
               console.log(error.response)
@@ -312,12 +315,12 @@
           if(this.$refs.form.validate()){
             apiCall({url: '/api/user', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.user.push(this.editedItem)
+              this.user.push(resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
               this.message = 'New User Added Succesfully';
-              this.alert = true;
+              this.snackbar = true;
             })
             .catch(error => {
               console.log(error.response)

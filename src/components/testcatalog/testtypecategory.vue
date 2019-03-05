@@ -1,15 +1,13 @@
 <template>
   <div>
-
-        <v-snackbar
-        v-model="snackbar"
-          
-        :color="color"
-        :timeout="6000"
-        :top="y === 'top'"
-        >
-        {{ message }}
-      </v-snackbar>
+    <v-snackbar
+      v-model="snackbar"    
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+      >
+      {{ message }}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -126,6 +124,7 @@
       color: 'success',
       valid: true,
       dialog: false,
+      snackbar: false,
       delete: false,
       saving: false,
       search: '',
@@ -261,6 +260,7 @@
             this.loading = true
             apiCall({url: '/api/testtypecategory', data: this.editedItem, method: 'POST' })
             .then(resp => {
+              this.editedItem.id = resp.id
               this.testtypecategory.push(this.editedItem)
               console.log(resp)
               this.resetDialogReferences();
