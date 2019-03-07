@@ -53,131 +53,6 @@
         </v-flex>
       </v-layout>
     </v-card-title>
-    <!-- <v-data-table
-      :headers="headers"
-      :items="tests"
-      hide-actions
-      class="elevation-1">
-      <template slot="items" slot-scope="props">
-        <td>{{ props.item.created_at }}</td>
-        <td class="text-xs">
-          <div v-if="props.item.encounter.patient.name">
-            {{ props.item.encounter.patient.name.text }}
-          </div>
-            ({{ getGender(props.item.encounter.patient.gender.code) }},
-            {{ getAge(props.item.encounter.patient.birth_date) }})
-        </td>
-        <td class="text-xs">
-          <div v-if="props.item.specimen">
-            {{ props.item.specimen.specimen_type.name }}
-          </div>
-        </td>
-        <td class="text-xs">{{ props.item.test_type.name }}</td>
-        <td class="text-xs">{{ props.item.encounter.identifier }}</td>
-        <td class="text-xs">{{ props.item.test_status.name }}</td>
-        <td class="justify-left layout px-0">
-          <v-btn
-            outline
-            small
-            title="Details"
-            color="green"
-            flat
-            @click="detail(props.item)">
-            Details
-            <v-icon right dark>visibility</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Collect Specimen"
-            color="deep-purple"
-            flat
-            v-if="!props.item.specimen && $can('accept_test_specimen')"
-            @click="collectSpecimen(props.item)">
-            Collect
-            <v-icon right dark>gradient</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Start"
-            color="blue"
-            flat
-            v-if="!props.item.specimen_rejection && props.item.specimen && !props.item.specimen.referral && props.item.test_status.code === 'pending' && $can('start_test')"
-            @click="start(props.item)">
-            Start
-            <v-icon right dark>play_arrow</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Enter"
-            color="light-blue"
-            flat
-            v-if="!props.item.specimen_rejection && props.item.test_status.code === 'started' && $can('enter_test_result')"
-            @click="enterResults(props.item)">
-            Enter
-            <v-icon right dark>library_books</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Edit"
-            color="teal"
-            flat
-            v-if="!props.item.specimen_rejection && props.item.test_status.code === 'completed' && $can('enter_test_result')"
-            @click="enterResults(props.item)">
-            Edit
-            <v-icon right dark>edit</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Reject"
-            color="red"
-            flat
-            v-if="(props.item.test_status.code === 'started' || props.item.test_status.code === 'pending') && props.item.test_status.test_phase.code === 'analytical'&& !props.item.specimen_rejection && $can('reject_test_specimen')"
-            @click="rejectSpecimen(props.item)">
-            Reject
-            <v-icon right dark>block</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Refer"
-            color="amber"
-            flat
-            v-if="props.item.test_status.code === 'pending' && props.item.specimen && !props.item.specimen.referral && $can('refer_test_specimen')"
-            @click="refer(props.item)">
-            Refer
-            <v-icon right dark>arrow_forward</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Verify"
-            color="green"
-            flat
-            v-if="props.item.test_status.code === 'completed' && $can('verify_test_result')"
-            @click="detail(props.item)">
-            Verify
-            <v-icon right dark>check_circle_outline</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Print"
-            color="gray"
-            flat
-            v-if="props.item.specimen_id !=NULL"
-            @click="print(props.item.specimen_id)">
-            Print
-            <v-icon right dark>print</v-icon>
-          </v-btn>
-        </td>
-      </template>
-    </v-data-table> -->
-
     <v-layout row wrap>
       <v-flex md4 v-for="test in tests" :key="test.id">
         <div class="blis_card" v-bind:style="{ 'border-right-color': test.status_color}">
@@ -289,7 +164,6 @@ import { log } from 'util';
     data: () => ({
       search: '',
       query: '',
-      status_id: '',
       editedIndex: -1,
       loadingDialog: {
         loading: false,
@@ -351,6 +225,7 @@ import { log } from 'util';
       },
 
       filterStatus (statusID) {
+				this.status_id = statusID
         let filteredData = []
         this.initialize()
         .then((data) => {
@@ -377,9 +252,6 @@ import { log } from 'util';
         if (this.search != '') {
             this.query = '&search='+this.search;
         }
-        // if (this.status_id != '') {
-        //     this.query = '&search='+this.search;
-        // }
 
         let resp = null
 
@@ -399,17 +271,9 @@ import { log } from 'util';
       },
 
       testStatusColor (data) {
-				if (this.editedIndex != -1) {
-					console.log("one data updated");
-					Object.assign(this.tests[this.editedIndex], {
-						"status_color": this.checkStatus(data[this.editedIndex].test_status_id)
-					})
-				} else {
-					console.log("all data updated");
-					for (var i = 0; i < data.length; i++) {
-          data[i]["status_color"] = this.checkStatus(data[i].test_status_id);
-        }	
-				}
+				for (var i = 0; i < data.length; i++) {
+					data[i]["status_color"] = this.checkStatus(data[i].test_status_id);
+				}	
 			},
 
       checkStatus (id) {
@@ -464,7 +328,6 @@ import { log } from 'util';
         apiCall({url: '/api/test/start/' + test.id, method: 'GET' })
         .then(resp => {
           console.log(resp)
-          // Vue.set(this,tests,resp)
           Object.assign(this.tests[this.editedIndex], resp)
           this.loadingMethod(false)
         })
