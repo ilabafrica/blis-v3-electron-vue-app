@@ -1,13 +1,13 @@
 <template>
   <div>
-       <v-snackbar
-        v-model="snackbar"   
-        :color="color"
-        :timeout="6000"
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
       :top="y === 'top'"
-      >
-        {{ message }}
-      </v-snackbar>
+    >
+      {{ message }}
+    </v-snackbar>
     <testrequest ref="testRequestForm"></testrequest>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
@@ -69,15 +69,15 @@
                 Gender
                 <v-radio-group v-if="editedIndex > -1"
                   v-model="editedItem.gender_id" row
-                  >
+                  :rules="[v => !!v || 'A radio selection is required']">
                   <v-radio label="Male" :value="1"></v-radio>
                   <v-radio label="Female" :value="2"></v-radio>
                 </v-radio-group>
                 <v-radio-group v-if="editedIndex === -1"
                   v-model="editedItem.gender_id" row
-                  >
-                  <v-radio label="Male" value="1"></v-radio>
-                  <v-radio label="Female" value="2"></v-radio>
+                  :rules="[v => !!v || 'A radio selection is required']">
+                  <v-radio label="Male" :value="1"></v-radio>
+                  <v-radio label="Female" :value="2"></v-radio>
                 </v-radio-group>
               </v-flex>
               <v-flex xs12 sm12 md12>
@@ -200,6 +200,8 @@
       message:'',
       y: 'top',
       color: 'success',
+      message: '',
+      snackbar: false,
       valid: true,
       dialog: false,
       delete: false,
@@ -228,6 +230,7 @@
         name: '',
         gender_id: '',
         birth_date: '',
+        gender: ''
 
       },
       defaultItem: {
@@ -235,6 +238,7 @@
         name: '',
         gender_id: '',
         birth_date: '',
+        gender: '',
 
       }
     }),
@@ -268,9 +272,6 @@
     },
 
     methods: {
-
-
-
 
       initialize () {
 
@@ -365,8 +366,11 @@
             apiCall({url: '/api/patient', data: this.editedItem, method: 'POST' })
             .then(resp => {
               this.loading = false
+              this.editedItem.id = resp.id
+              this.editedItem.gender = resp.gender
+              this.editedItem.name = resp.name
               this.patient.push(this.editedItem)
-              console.log(resp)
+              console.log(this.editedItem)
               this.resetDialogReferences();
               this.saving = false;
               this.message = 'Patient Added Succesfully';
@@ -380,8 +384,6 @@
             this.close()
           }
         }
-        
-
       }
     }
   }

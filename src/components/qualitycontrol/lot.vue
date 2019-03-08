@@ -4,10 +4,10 @@
         v-model="snackbar"
         :color="color"
         :timeout="6000"
-      :top="y === 'top'"
+        :top="y === 'top'"
       >
         {{ message }}
-      </v-snackbar>
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -137,6 +137,7 @@
     name:'Lot',
     data: () => ({
       loading: false,
+      snackbar: false,
       message:'',
       y: 'top',
       color: 'success',

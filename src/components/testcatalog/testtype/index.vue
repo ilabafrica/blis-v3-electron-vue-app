@@ -340,6 +340,7 @@
             this.loading = true
             apiCall({url: '/api/testtype', data: this.editedItem, method: 'POST' })
             .then(resp => {
+              console.log(resp)
               this.testTypes.push(resp)
               this.resetDialogReferences();
               this.saving = false;

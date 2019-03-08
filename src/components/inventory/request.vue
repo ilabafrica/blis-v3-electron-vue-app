@@ -209,6 +209,7 @@
         tests_done: '',
         quantity_requested: '',
         remarks: '',
+        lab: '',
       },
       defaultItem: {
         item_id: '',
@@ -217,6 +218,7 @@
         tests_done: '',
         quantity_requested: '',
         remarks: '',
+        lab: '',
       }
     }),
 
@@ -330,7 +332,7 @@
           if(this.$refs.form.validate()){
             apiCall({url: '/request/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
             .then(resp => {
-              Object.assign(this.request[this.editedIndex], this.editedItem)
+              Object.assign(this.request[this.editedIndex], resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;

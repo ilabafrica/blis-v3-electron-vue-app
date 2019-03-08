@@ -35,14 +35,14 @@
                     <v-date-picker v-show="datePicker" v-model="referSpecimen.time_dispatched_to" :landscape="landscape" :reactive="reactive"></v-date-picker>
                   </v-flex>
                   <v-flex xs12 sm12 md12>
-                    <v-select
+                    <v-autocomplete
                       v-bind:items="referralReasons"
                       v-model="referSpecimen.referralReasonIds"
                       label="Referral Reasons"
                       item-text="display"
                       item-value="id"
-                      autocomplete multiple chips>
-                    </v-select>
+                      multiple chips>
+                    </v-autocomplete>
                   </v-flex>
                   <v-flex xs3 offset-xs9 text-xs-right>
                     <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="save">

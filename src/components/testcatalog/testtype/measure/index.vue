@@ -315,6 +315,7 @@
             this.loading = true
             apiCall({url: '/api/measure', data: this.measurefield, method: 'POST' })
             .then(resp => {
+              this.measurefield.id = resp.id
               this.measures.push(this.measurefield)
               console.log('resp')
               console.log(resp)
