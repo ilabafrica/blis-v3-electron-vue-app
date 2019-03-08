@@ -124,10 +124,9 @@
       },
 
       editResults (item) {
-      console.log('edit results')
       console.log(item)
         if (item.results.length > 0) {
-          console.log('edit results')
+          console.log('edit results d',item.results.length)
           this.savedResults = item.results;
           // set old input
           for (var i = this.savedResults.length - 1; i >= 0; i--){
@@ -150,7 +149,7 @@
           console.log('create results')
           this.measures = item.test_type.measures
         }
-
+        console.log("Measures should be ",this.measures)
         this.results.test_id = item.id;
         this.dialog = true
       },

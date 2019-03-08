@@ -1,133 +1,153 @@
 <template>
   <div>
-  <v-toolbar flat class="transparent">
-    <v-list>
-      <v-list-tile avatar>
-        <v-list-tile-avatar>
-          <img src="ILABLOGO1.jpg" >
-        </v-list-tile-avatar>
-        <v-list-tile-content>
-          <v-list-tile-title> @iLabAfrica</v-list-tile-title>
-        </v-list-tile-content>
+    <div class="blis_profile_sidebar">
+      <div class="blis_card_footer">
+        {{name}}
+      </div>
+      <div class="blis_card_footer_right">
+        <v-btn outline fab title="Edit" color="info" small v-if="$can('manage_patients')" @click="editItem(patient)">
+          <v-icon dark>edit</v-icon>
+        </v-btn>
+        <v-btn fab title="Logout" color="error" small @click="logout">
+          <v-icon dark>power_settings_new</v-icon>
+        </v-btn>
+      </div>
+    </div>
+    <v-list dense>
+      <v-list-tile to="/">
+        <v-list-tile-action>
+          <v-icon>home</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Home</v-list-tile-title>
       </v-list-tile>
+      <v-list-tile to="/patients/patient">
+        <v-list-tile-action>
+          <v-icon>assignment_ind</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Patients</v-list-tile-title>
+      </v-list-tile>
+      <v-list-group prepend-icon="settings" no-action>
+        <v-list-tile slot="activator">
+          <v-list-tile-title>Lab Configuration</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-for="(lab_configuration, i) in lab_configurations" :key="i"
+          :to="{path:lab_configuration.path}">
+          <v-list-tile-action>
+            <v-icon v-text="lab_configuration.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title v-text="lab_configuration.label"></v-list-tile-title>
+        </v-list-tile>
+      </v-list-group>
+      <v-list-group prepend-icon="assignment" no-action>
+        <v-list-tile slot="activator">
+          <v-list-tile-title>Test Catalog</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-for="(test_catalog, i) in test_catalogs" :key="i"
+          :to="{path:test_catalog.path}">
+          <v-list-tile-action>
+            <v-icon v-text="test_catalog.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title v-text="test_catalog.label"></v-list-tile-title>
+        </v-list-tile>
+      </v-list-group>
+      <v-list-group prepend-icon="security" no-action>
+        <v-list-tile slot="activator">
+          <v-list-tile-title>Access Control</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-for="(access_control, i) in access_controls" :key="i"
+          :to="{path:access_control.path}">
+          <v-list-tile-action>
+            <v-icon v-text="access_control.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title v-text="access_control.label"></v-list-tile-title>
+        </v-list-tile>
+      </v-list-group>
+      <v-list-tile to="/encounter/index">
+        <v-list-tile-action>
+          <v-icon>directions_walk</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>
+            Visits
+        </v-list-tile-title>
+      </v-list-tile>
+      <v-list-tile to="/test/index">
+        <v-list-tile-action>
+          <v-icon>settings_input_component</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>
+            Tests
+        </v-list-tile-title>
+      </v-list-tile>
+      <v-list-group prepend-icon="sync_problem" no-action>
+        <v-list-tile slot="activator">
+          <v-list-tile-title>Quality Controls</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-for="(quality_control, i) in quality_control" :key="i" :to="{path:quality_control.path}">
+          <v-list-tile-action>
+            <v-icon v-text="quality_control.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title v-text="quality_control.label"></v-list-tile-title>
+        </v-list-tile>
+      </v-list-group>
+      <v-list-group prepend-icon="line_weight" no-action>
+        <v-list-tile slot="activator">
+          <v-list-tile-title>Inventory</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-for="(inventory, i) in inventory" :key="i" :to="{path:inventory.path}">
+          <v-list-tile-action>
+            <v-icon v-text="inventory.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title v-text="inventory.label"></v-list-tile-title>
+        </v-list-tile>
+      </v-list-group>
+      <v-list-group prepend-icon="assessment" no-action>
+        <v-list-tile slot="activator">
+          <v-list-tile-title>Statistics</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-for="(stat, i) in stats" :key="i" :to="{path:stat.path}">
+          <v-list-tile-action>
+            <v-icon v-text="stat.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title v-text="stat.label"></v-list-tile-title>
+        </v-list-tile>
+      </v-list-group>
+      <v-list-group prepend-icon="dashboard" no-action>
+        <v-list-tile slot="activator">
+          <v-list-tile-title>Reports</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-for="(report, i) in reports" :key="i" :to="{path:report.path}">
+          <v-list-tile-action>
+            <v-icon v-text="report.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title v-text="report.label"></v-list-tile-title>
+        </v-list-tile>
+      </v-list-group>
     </v-list>
-  </v-toolbar>
-  <v-list dense>
-    <v-list-tile to="/">
-      <v-list-tile-action>
-        <v-icon>home</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-title>Home</v-list-tile-title>
-    </v-list-tile>
-    <v-list-tile to="/patients/patient">
-      <v-list-tile-action>
-        <v-icon>assignment_ind</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-title>Patients</v-list-tile-title>
-    </v-list-tile>
-    <v-list-group prepend-icon="settings" no-action>
-      <v-list-tile slot="activator">
-        <v-list-tile-title>Lab Configuration</v-list-tile-title>
-      </v-list-tile>
-      <v-list-tile v-for="(lab_configuration, i) in lab_configurations" :key="i"
-        :to="{path:lab_configuration.path}">
-        <v-list-tile-action>
-          <v-icon v-text="lab_configuration.icon"></v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title v-text="lab_configuration.label"></v-list-tile-title>
-      </v-list-tile>
-    </v-list-group>
-    <v-list-group prepend-icon="assignment" no-action>
-      <v-list-tile slot="activator">
-        <v-list-tile-title>Test Catalog</v-list-tile-title>
-      </v-list-tile>
-      <v-list-tile v-for="(test_catalog, i) in test_catalogs" :key="i"
-        :to="{path:test_catalog.path}">
-        <v-list-tile-action>
-          <v-icon v-text="test_catalog.icon"></v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title v-text="test_catalog.label"></v-list-tile-title>
-      </v-list-tile>
-    </v-list-group>
-    <v-list-group prepend-icon="security" no-action>
-      <v-list-tile slot="activator">
-        <v-list-tile-title>Access Control</v-list-tile-title>
-      </v-list-tile>
-      <v-list-tile v-for="(access_control, i) in access_controls" :key="i"
-        :to="{path:access_control.path}">
-        <v-list-tile-action>
-          <v-icon v-text="access_control.icon"></v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title v-text="access_control.label"></v-list-tile-title>
-      </v-list-tile>
-    </v-list-group>
-    <v-list-tile to="/encounter/index">
-      <v-list-tile-action>
-        <v-icon>directions_walk</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-title>
-          Visits
-      </v-list-tile-title>
-    </v-list-tile>
-    <v-list-tile to="/test/index">
-      <v-list-tile-action>
-        <v-icon>settings_input_component</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-title>
-          Tests
-      </v-list-tile-title>
-    </v-list-tile>
-    <v-list-group prepend-icon="sync_problem" no-action>
-      <v-list-tile slot="activator">
-        <v-list-tile-title>Quality Controls</v-list-tile-title>
-      </v-list-tile>
-      <v-list-tile v-for="(quality_control, i) in quality_control" :key="i" :to="{path:quality_control.path}">
-        <v-list-tile-action>
-          <v-icon v-text="quality_control.icon"></v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title v-text="quality_control.label"></v-list-tile-title>
-      </v-list-tile>
-    </v-list-group>
-    <v-list-group prepend-icon="line_weight" no-action>
-      <v-list-tile slot="activator">
-        <v-list-tile-title>Inventory</v-list-tile-title>
-      </v-list-tile>
-      <v-list-tile v-for="(inventory, i) in inventory" :key="i" :to="{path:inventory.path}">
-        <v-list-tile-action>
-          <v-icon v-text="inventory.icon"></v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title v-text="inventory.label"></v-list-tile-title>
-      </v-list-tile>
-    </v-list-group>
-    <v-list-group prepend-icon="assessment" no-action>
-      <v-list-tile slot="activator">
-        <v-list-tile-title>Statistics</v-list-tile-title>
-      </v-list-tile>
-      <v-list-tile v-for="(stat, i) in stats" :key="i" :to="{path:stat.path}">
-        <v-list-tile-action>
-          <v-icon v-text="stat.icon"></v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title v-text="stat.label"></v-list-tile-title>
-      </v-list-tile>
-    </v-list-group>
-    <v-list-group prepend-icon="dashboard" no-action>
-      <v-list-tile slot="activator">
-        <v-list-tile-title>Reports</v-list-tile-title>
-      </v-list-tile>
-      <v-list-tile v-for="(report, i) in reports" :key="i" :to="{path:report.path}">
-        <v-list-tile-action>
-          <v-icon v-text="report.icon"></v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title v-text="report.label"></v-list-tile-title>
-      </v-list-tile>
-    </v-list-group>
-  </v-list>
   </div>
 </template>
+<style>
+  .blis_profile_sidebar{
+    height: 200px;
+    width: 100%;
+    position: relative;
+    border-top:2px solid #11002A;
+    background: #F7F7F7;
+  }
+  .blis_profile_sidebar .blis_card_footer{
+    color: white;
+    padding: 20px;
+    background-image: linear-gradient(to bottom, rgba(0,0,0,0),rgba(0,0,0,0.6));
+  }
+</style>
+
 <script>
+  import { mapGetters, mapState } from 'vuex'
+  import { AUTH_LOGOUT } from '../store/actions/auth'
+  import { USER_REQUEST } from '../store/actions/user'
   export default {
     name: 'Sidebar',
-    data: () => ({
+    data: () => ({      
+      user: {},
       lab_configurations: [
         {
           path: '/labconfiguration/healthunit',
@@ -262,7 +282,26 @@
           icon: 'people'
         },
       ]
-    })
+    }),
+    mounted: function () {
+      if (this.$store.getters.isAuthenticated) {
+        this.$store.dispatch(USER_REQUEST)
+        
+      }
+    },
+    methods: {
+      logout: function () {
+        this.$store.dispatch(AUTH_LOGOUT).then(() => this.$router.push('/login'))
+      }
+    },
+    computed: {
+      ...mapGetters(['getProfile', 'isAuthenticated', 'isProfileLoaded']),
+      ...mapState({
+        authLoading: state => state.auth.status === 'loading',
+        name: state => `${state.user.profile.name}`,
+        pic: state =>  `${state.user.profile.profile_picture}`,
+      })
+    },
   }
 </script>
 

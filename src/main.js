@@ -10,9 +10,11 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import {ability} from './store'
 import { abilitiesPlugin } from '@casl/vue'
 import VueRouter from 'vue-router'
+import dotenv from 'dotenv'
+dotenv.config()
 export const EventBus = new Vue()
 
-
+console.log(process.env);
 window.Vue = require('vue');
 Vue.config.productionTip = false
 

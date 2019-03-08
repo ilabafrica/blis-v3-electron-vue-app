@@ -41,7 +41,6 @@
                       v-model="testRequest.location_id"
                       item-text="name"
                       item-value="id"
-                      :rules="[v => !!v || 'Location is Required']"
                       label="Location">
                     </v-select>
                   </v-flex>
@@ -107,7 +106,7 @@
       defaultItem: {
         patient_id: '',
         bed_no: '',
-        location_id: '',
+        location_id: '1',
         practitioner_name: '',
         encounter_class_id: '',
         testTypeIds: [],

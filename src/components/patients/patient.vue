@@ -5,20 +5,19 @@
       :color="color"
       :timeout="6000"
       :top="y === 'top'"
-    >
-      {{ message }}
-    </v-snackbar>
+      >
+        {{ message }}
+      </v-snackbar>
+    <v-dialog v-model="loadingDialog.loading" hide-overlay persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text>
+          {{ loadingDialog.message }}
+          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <testrequest ref="testRequestForm"></testrequest>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn
-        outline
-        small
-        color="primary"
-        slot="activator"
-        flat>
-        New Patient
-        <v-icon right dark>playlist_add</v-icon>
-      </v-btn>
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
           <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
@@ -100,80 +99,48 @@
       </v-card>
     </v-dialog>
     <v-card-title>
-      Patients
+      <p class="blis_page_title">
+        Patients
+      </p>
+      <v-btn small color="primary" class="blis_card_button" @click="newItem">
+        <v-icon left dark>add_circle</v-icon>
+        New Patient
+      </v-btn>
       <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Search"
-        single-line
-        v-on:keyup.enter="initialize"
-        hide-details>
+      <v-text-field class="blis_search" v-model="search" append-icon="search" label="Search" single-line v-on:keyup.enter="initialize" hide-details>
       </v-text-field>
     </v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="patient"
-      hide-actions
-      class="elevation-1"
-    >
-      <template slot="items" slot-scope="props">
-        <td>{{ props.item.identifier }}</td>
-        <td class="text-xs-left">
-          {{ props.item.name.given }}
-          {{ props.item.name.family }}
-        </td>
-        <td class="text-xs-left">{{ props.item.gender.display }}</td>
-        <td class="text-xs-left">{{ props.item.birth_date }}</td>
-        <td class="justify-left layout px-0">
-          <v-btn
-            outline
-            small
-            title="Edit"
-            color="blue"
-            flat
-            v-if="$can('request_test')"
-            @click="requestTest(props.item)">
+    <v-layout row wrap>
+    <v-flex sm12 md6 lg4 v-for="patient in patient" :key="patient.id">
+      <div class="blis_card">
+        <div class="blis_card_top_right">
+          <v-btn outline fab small title="View History" color="green" v-if="$can('view_reports')" @click="toPatientHistory">
+            <v-icon dark>description</v-icon>
+          </v-btn>
+        </div>
+        <p class="blis_card_main_heading">{{ patient.name.given }} {{ patient.name.family }}</p>
+        <p class="blis_card_small_text">{{ patient.gender.display }}</p>
+        <p class="blis_card_title">Identifier</p>
+        <p class="blis_card_description">{{ patient.identifier }}</p>
+        <p class="blis_card_title">Date of Birth</p>
+        <p class="blis_card_description">{{patient.birth_date}}</p>
+        <div class="blis_card_footer">
+          <v-btn class="blis_card_button" small title="Edit" color="secondary" round v-if="$can('request_test')" @click="requestTest(patient)">
+            <v-icon left dark>add_circle</v-icon>
             New Test
-            <v-icon right dark>playlist_add</v-icon>
           </v-btn>
-          <v-btn
-            outline
-            small
-            title="View Patient History"
-            color="green"
-            flat
-            v-if="$can('view_reports')"
-            :to="{name:'patient_reports_single', params:{id:props.item.id}}">
-            <!-- user new view_patient_report -->
-            Report
-            <v-icon right dark>list_alt</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Edit"
-            color="teal"
-            flat
-            v-if="$can('manage_patients')"
-            @click="editItem(props.item)">
-            Edit
-            <v-icon right dark>edit</v-icon>
-          </v-btn>
-          <v-btn
-            outline
-            small
-            title="Edit"
-            color="pink"
-            flat
-            v-if="$can('manage_patients')"
-            @click="deleteItem(props.item)">
-            Delete
-            <v-icon right dark>delete</v-icon>
-          </v-btn>
-        </td>
-      </template>
-    </v-data-table>
+          <div class="blis_card_footer_right">
+            <v-btn outline fab title="Edit" color="info" small v-if="$can('manage_patients')" @click="editItem(patient)">
+              <v-icon dark>edit</v-icon>
+            </v-btn>
+            <v-btn outline fab title="Edit" color="warn" small v-if="$can('manage_patients')" @click="deleteItem(patient)">
+              <v-icon dark>delete</v-icon>
+            </v-btn>
+          </div>
+        </div>
+      </div>
+    </v-flex>
+    </v-layout>
     <div class="text-xs-center">
       <v-pagination
         :length="length"
@@ -185,10 +152,14 @@
     </div>
   </div>
 </template>
+<style>
+</style>
+
 <script>
   import apiCall from '../../utils/api'
   import testrequest from './testrequest'
   import { EventBus } from './../../main.js'
+  import Vue from 'vue'
 
   export default {
     name:'Patient',
@@ -197,6 +168,10 @@
     },
     data: () => ({
       loading: false,
+      loadingDialog: {
+        loading: false,
+        message: ""
+      },
       message:'',
       y: 'top',
       color: 'success',
@@ -242,27 +217,22 @@
 
       }
     }),
-
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'New Patient' : 'Edit Patient Details'
       },
-
       length: function() {
         return Math.ceil(this.pagination.total / this.pagination.per_page);
       },
     },
-
     watch: {
       dialog (val) {
         val || this.close()
       }
     },
-
     created () {
       this.initialize()
     },
-
     mounted() {
       // Listen for the update-patient-list event and its payload.
       EventBus.$on('update-patient-list', data => {
@@ -272,75 +242,79 @@
     },
 
     methods: {
-
+      loadingMethod(load, message="") {
+        this.loadingDialog.loading = load;
+        this.loadingDialog.message = message
+      },
       initialize () {
-
+        
+        this.loadingMethod(true, "Fetching All Patients")
         this.query = 'page='+ this.pagination.page;
         if (this.search != '') {
-            this.query = this.query+'&search='+this.search;
+            this.query = '&search='+this.search;
         }
-
         apiCall({url: '/api/patient?' + this.query, method: 'GET' })
         .then(resp => {
           console.log(resp)
           this.patient = resp.data;
           this.pagination.total = resp.total;
           this.pagination.per_page = resp.per_page;
+          this.loadingMethod(false)
         })
         .catch(error => {
           console.log(error.response)
+          this.loadingMethod(false)
         })
       },
-
+      toPatientHistory(patient){
+        this.$router.push({ name: 'patient_reports_single', params: { id: patient.id } })
+      },
+      newItem(){
+        Vue.set(this,"dialog",true);
+      },
       editItem (item) {
         this.editedIndex = this.patient.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
-       
-       
       },
-
       deleteItem (item) {
-
         confirm('Are you sure you want to delete this item?') && (this.delete = true)
-
         if (this.delete) {
+          this.loadingMethod(true, "Deleting Patient")
           const index = this.patient.indexOf(item)
           this.patient.splice(index, 1)
           apiCall({url: '/api/patient/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Patient Deleted Succesfully';
+            this.snackbar = true;
+            this.loadingMethod(false)
           })
           .catch(error => {
             console.log(error.response)
+            this.loadingMethod(false)
           })
         }
-
       },
-
       close () {
         this.dialog = false
-
         // if not saving reset dialog references to datatables
         if (!this.saving) {
           this.resetDialogReferences();
         }
       },
-
       resetDialogReferences() {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       },
-
       requestTest (patient) {
         this.$refs.testRequestForm.modal(patient);
       },
-
       save () {
-
         this.saving = true;
         // update
         if (this.editedIndex > -1) {
+          this.loadingMethod(true, "Updating Patient")
           if(this.$refs.form.validate()){
             this.loading = true
             apiCall({url: '/api/patient/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
@@ -350,17 +324,20 @@
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
-               this.message = 'Patient Information Updated Succesfully';
+              this.message = 'Patient Information Updated Succesfully';
               this.snackbar = true;
+              this.loadingMethod(false)
             })
             .catch(error => {
               this.loading = false
               console.log(error.response)
+              this.loadingMethod(false)
             })
             this.close()
           }
         // store
         } else {
+          // this.loadingMethod(true, "Adding Patient")
           if(this.$refs.form.validate()){
             this.loading = true
             apiCall({url: '/api/patient', data: this.editedItem, method: 'POST' })
@@ -375,11 +352,12 @@
               this.saving = false;
               this.message = 'Patient Added Succesfully';
               this.snackbar = true;
-
+              this.loadingMethod(false)
             })
             .catch(error => {
               this.loading = false
               console.log(error.response)
+              this.loadingMethod(false)
             })
             this.close()
           }
