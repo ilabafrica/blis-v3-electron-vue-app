@@ -1,5 +1,5 @@
 import axios from 'axios'
-const base_url ="http://blis.com"
+const base_url ="http://10.9.41.27"
 const apiCall = ({url, data, method}) => new Promise((resolve, reject) => {
   console.log(url)
   url = base_url+url

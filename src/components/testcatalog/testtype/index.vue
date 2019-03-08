@@ -1,5 +1,14 @@
 <template>
   <div>
+      <v-snackbar
+        v-model="snackbar"
+          
+        :color="color"
+        :timeout="6000"
+      :top="y === 'top'"
+      >
+        {{ message }}
+      </v-snackbar>
     <TestTypeDetail ref="testTypeDetailForm"></TestTypeDetail>
     <v-layout row>
       <v-dialog v-model="dialog" max-width="500px">
@@ -27,7 +36,7 @@
               <v-text-field
                 v-model="editedItem.name"
                 :rules="[v => !!v || 'Name is Required' , 
-                v => /^[a-zA-Z]+$/.test(v)  || 'Name should have alphabetic chars only']"
+                v => /^[a-zA-Z\s]+$/.test(v)  || 'Name should have alphabetic chars only']"
                 label="Name">
               </v-text-field>
             </v-flex>
@@ -169,6 +178,9 @@
     },
     data: () => ({
       loading: false,
+      message:'',
+      y: 'top',
+      color: 'success',
       dialog: false,
       valid: true,
       delete: false,
@@ -312,6 +324,8 @@
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
+              this.message = 'Test Type Updated Succesfully';
+              this.snackbar = true;
 
             })
             .catch(error => {
@@ -331,6 +345,8 @@
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
+              this.message = 'New Test Type Added Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               this.loading = false

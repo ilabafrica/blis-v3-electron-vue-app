@@ -48,7 +48,7 @@
                 <v-text-field v-if="editedIndex === -1"
                   v-model="editedItem.given"
                   :rules="[v => !!v || 'Given Name is Required',
-                  v => /^[a-zA-Z]+$/.test(v)  || 'Name should have alphabetic chars only']"
+                  v => /^[a-zA-Z\s]+$/.test(v)  || 'Name should have alphabetic chars only']"
                   label="Given Name">
                 </v-text-field>
               </v-flex>
@@ -60,8 +60,8 @@
                 </v-text-field>
                 <v-text-field v-if="editedIndex === -1"
                   v-model="editedItem.family"
-                  :rules="[v => !!v || 'Family Name is Required',
-                  v => /^[a-zA-Z]+$/.test(v)  || 'Family Name should have alphabetic chars only']"
+                  :rules="[v => !!v || 'Family Name is Required',,
+                  v => /^[a-zA-Z\s]+$/.test(v)  || 'Family Name should have alphabetic chars only']"
                   label="Family Name">
                 </v-text-field>
               </v-flex>

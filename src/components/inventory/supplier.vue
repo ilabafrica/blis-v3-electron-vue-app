@@ -1,8 +1,16 @@
 <template>
   <div>
+      <v-snackbar
+        v-model="alert"
+        :color="color"
+        :timeout="6000"
+      :top="y === 'top'"
+      >
+        {{message}}
+     </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn slot="activator" color="primary" dark class="mb-2" outline>
-        New Item
+        New Supplier
         <v-icon right dark>playlist_add</v-icon>
       </v-btn>
       <v-card>
@@ -20,9 +28,10 @@
               <v-layout wrap>
                 <v-flex xs12 sm12 md12>
                   <v-text-field
-                    v-model="editedItem.name"
-                    :rules="[v => !!v || 'Name is Required']"
-                    label="Name">
+                 v-model="editedItem.name"
+                  :rules="[v => !!v || 'Name is Required' ,
+                  v => /^[a-zA-Z\s]+$/.test(v)  || 'Name should have alphabetic chars only']"
+                  label="Name">
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm12 md12>
@@ -34,9 +43,9 @@
                 </v-flex>
                 <v-flex xs12 sm12 md12>
                   <v-text-field
-                    v-model="editedItem.email"
-                    :rules="[v => !!v || 'Email Address is Required']"
-                    label="Email Address">
+                  v-model="editedItem.email"
+                  :rules="[v => !!v || 'Email is Required',v => /.+@.+/.test(v)  || 'Email not valid' ]"
+                  label="Email Address">
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm12 md12>
@@ -125,6 +134,9 @@
       loading: false,
       valid: true,
       dialog: false,
+      message:'',
+      y: 'top',
+      color: 'success',
       delete: false,
       saving: false,
       search: '',
@@ -244,11 +256,13 @@
             apiCall({url: '/supplier/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
             .then(resp => {
               Object.assign(this.supplier[this.editedIndex], this.editedItem)
-              Vue.set(this,"supplier", supplier)
+              Vue.set(this,"supplier",supplier)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
+                 this.message = 'Supplier Updated Succesfully';
+              this.alert = true;
             })
             .catch(error => {
               this.loading = false
@@ -267,6 +281,8 @@
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
+              this.message = 'New Supplier Added Succesfully';
+              this.alert = true;
             })
             .catch(error => {
               this.loading = false

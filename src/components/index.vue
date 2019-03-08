@@ -48,6 +48,8 @@
       <v-card-text class="white--text">
         &copy; {{ new Date().getFullYear() }} — <strong>@iLabAfrica</strong>
       </v-card-text>
+
+      
     </v-footer>
   </v-app>
 </template>
