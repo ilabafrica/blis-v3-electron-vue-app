@@ -222,6 +222,9 @@
     data: () => ({
       valid: true,
       dialog: false,
+      message:'',
+      y: 'top',
+      color: 'success',
       delete: false,
       saving: false,
       size: 32,

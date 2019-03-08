@@ -41,9 +41,9 @@
               </v-flex>
               <v-flex xs12 sm12 md12>
                 <v-text-field
-                  v-model="editedItem.name"
-                  :rules="[v => !!v || 'Name is Required' ,
-                  v => /^[a-zA-Z]+$/.test(v)  || 'Name  should have alphabetic chars only']"
+                 v-model="editedItem.name"
+                  :rules="[v => !!v || 'Name is Required',
+                  v => /^[a-zA-Z\s]+$/.test(v)  || 'Name should have alphabetic chars only']"
                   label="Name">
                 </v-text-field>
               </v-flex>
@@ -143,6 +143,9 @@
     data: () => ({
       valid: true,
       dialog: false,
+      message:'',
+      y: 'top',
+      color: 'success',
       delete: false,
       saving: false,
       size: 32,

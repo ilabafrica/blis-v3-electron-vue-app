@@ -127,7 +127,6 @@
       y: 'top',
       color: 'success',
       valid: true,
-      message: '',
       dialog: false,
       delete: false,
       saving: false,
