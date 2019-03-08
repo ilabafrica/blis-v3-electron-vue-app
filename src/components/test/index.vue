@@ -19,19 +19,8 @@
       </p>
       <v-spacer></v-spacer>
       <v-layout wrap>
-        <v-flex xs12>
-          <v-text-field
-            class="blis_search"
-            v-model="search"
-            append-icon="search"
-            label="Search"
-            single-line
-            v-on:keyup.enter="initialize"
-            hide-details>
-          </v-text-field>
-        </v-flex>
-        <v-flex xs12>
-          <v-layout style="margin-top: 10px;" align-start justify-end row fill-height>
+        <v-flex xs12 md6>
+          <v-layout style="margin-top: 0px;" align-start justify-end row fill-height>
             <v-btn-toggle class="blis_search">
               <v-btn @click="filterStatus(0)" color="secondary" flat>
                 <span>All</span>
@@ -50,6 +39,10 @@
               </v-btn>
             </v-btn-toggle>
           </v-layout>
+        </v-flex>
+        <v-flex xs10 md6>
+          <v-text-field class="blis_search" v-model="search" append-icon="search" label="Search" single-line v-on:keyup.enter="initialize" hide-details>
+          </v-text-field>
         </v-flex>
       </v-layout>
     </v-card-title>
@@ -100,7 +93,7 @@
             <div class="blis_card_footer_right">
               <v-btn class="blis_card_button" small title="Verify" color="secondary" round v-if="test.test_status.code === 'completed' && $can('verify_test_result')"
               @click="detail(test)">
-                <v-icon left>check_circle_outline</v-icon>
+                <v-icon>check_circle_outline</v-icon>
                 Verify
               </v-btn>
               <v-btn class="blis_card_button" small title="Collect" color="primary" round v-if="!test.specimen && $can('accept_test_specimen')"

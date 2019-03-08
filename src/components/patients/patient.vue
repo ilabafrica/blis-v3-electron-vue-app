@@ -111,7 +111,7 @@
       </v-text-field>
     </v-card-title>
     <v-layout row wrap>
-    <v-flex md4  v-for="patient in patient" :key="patient.id">
+    <v-flex sm12 md6 lg4 v-for="patient in patient" :key="patient.id">
       <div class="blis_card">
         <div class="blis_card_top_right">
           <v-btn outline fab small title="View History" color="green" v-if="$can('view_reports')" @click="toPatientHistory">
