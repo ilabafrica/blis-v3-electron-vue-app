@@ -247,8 +247,8 @@
           console.log(error.response)
         })
       },
-      toPatientHistory(){
-          to="{name:'patient_reports_single', params:{id:patient.id}}"
+      toPatientHistory(patient){
+        this.$router.push({ name: 'patient_reports_single', params: { id: patient.id } })
       },
       newItem(){
         Vue.set(this,"dialog",true);
