@@ -71,7 +71,7 @@
         <v-card-title>
           Range Details
         </v-card-title>
-        <v-form ref="form" v-model="valid" lazy-validation>
+        <v-form ref="form2" v-model="valid" lazy-validation>
         <v-card-text>
           <v-flex xs12 sm12 md12>
             <v-text-field
@@ -225,6 +225,7 @@
         gender_id: '',
         low: '',
         high: '',
+        gender: ''
       },
 
       editedIndex: -1,
@@ -237,6 +238,7 @@
         gender_id: '',
         low: '',
         high: '',
+        gender: ''
       },
 
       alphanumerics:{
@@ -386,7 +388,7 @@
                 this.saving = false;
               }
             }else{
-              if(this.$refs.form.validate()){
+              if(this.$refs.form2.validate()){
                 this.loading = true
                 apiCall({url: '/api/measurerange/'+this.alphanumerics.id, data: this.alphanumerics, method: 'PUT' })
                 .then(resp => {
@@ -425,7 +427,7 @@
                 this.closeMeasureRangeDialog();
               }
             }else{
-              if(this.$refs.form.validate()){
+              if(this.$refs.form2.validate()){
                 this.loading = true
                 this.alphanumerics.measure_id = this.$route.params.measureId
                 console.log("alphanumerics")

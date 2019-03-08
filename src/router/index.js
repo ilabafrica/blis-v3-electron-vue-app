@@ -15,6 +15,7 @@ import Measure from '../components/testcatalog/testtype/measure'
 import SpecimenRejectionReason from '../components/testcatalog/specimenrejectionreason'
 import Antibiotic from '../components/testcatalog/testtype/antibiotic'
 import UserAccounts from '../components/accesscontrol/useraccounts'
+import ThirdPartyApps from '../components/accesscontrol/thirdpartyapps'
 import Permissions from '../components/accesscontrol/permissions'
 import Role from '../components/accesscontrol/role'
 import RoleUser from '../components/accesscontrol/roleusers'
@@ -40,6 +41,8 @@ import BreakPoint from '../components/testcatalog/testtype/measure/measurerange/
 import MeasureRange from '../components/testcatalog/testtype/measure/measurerange/index'
 import TestTypeSpecimenType from '../components/testcatalog/testtype/specimentype'
 import MeasureTestType from '../components/testcatalog/testtype/measure/index'
+import EMRTestTypeMapping from '../components/emrinterface/testtypemapping'
+import EMRResultMapping from '../components/emrinterface/testresultmapping'
 
 Vue.use(Router)
 
@@ -172,6 +175,12 @@ export default new Router({
       beforeEnter: ifAuthenticated,
     },
     // Access Control
+    {
+      path: '/accesscontrol/thirdpartyapps',
+      name: 'ThirdPartyApps',
+      component: ThirdPartyApps,
+      beforeEnter: ifAuthenticated,
+    },
     {
       path: '/accesscontrol/useraccounts',
       name: 'UserAccount',
@@ -308,6 +317,19 @@ export default new Router({
       path: '/qualitycontrol/controltest',
       name: 'ControlTest',
       component: ControlTest,
+      beforeEnter: ifAuthenticated,
+    },
+    //EMR Interface
+    {
+      path: '/emr/testtypemapping',
+      name: 'EMRTestTypeMapping',
+      component: EMRTestTypeMapping,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/emr/testresultmapping/:emrTestTypeAliasId/:measureId',
+      name: 'EMRResultMapping',
+      component: EMRResultMapping,
       beforeEnter: ifAuthenticated,
     },
   ],

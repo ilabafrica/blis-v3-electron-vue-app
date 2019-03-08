@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+      >
+      {{message}}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -94,6 +102,10 @@
     data: () => ({
       valid: true,
       dialog: false,
+      snackbar: false,
+      message: '',
+      y: 'top',
+      color: 'success',
       delete: false,
       saving: false,
       search: '',
@@ -192,6 +204,8 @@
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
+              this.message = 'Role Updated Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               console.log(error.response)
@@ -203,10 +217,12 @@
           if(this.$refs.form.validate()){
             apiCall({url: '/api/role', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.roles.push(this.editedItem)
+              this.roles.push(resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
+              this.message = 'New Role Added Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               console.log(error.response)

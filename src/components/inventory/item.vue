@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+      >
+      {{message}}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn slot="activator" color="primary" dark class="mb-2" outline>
         New Item
@@ -82,7 +90,7 @@
             <v-icon right dark>close</v-icon>
           </v-btn>
         </v-toolbar>
-        <v-form ref="form" v-model="valid" lazy-validation>
+        <v-form ref="updateform" v-model="valid" lazy-validation>
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
@@ -166,7 +174,7 @@
         <v-card-title>
           <span class="headline">Issue Stock Items</span>
         </v-card-title>
-        <v-form ref="form" v-model="valid" lazy-validation>
+        <v-form ref="issueform" v-model="valid" lazy-validation>
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
@@ -261,17 +269,10 @@
         <v-card-title>
           <span class="headline">Receive New Medical Stock</span>
         </v-card-title>
-        <v-form ref="form" v-model="valid" lazy-validation>
+        <v-form ref="stockform" v-model="valid" lazy-validation>
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-              <v-flex xs12 sm12 md12>
-                <v-text-field
-                  v-model="stockItem.item_id"
-                  readonly
-                  label="Item">
-                </v-text-field>
-              </v-flex>
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="stockItem.lot_no"
@@ -479,6 +480,10 @@
       loading: false,
       valid: true,
       dialog: false,
+      snackbar: false,
+      message: '',
+      y: 'top',
+      color: 'success',
       stockdialog: false,
       issueDialog: false,
       delete: false,
@@ -784,7 +789,7 @@
             this.loading = true
             apiCall({url: '/item', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.item.push(this.editedItem)
+              this.item.push(resp)
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
@@ -799,7 +804,7 @@
       },
 
       saveUpdateStock () {
-        if(this.$refs.form.validate()){
+        if(this.$refs.updateform.validate()){
           this.loading = true
           apiCall({url: '/stock/'+this.editedStockItem.id, data: this.editedStockItem, method: 'PUT' })
           .then(resp => {
@@ -818,11 +823,11 @@
       },
 
       saveStock () {
-        if(this.$refs.form.validate()){
+        if(this.$refs.stockform.validate()){
           this.loading = true
           apiCall({url: '/stock', data: this.stockItem, method: 'POST' })
             .then(resp => {
-              this.stock.push(this.stockItem)
+              this.stock.push(resp)
               console.log(resp)
               this.resetStockDialogReferences();
               //this.saving = false;
@@ -832,11 +837,11 @@
               this.loading = false
               console.log(error.response)
           })
-          }
+        }
       },
 
       saveIssueStock () {
-        if(this.$refs.form.validate()){
+        if(this.$refs.issueform.validate()){
           this.loading = true
           apiCall({url: '/issueStock', data: this.requestItem, method: 'POST' })
             .then(resp => {
@@ -847,6 +852,8 @@
             })
             .catch(error => {
               this.loading = false
+              this.message = 'Issued Stock is Greater than Available';
+              this.snackbar = true;
               console.log(error.response)
           })
         }

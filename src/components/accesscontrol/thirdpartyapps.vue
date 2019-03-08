@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-snackbar
-      v-model="snackbar"
-      :color="color"
-      :timeout="6000"
+   <v-snackbar
+        v-model="snackbar"
+        :color="color"
+        :timeout="6000"
       :top="y === 'top'"
       >
-      {{message}}
-    </v-snackbar>
+        {{message}}
+     </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -15,7 +15,7 @@
         color="primary"
         slot="activator"
         flat>
-        New User
+        New TPA
         <v-icon right dark>playlist_add</v-icon>
       </v-btn>
       <v-card>
@@ -40,9 +40,9 @@
               </v-flex>
               <v-flex xs12 sm12 md12>
                 <v-text-field
-                 v-model="editedItem.name"
-                  :rules="[v => !!v || 'Name is Required',
-                  v => /^[a-zA-Z\s]+$/.test(v)  || 'Name should have alphabetic chars only']"
+                  v-model="editedItem.name"
+                  :rules="[v => !!v || 'Name is Required' ,
+                  v => /^[a-zA-Z]+$/.test(v)  || 'Name  should have alphabetic chars only']"
                   label="Name">
                 </v-text-field>
               </v-flex>
@@ -53,18 +53,97 @@
                   label="Email Address">
                 </v-text-field>
               </v-flex>
-              <div>
-                <v-btn small color="primary" dark @click.native="passordReset">Reset Password</v-btn>
-              </div>
-              <v-flex xs12 sm12 md12
-                v-if="showPasswordField">
+              <v-flex xs12 sm12 md12>
                 <v-text-field
-                  v-model="password"
-                  :rules="[v => !!v || 'New Password is Required']"
+                  v-model="editedItem.password"
                   type = "text"
                   append-icon="autorenew"
                   @click:append="generate"
-                  label="New Password">
+                  label="Password">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm12 md12>
+                <v-text-field
+                  v-if="editedIndex === -1"
+                  v-model="editedItem.result_url"
+                  :rules="[v => !!v || 'Result URL is Required']"
+                  label="Result URL">
+                </v-text-field>
+                <v-text-field
+                  v-if="editedIndex > -1"
+                  v-model="editedItem.emr.result_url"
+                  :rules="[v => !!v || 'Result URL is Required']"
+                  label="Result URL">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm12 md12>
+                <v-text-field
+                  v-if="editedIndex === -1"
+                  v-model="editedItem.access_username"
+                  :rules="[v => !!v || 'Access Username is Required']"
+                  label="Access Username">
+                </v-text-field>
+                <v-text-field
+                  v-if="editedIndex > -1"
+                  v-model="editedItem.access.username"
+                  :rules="[v => !!v || 'Access Username is Required']"
+                  label="Access Username">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm12 md12>
+                <v-text-field
+                  v-if="editedIndex === -1"
+                  v-model="editedItem.access_password"
+                  :rules="[v => !!v || 'Acess Password is Required']"
+                  label="Access Password">
+                </v-text-field>
+                <v-text-field
+                  v-if="editedIndex > -1"
+                  v-model="editedItem.access.password"
+                  :rules="[v => !!v || 'Acess Password is Required']"
+                  label="Access Password">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm12 md12>
+                <v-text-field
+                  v-if="editedIndex === -1"
+                  v-model="editedItem.client_name"
+                  :rules="[v => !!v || 'client_name is Required']"
+                  label="Client Name">
+                </v-text-field>
+                <v-text-field
+                  v-if="editedIndex > -1"
+                  v-model="editedItem.access.client_name"
+                  :rules="[v => !!v || 'client_name is Required']"
+                  label="Client Name">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm12 md12>
+                <v-text-field
+                  v-if="editedIndex === -1"
+                  v-model="editedItem.client_id"
+                  :rules="[v => !!v || 'Client ID is Required']"
+                  label="Client ID">
+                </v-text-field>
+                <v-text-field
+                  v-if="editedIndex > -1"
+                  v-model="editedItem.access.client_id"
+                  :rules="[v => !!v || 'Client ID is Required']"
+                  label="Client ID">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm12 md12>
+                <v-text-field
+                  v-if="editedIndex === -1"
+                  v-model="editedItem.client_secret"
+                  :rules="[v => !!v || 'Client Secret is Required']"
+                  label="Client Secret">
+                </v-text-field>
+                <v-text-field
+                  v-if="editedIndex > -1"
+                  v-model="editedItem.access.client_secret"
+                  :rules="[v => !!v || 'Client Secret is Required']"
+                  label="Client Secret">
                 </v-text-field>
               </v-flex>
               <v-flex xs3 offset-xs9 text-xs-right>
@@ -79,7 +158,7 @@
       </v-card>
     </v-dialog>
     <v-card-title>
-      Users
+      Third Party Applications
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -92,7 +171,7 @@
     </v-card-title>
   <v-data-table
     :headers="headers"
-    :items="user"
+    :items="tpas"
     hide-actions
     class="elevation-1"
   >
@@ -140,17 +219,19 @@
   export default {
     name:'UserAccounts',
     data: () => ({
+      snackbar: false,
       valid: true,
       dialog: false,
-      snackbar: false,
-      message: '',
+      message:'',
+      y: 'top',
+      color: 'success',
       delete: false,
       saving: false,
+      message: '',
       size: 32,
       y: 'top',
       color: 'success',
       characters: 'a-z,A-Z,0-9,#',
-      showPasswordField: false,
       search: '',
       query: '',
       password: '',
@@ -166,17 +247,35 @@
         { text: 'Email Address', value: 'email' },
         { text: 'Actions', sortable: false, value: 'action' }
       ],
-      user: [],
+      tpas: [],
       editedIndex: -1,
       editedItem: {
         username: '',
         name: '',
-        email: ''
+        email: '',
+        password: '',
+        result_url: '',
+        access_username: '',
+        access_password: '',
+        client_name: '',
+        client_id: '',
+        client_secret: '',
+        emr: '',
+        access: ''
       },
       defaultItem: {
         username: '',
         name: '',
-        email: ''
+        email: '',
+        password: '',
+        result_url: '',
+        access_username: '',
+        access_password: '',
+        client_name: '',
+        client_id: '',
+        client_secret: '',
+        emr: '',
+        access: ''
       }
     }),
     created () {
@@ -206,10 +305,10 @@
             this.query = this.query+'&search='+this.search;
         }
 
-        apiCall({url: '/api/user?' + this.query, method: 'GET' })
+        apiCall({url: '/api/emrclients?' + this.query, method: 'GET' })
         .then(resp => {
           console.log(resp)
-          this.user = resp.data;
+          this.tpas = resp;
           this.pagination.per_page = resp.per_page;
           this.pagination.total = resp.total;
         })
@@ -218,7 +317,8 @@
         })
       },
       editItem (item) {
-        this.editedIndex = this.user.indexOf(item)
+        console.log("this is",item)
+        this.editedIndex = this.tpas.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
@@ -243,14 +343,14 @@
         for(let i=0; i < this.size; i++) {
           password += CharacterSet.charAt(Math.floor(Math.random() * CharacterSet.length));
         }
-        this.password = password;
+        this.editedItem.password = password;
       },
       deleteItem (item) {
         confirm('Are you sure you want to delete this user?') && (this.delete = true)
         if (this.delete) {
-          const index = this.user.indexOf(item)
-          this.user.splice(index, 1)
-          apiCall({url: '/api/user/'+item.id, method: 'DELETE' })
+          const index = this.tpas.indexOf(item)
+          this.tpas.splice(index, 1)
+          apiCall({url: '/api/emrclients/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp.data)
           })
@@ -273,17 +373,6 @@
       resetDialogReferences() {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
-        this.showPasswordField = false
-        this.password = ''
-      },
-
-      passordReset () {
-        if (this.showPasswordField){
-          this.showPasswordField = false
-          this.password = ''
-        }else{
-          this.showPasswordField = true;
-        }
       },
 
       save () {
@@ -292,17 +381,13 @@
         // update
         if (this.editedIndex > -1) {
           if(this.$refs.form.validate()){
-            if(this.showPasswordField){
-              this.editedItem.adminPasswordChange = true
-              this.editedItem.password = this.password
-            }
-            apiCall({url: '/api/user/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            apiCall({url: '/api/emrclientregistration/'+this.editedItem.id, data: this.editedItem, method: 'POST' })
             .then(resp => {
               Object.assign(this.user[this.editedIndex], this.editedItem)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
-              this.message = 'User Information Updated Succesfully';
+              this.message = 'Third Party Application Information Updated Succesfully';
               this.snackbar = true;
             })
             .catch(error => {
@@ -313,13 +398,13 @@
         // store
         } else {
           if(this.$refs.form.validate()){
-            apiCall({url: '/api/user', data: this.editedItem, method: 'POST' })
+            apiCall({url: '/api/emrclientregistration', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.user.push(resp)
+              this.tpas.push(resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
-              this.message = 'New User Added Succesfully';
+              this.message = 'New Third Party Application Added Succesfully';
               this.snackbar = true;
             })
             .catch(error => {

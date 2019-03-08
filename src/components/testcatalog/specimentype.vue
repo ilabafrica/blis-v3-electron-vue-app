@@ -1,15 +1,13 @@
 <template>
   <div>
-
     <v-snackbar
-        v-model="snackbar"
-          
-        :color="color"
-        :timeout="6000"
+      v-model="snackbar"    
+      :color="color"
+      :timeout="6000"
       :top="y === 'top'"
-      >
-        {{ message }}
-      </v-snackbar>
+    >
+      {{ message }}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -37,7 +35,7 @@
                 <v-text-field
                   v-model="editedItem.name"
                   :rules="[v => !!v || 'Name is Required' , 
-                  v => /^[a-zA-Z]+$/.test(v)  || 'Name should have alphabetic chars only']"
+                  v => /^[a-zA-Z\s]+$/.test(v)  || 'Name should have alphabetic chars only']"
                   label="Name">
                 </v-text-field>
               </v-flex>
@@ -119,6 +117,7 @@
       color: 'success',
       valid: true,
       dialog: false,
+      snackbar: false,
       delete: false,
       saving: false,
       search: '',
@@ -254,6 +253,7 @@
             this.loading = true
             apiCall({url: '/api/specimentype', data: this.editedItem, method: 'POST' })
             .then(resp => {
+              this.editedItem.id = resp.id
               this.specimentype.push(this.editedItem)
               console.log(resp)
               this.resetDialogReferences();

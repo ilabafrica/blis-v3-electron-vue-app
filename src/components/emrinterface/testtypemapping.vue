@@ -1,16 +1,9 @@
 <template>
   <div>
-      <v-snackbar
-        v-model="alert"
-        :color="color"
-        :timeout="6000"
-      :top="y === 'top'"
-      >
-        {{message}}
-     </v-snackbar>
+    <mapmeasureranges ref="mapMeasureRangesForm"></mapmeasureranges>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn slot="activator" color="primary" dark class="mb-2" outline>
-        New Supplier
+        New Item
         <v-icon right dark>playlist_add</v-icon>
       </v-btn>
       <v-card>
@@ -27,32 +20,51 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12 sm12 md12>
+                  <v-select
+                    :items="clients"
+                    :rules="[v => !!v  || 'Client ID is Required']"
+                    v-model="editedItem.client_id"
+                    item-text="name"
+                    item-value="id"
+                    label="Client ID">
+                  </v-select>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
+                  <v-select
+                    :items="testTypes"
+                    :rules="[v => !!v  || 'Test Type is Required']"
+                    v-model="editedItem.test_type_id"
+                    item-text="name"
+                    item-value="id"
+                    label="Test Type">
+                  </v-select>
+                </v-flex>
+                <v-flex xs12 sm12 md12>
                   <v-text-field
-                 v-model="editedItem.name"
-                  :rules="[v => !!v || 'Name is Required' ,
-                  v => /^[a-zA-Z\s]+$/.test(v)  || 'Name should have alphabetic chars only']"
-                  label="Name">
+                    v-model="editedItem.emr_alias"
+                    :rules="[v => !!v || 'EMR Alias is Required']"
+                    label="EMR Alias">
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm12 md12>
                   <v-text-field
-                    v-model="editedItem.phone"
-                    :rules="[v => !!v || 'Phone is Required']"
-                    label="Phone">
+                    v-model="editedItem.system"
+                    :rules="[v => !!v || 'System is Required']"
+                    label="System">
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm12 md12>
                   <v-text-field
-                  v-model="editedItem.email"
-                  :rules="[v => !!v || 'Email is Required',v => /.+@.+/.test(v)  || 'Email not valid' ]"
-                  label="Email Address">
+                    v-model="editedItem.code"
+                    :rules="[v => !!v || 'Code is Required']"
+                    label="Code">
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm12 md12>
                   <v-text-field
-                    v-model="editedItem.address"
-                    :rules="[v => !!v || 'Address is Required']"
-                    label="Address">
+                    v-model="editedItem.display"
+                    :rules="[v => !!v || 'Display is Required']"
+                    label="Display">
                   </v-text-field>
                 </v-flex>
               </v-layout>
@@ -69,28 +81,31 @@
     </v-dialog>
 
     <v-card-title>
-      Suppliers
+      Test Types
       <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Search"
-        single-line
-        v-on:keyup.enter="initialize"
-        hide-details>
-      </v-text-field>
     </v-card-title>
 
     <v-data-table
       :headers="headers"
-      :items="supplier"
+      :items="testTypeMappings"
       hide-actions
       class="elevation-1"
     >
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.name }}</td>
-        <td class="text-xs-left">{{ props.item.phone }}</td>
+        <td>{{ props.item.client_id }}</td>
+        <td>{{ props.item.emr_alias }}</td>
+        <td class="text-xs-left">{{ props.item.test_type.name }}</td>
         <td class="justify-left layout px-0">
+          <v-btn
+            outline
+            small
+            title="Measures"
+            color="info"
+            flat
+            @click="mapMeasureRanges(props.item.test_type)">
+            Measures
+            <v-icon right dark>tune</v-icon>
+          </v-btn>
           <v-btn
             outline
             small
@@ -127,20 +142,19 @@
 </template>
 <script>
   import apiCall from '../../utils/api'
-  import Vue from 'vue'
+  // import Vue from 'vue'
+  import mapmeasureranges from './mapmeasureranges'
   export default {
-    name:'InventorySupplier',
+    name:'EMRTestTypeMapping',
+    components: {
+      mapmeasureranges,
+    },
     data: () => ({
       loading: false,
       valid: true,
       dialog: false,
-      message:'',
-      y: 'top',
-      color: 'success',
       delete: false,
       saving: false,
-      search: '',
-      query: '',
       pagination: {
         page: 1,
         per_page: 0,
@@ -148,23 +162,30 @@
         visible: 10
       },
       headers: [
-        { text: 'Name', value: 'name' },
-        { text: 'Phone', value: 'phone' },
-        { text: 'Actions', value: 'name', sortable: false }
+        { text: 'Client Id', value: 'client_id' },
+        { text: 'EMR Alias', value: 'emr_alias' },
+        { text: 'Test Type', value: 'test_type_id' },
+        { text: 'Actions', value: 'emr_alias', sortable: false }
       ],
-      supplier: [],
+      testTypeMappings: [],
+      testTypes: [],
+      clients: [],
       editedIndex: -1,
       editedItem: {
-        name: '',
-        phone: '',
-        email: '',
-        address: '',
+        client_id: '',
+        test_type_id: '',
+        emr_alias: '',
+        system: '',
+        code: '',
+        display: '',
       },
       defaultItem: {
-        name: '',
-        phone: '',
-        email: '',
-        address: '',
+        client_id: '',
+        test_type_id: '',
+        emr_alias: '',
+        system: '',
+        code: '',
+        display: '',
       }
     }),
 
@@ -191,17 +212,33 @@
     methods: {
 
       initialize () {
-
-        this.query = 'page='+ this.pagination.page;
-        if (this.search != '') {
-            this.query = this.query+'&search='+this.search;
-        }
-
-        apiCall({url: '/supplier?' + this.query, method: 'GET' })
+        // testtype mappings
+        apiCall({url: '/api/maptesttypeget?' + this.query, method: 'GET' })
         .then(resp => {
           console.log(resp)
-          this.supplier = resp.data;
+          this.testTypeMappings = resp.data;
           this.pagination.total = resp.total;
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
+
+        // test types
+        apiCall({url: '/api/testtype?fetch=1', method: 'GET' })
+        .then(resp => {
+          console.log(resp)
+          this.testTypes = resp;
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
+
+        // clients
+        apiCall({url: '/api/emrclients', method: 'GET' })
+        .then(resp => {
+          console.log('clients')
+          console.log(resp)
+          this.clients = resp;
         })
         .catch(error => {
           console.log(error.response)
@@ -209,7 +246,7 @@
       },
 
       editItem (item) {
-        this.editedIndex = this.supplier.indexOf(item)
+        this.editedIndex = this.testTypeMappings.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
@@ -219,9 +256,9 @@
         confirm('Are you sure you want to delete this item?') && (this.delete = true)
 
         if (this.delete) {
-          const index = this.supplier.indexOf(item)
-          this.supplier.splice(index, 1)
-          apiCall({url: '/supplier/'+item.id, method: 'DELETE' })
+          const index = this.testTypeMappings.indexOf(item)
+          this.testTypeMappings.splice(index, 1)
+          apiCall({url: '/api/maptesttypedestroy/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
           })
@@ -241,6 +278,12 @@
         }
       },
 
+      mapMeasureRanges (testType) {
+        // :to="{path:'/emr/testresultmapping/'+props.item.test_type_id}"
+        console.log('mapMeasureRanges')
+        this.$refs.mapMeasureRangesForm.modal(testType);
+      },
+
       resetDialogReferences() {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
@@ -253,16 +296,15 @@
         if (this.editedIndex > -1) {
           if(this.$refs.form.validate()){
             this.loading = true
-            apiCall({url: '/supplier/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
+            apiCall({url: '/api/maptesttypestore', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              Object.assign(this.supplier[this.editedIndex], this.editedItem)
-              Vue.set(this,"supplier",supplier)
+              // let testTypeMapping = resp
+              Object.assign(this.testTypeMappings[this.editedIndex], this.editedItem)
+              // Vue.set(this,"testTypeMappings", testTypeMapping)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
-                 this.message = 'Supplier Updated Succesfully';
-              this.alert = true;
             })
             .catch(error => {
               this.loading = false
@@ -274,15 +316,13 @@
         } else {
           if(this.$refs.form.validate()){
             this.loading = true
-            apiCall({url: '/supplier', data: this.editedItem, method: 'POST' })
+            apiCall({url: '/api/maptesttypestore', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.supplier.push(resp)
+              this.testTypeMappings.push(this.editedItem)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
-              this.message = 'New Supplier Added Succesfully';
-              this.alert = true;
             })
             .catch(error => {
               this.loading = false

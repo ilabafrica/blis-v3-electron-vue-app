@@ -194,6 +194,11 @@
       ],
       access_controls: [
         {
+          path: '/accesscontrol/thirdpartyapps',
+          label: 'Third Party Apps',
+          icon: 'extension'
+        },
+        {
           path: '/accesscontrol/useraccounts',
           label: 'User Accounts',
           icon: 'people'

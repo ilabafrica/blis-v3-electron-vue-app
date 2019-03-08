@@ -45,14 +45,14 @@
                     </v-text-field>
                   </v-flex>
                   <v-flex xs12 sm12 md12>
-                    <v-select
+                    <v-autocomplete
                       v-bind:items="testTypes"
                       v-model="specimenCollection.testIds"
                       label="Tests"
                       item-text="name"
                       item-value="id"
-                      autocomplete multiple chips>
-                    </v-select>
+                      multiple chips>
+                    </v-autocomplete>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>

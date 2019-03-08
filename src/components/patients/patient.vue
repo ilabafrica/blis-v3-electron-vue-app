@@ -1,9 +1,9 @@
 <template>
   <div>
-       <v-snackbar
-        v-model="snackbar"   
-        :color="color"
-        :timeout="6000"
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
       :top="y === 'top'"
       >
         {{ message }}
@@ -47,7 +47,7 @@
                 <v-text-field v-if="editedIndex === -1"
                   v-model="editedItem.given"
                   :rules="[v => !!v || 'Given Name is Required',
-                  v => /^[a-zA-Z]+$/.test(v)  || 'Name should have alphabetic chars only']"
+                  v => /^[a-zA-Z\s]+$/.test(v)  || 'Name should have alphabetic chars only']"
                   label="Given Name">
                 </v-text-field>
               </v-flex>
@@ -60,7 +60,7 @@
                 <v-text-field v-if="editedIndex === -1"
                   v-model="editedItem.family"
                   :rules="[v => !!v || 'Family Name is Required',,
-                  v => /^[a-zA-Z]+$/.test(v)  || 'Family Name should have alphabetic chars only']"
+                  v => /^[a-zA-Z\s]+$/.test(v)  || 'Family Name should have alphabetic chars only']"
                   label="Family Name">
                 </v-text-field>
               </v-flex>
@@ -68,15 +68,15 @@
                 Gender
                 <v-radio-group v-if="editedIndex > -1"
                   v-model="editedItem.gender_id" row
-                  >
+                  :rules="[v => !!v || 'A radio selection is required']">
                   <v-radio label="Male" :value="1"></v-radio>
                   <v-radio label="Female" :value="2"></v-radio>
                 </v-radio-group>
                 <v-radio-group v-if="editedIndex === -1"
                   v-model="editedItem.gender_id" row
-                  >
-                  <v-radio label="Male" value="1"></v-radio>
-                  <v-radio label="Female" value="2"></v-radio>
+                  :rules="[v => !!v || 'A radio selection is required']">
+                  <v-radio label="Male" :value="1"></v-radio>
+                  <v-radio label="Female" :value="2"></v-radio>
                 </v-radio-group>
               </v-flex>
               <v-flex xs12 sm12 md12>
@@ -176,6 +176,7 @@
       y: 'top',
       color: 'success',
       message: '',
+      snackbar: false,
       valid: true,
       dialog: false,
       delete: false,
@@ -204,6 +205,7 @@
         name: '',
         gender_id: '',
         birth_date: '',
+        gender: ''
 
       },
       defaultItem: {
@@ -211,6 +213,7 @@
         name: '',
         gender_id: '',
         birth_date: '',
+        gender: '',
 
       }
     }),
@@ -340,8 +343,11 @@
             apiCall({url: '/api/patient', data: this.editedItem, method: 'POST' })
             .then(resp => {
               this.loading = false
+              this.editedItem.id = resp.id
+              this.editedItem.gender = resp.gender
+              this.editedItem.name = resp.name
               this.patient.push(this.editedItem)
-              console.log(resp)
+              console.log(this.editedItem)
               this.resetDialogReferences();
               this.saving = false;
               this.message = 'Patient Added Succesfully';
@@ -356,8 +362,6 @@
             this.close()
           }
         }
-        
-
       }
     }
   }
