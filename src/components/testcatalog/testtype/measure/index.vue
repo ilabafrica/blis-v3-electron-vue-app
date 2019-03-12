@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+    >
+      {{ message }}
+    </v-snackbar>
     <v-card-title>
       {{testType.name}}
     </v-card-title>
@@ -104,6 +112,7 @@
                 title="Delete"
                 color="pink"
                 flat
+                v-if="props.item.measure_ranges.length == 0"
                 @click="deleteMeasure(props.item)">
                 Delete
                 <v-icon right dark>delete</v-icon>
@@ -119,6 +128,10 @@
 
   export default {
     data: () => ({
+      message:'',
+      y: 'top',
+      color: 'success',
+      snackbar: false,
       loading: false,
       dialog: false,
       dialogMeasure: false,
@@ -248,6 +261,8 @@
           apiCall({url: '/api/measure/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Measure Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -323,6 +338,8 @@
               this.closeMeasureDialogue();
               this.resetMeasureDialogReferences()
               this.loading = false
+              this.message = 'Measure Added Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               this.loading = false

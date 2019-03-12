@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+    >
+      {{ message }}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn slot="activator" color="primary" dark class="mb-2" outline>
         New Item Request
@@ -178,6 +186,10 @@
     data: () => ({
       valid: true,
       dialog: false,
+      message:'',
+      y: 'top',
+      color: 'success',
+      snackbar: false,
       detailsdialog: false,
       delete: false,
       saving: false,
@@ -302,6 +314,8 @@
           apiCall({url: '/request/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Item Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -336,6 +350,8 @@
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
+              this.message = 'Request Updated Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               console.log(error.response)
@@ -350,6 +366,8 @@
               this.request.push(resp)
               this.resetDialogReferences();
               this.saving = false;
+              this.message = 'Request Created Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               console.log(error.response)

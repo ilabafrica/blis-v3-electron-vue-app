@@ -776,6 +776,8 @@
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
+              this.message = 'Item Updated Succesfully';
+            this.snackbar = true;
             })
             .catch(error => {
               this.loading = false
@@ -792,6 +794,8 @@
               this.item.push(resp)
               this.resetDialogReferences();
               this.saving = false;
+              this.message = 'Item Added Succesfully';
+            this.snackbar = true;
               this.loading = false
             })
             .catch(error => {
@@ -813,6 +817,8 @@
             this.resetDialogReferences();
             this.saving = false;
             this.loading = false
+            this.message = 'Stock Updated Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             this.loading = false
@@ -832,6 +838,8 @@
               this.resetStockDialogReferences();
               //this.saving = false;
               this.loading = false
+              this.message = 'Stock Added Succesfully';
+            this.snackbar = true;
             })
             .catch(error => {
               this.loading = false
@@ -849,6 +857,8 @@
               this.resetIssueDialogReferences();
               //this.saving = false;
               this.loading = false
+              this.message = 'Stock Issued Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               this.loading = false

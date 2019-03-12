@@ -117,6 +117,7 @@
             title="Edit"
             color="pink"
             flat
+            v-if="props.item.specimen_collected.length == 0 && props.item.specimen_received.length == 0"
             @click="deleteItem(props.item)">
             Delete
             <v-icon right dark>delete</v-icon>
@@ -124,7 +125,7 @@
       </td>
     </template>
   </v-data-table>
-  <div class="text-xs-center">
+  <div v-if="length" class="text-xs-center">
       <v-pagination
         :length="length"
         :total-visible="pagination.visible"
@@ -253,6 +254,8 @@
           apiCall({url: '/api/user/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp.data)
+            this.message = 'User Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)

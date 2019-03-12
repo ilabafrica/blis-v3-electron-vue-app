@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+    >
+      {{ message }}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
@@ -97,6 +105,10 @@
   export default {
     data: () => ({
       loading: false,
+      message:'',
+      y: 'top',
+      color: 'success',
+      snackbar: false,
       dialog: false,
       valid: true,
       saving: false,
@@ -179,6 +191,8 @@
               this.inputs = [];
               this.loading = false
               this.dialog = false;
+              this.message = 'Results Entered Succesfully';
+            this.snackbar = true;
           })
             .catch(error => {
               this.loading = false

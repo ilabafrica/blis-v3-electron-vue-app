@@ -203,7 +203,7 @@
       </td>
     </template>
   </v-data-table>
-  <div class="text-xs-center">
+  <div v-if="length" class="text-xs-center">
       <v-pagination
         :length="length"
         :total-visible="pagination.visible"

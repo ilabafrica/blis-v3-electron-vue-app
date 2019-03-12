@@ -82,6 +82,7 @@
 <script>
   import HelloWorld from './HelloWorld'
   import Sidebar from './sidebar'
+  import Loading from './loading'
   import { mapGetters, mapState } from 'vuex'
   import { AUTH_LOGOUT } from '../store/actions/auth'
   import { USER_REQUEST } from '../store/actions/user'
@@ -89,7 +90,8 @@
     name: 'App',
     components: {
       HelloWorld,
-      Sidebar
+      Sidebar,
+      Loading
     },
     created: function () {
       if (this.$store.getters.isAuthenticated) {
@@ -99,6 +101,7 @@
     },
     data: () => ({
       user: {},
+      loading: false,
       drawer: null
     }),
     methods: {

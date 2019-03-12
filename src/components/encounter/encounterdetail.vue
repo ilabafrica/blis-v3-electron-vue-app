@@ -10,7 +10,7 @@
             <v-icon right dark>close</v-icon>
           </v-btn>
         </v-toolbar>
-        <v-card-text>
+        <v-card-text v-if="encounter.patient">
           <p><span class="grey--text pa-2">Patient Name: </span>{{encounter.patient.name.family}}, {{encounter.patient.name.given}}</p>
           <p><span class="grey--text pa-2">Patient Gender: </span>{{encounter.patient.gender.display}}</p>
           <p><span class="grey--text pa-2">Date: </span>{{encounter.created_at}}</p>
