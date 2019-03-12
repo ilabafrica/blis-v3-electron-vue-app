@@ -88,6 +88,7 @@
             title="Edit"
             color="pink"
             flat
+            v-if="props.item.test_types.length == 0"
             @click="deleteItem(props.item)">
             Delete
             <v-icon right dark>delete</v-icon>
@@ -95,7 +96,7 @@
         </td>
       </template>
     </v-data-table>
-    <div class="text-xs-center">
+    <div v-if="length" class="text-xs-center">
       <v-pagination
         :length="length"
         :total-visible="pagination.visible"
@@ -201,6 +202,8 @@
           apiCall({url: '/api/specimentype/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Specimen Type Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -253,8 +256,7 @@
             this.loading = true
             apiCall({url: '/api/specimentype', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.editedItem.id = resp.id
-              this.specimentype.push(this.editedItem)
+              this.specimentype.push(resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;

@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+    >
+      {{ message }}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
         outline
@@ -132,6 +140,10 @@
     name: 'BreakPoint',
     data: () => ({
       loading: false,
+      message:'',
+      y: 'top',
+      color: 'success',
+      snackbar: false,
       landscape: true,
       reactive: true,
       antibiotics: [],
@@ -225,6 +237,8 @@
           apiCall({url: '/api/susceptibilitybreakpoint/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Break Point Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -261,11 +275,14 @@
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
+
+              this.message = 'Break Point Updated Succesfully';
+              this.snackbar = true;
+              this.close()
             })
             .catch(error => {
               this.loading = false
               console.log(error.response)
-              this.close()
             })
           }
         // store
@@ -280,6 +297,9 @@
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
+
+              this.message = 'Break Point Added Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               this.loading = false

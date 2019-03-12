@@ -96,7 +96,7 @@
         </td>
       </template>
     </v-data-table>
-    <div class="text-xs-center">
+    <div v-if="length" class="text-xs-center">
       <v-pagination
         :length="length"
         :total-visible="pagination.visible"
@@ -200,6 +200,8 @@
           apiCall({url: '/api/organization/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Lab Section Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)

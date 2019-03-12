@@ -88,6 +88,7 @@
             title="Delete"
             color="pink"
             flat
+            v-if="props.item.specimen_rejection.length == 0"
             @click="deleteItem(props.item)">
             Delete
             <v-icon right dark>delete</v-icon>
@@ -183,6 +184,8 @@
           apiCall({url: '/api/rejectionreason/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Rejection Reason Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -234,8 +237,7 @@
             this.loading = true
             apiCall({url: '/api/rejectionreason', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.editedItem.id = resp.id
-              this.rejectionReasons.push(this.editedItem)
+              this.rejectionReasons.push(resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;

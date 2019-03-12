@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+    >
+      {{ message }}
+    </v-snackbar>
     <specimencollection ref="specimenCollectionForm"></specimencollection>
     <result ref="resultForm"></result>
     <specimenrejection ref="specimenRejectionForm"></specimenrejection>
@@ -50,7 +58,7 @@
       <v-flex md4 v-for="test in tests" :key="test.id">
         <div class="blis_card" v-bind:style="{ 'border-right-color': test.status_color}">
           <div class="blis_card_top_right">
-            <v-btn outline fab small title="Print" color="primaryb" v-if="test.specimen_id !=NULL" @click="print(test.specimen_id)">
+            <v-btn outline fab small title="Print" color="primaryb" v-if="test.specimen_id != null" @click="print(test.specimen_id)">
               <v-icon dark>print</v-icon>
             </v-btn>
           </div>
@@ -158,6 +166,10 @@ import { log } from 'util';
       search: '',
       query: '',
       editedIndex: -1,
+      message:'',
+      y: 'top',
+      color: 'success',
+      snackbar: false,
       loadingDialog: {
         loading: false,
         message: ""
@@ -323,6 +335,8 @@ import { log } from 'util';
           console.log(resp)
           Object.assign(this.tests[this.editedIndex], resp)
           this.loadingMethod(false)
+          this.message = 'Test Started';
+          this.snackbar = true;
         })
         .catch(error => {
           console.log(error.response)

@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+    >
+      {{ message }}
+    </v-snackbar>
     <v-dialog v-model="dialogNumericRange" max-width="500px">
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
@@ -191,7 +199,7 @@
                 small
                 flat
                 title="Break Points"
-                v-if="$can('manage_test_catalog')"
+                v-if="$can('manage_test_catalog') && row.item.susceptibility_break_points.length == 0"
                 color="pink"
                 @click="deleteItem(row.item)">
                 Delete
@@ -211,6 +219,10 @@
     name: 'MeasureRange',
     data: () => ({
       loading: false,
+      message:'',
+      y: 'top',
+      color: 'success',
+      snackbar: false,
       dialog: false,
       dialogNumericRange: false,
       dialogAlphanumericRange: false,
@@ -366,6 +378,26 @@
         this.alphanumerics = Object.assign({}, this.defaultAlphaNumerics)
       },
 
+      deleteItem (item) {
+
+        confirm('Are you sure you want to delete this item?') && (this.delete = true)
+
+        if (this.delete) {
+          const index = this.measure.measure_ranges.indexOf(item)
+          this.measure.measure_ranges.splice(index, 1)
+          apiCall({url: '/api/measurerange/'+item.id, method: 'DELETE' })
+          .then(resp => {
+            console.log(resp)
+            this.message = 'Range Deleted Succesfully';
+            this.snackbar = true;
+          })
+          .catch(error => {
+            console.log(error.response)
+          })
+        }
+
+      },
+
       saveMeasureRange(){
 
         this.saving = true;
@@ -376,9 +408,11 @@
                 this.loading = true
                 apiCall({url: '/api/measurerange/'+this.numerics.id, data: this.numerics, method: 'PUT' })
                 .then(resp => {
-                  Object.assign(this.item[this.editedIndex], this.numerics)
+                  Object.assign(this.measure.measure_ranges[this.editedIndex], resp)
                   console.log("Numeric Measure type save response",resp)
                   this.loading = false
+                  this.message = 'Range Updated Succesfully';
+                  this.snackbar = true;
                 })
                 .catch(error => {
                   this.loading = false
@@ -392,9 +426,11 @@
                 this.loading = true
                 apiCall({url: '/api/measurerange/'+this.alphanumerics.id, data: this.alphanumerics, method: 'PUT' })
                 .then(resp => {
-                  Object.assign(this.item[this.editedIndex], this.alphanumerics)
+                  Object.assign(this.measure.measure_ranges[this.editedIndex], resp)
                   console.log("Alphanumeric measure type save response is ",resp)
                   this.loading = false
+                  this.message = 'Range Updated Succesfully';
+                  this.snackbar = true;
                 })
                 .catch(error => {
                   this.loading = false
@@ -418,6 +454,8 @@
                   measureRanges.push(resp)
                   Vue.set(this.measure,"measure_ranges",measureRanges)
                   this.loading = false
+                  this.message = 'Range Added Succesfully';
+                  this.snackbar = true;
                   console.log(this.numerics);
                 })
                 .catch(error => {
@@ -439,6 +477,8 @@
                   measureRanges.push(resp)
                   Vue.set(this.measure,"measure_ranges",measureRanges)
                   this.loading = false
+                  this.message = 'Range Added Succesfully';
+                  this.snackbar = true;
                   console.log(this.alphanumerics);
                 })
                 .catch(error => {
@@ -454,12 +494,12 @@
       editItem (item) {
         if(this.measure.measure_type.code != 'numeric'){
           console.log("item" + item)
-          this.editedIndex = 2
+          this.editedIndex = this.measure.measure_ranges.indexOf(item)
           this.alphanumerics = Object.assign({}, item)
           this.dialogAlphanumericRange = true
         }else{
           console.log("item" + item)
-          this.editedIndex = 2
+          this.editedIndex = this.measure.measure_ranges.indexOf(item)
           this.numerics = Object.assign({}, item)
           this.dialogNumericRange = true
         }

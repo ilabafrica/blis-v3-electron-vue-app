@@ -34,7 +34,7 @@
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.identifier"
-                  :rules="[v => v.length >=1  || 'Patient No. is Required']"
+                  :rules="[v => !!v || 'Patient No. is Required']"
                   label="Patient No.">
                 </v-text-field>
               </v-flex>
@@ -59,7 +59,7 @@
                 </v-text-field>
                 <v-text-field v-if="editedIndex === -1"
                   v-model="editedItem.family"
-                  :rules="[v => !!v || 'Family Name is Required',,
+                  :rules="[v => !!v || 'Family Name is Required',
                   v => /^[a-zA-Z\s]+$/.test(v)  || 'Family Name should have alphabetic chars only']"
                   label="Family Name">
                 </v-text-field>
@@ -133,7 +133,7 @@
             <v-btn outline fab title="Edit" color="info" small v-if="$can('manage_patients')" @click="editItem(patient)">
               <v-icon dark>edit</v-icon>
             </v-btn>
-            <v-btn outline fab title="Edit" color="warn" small v-if="$can('manage_patients')" @click="deleteItem(patient)">
+            <v-btn outline fab title="Edit" color="warn" small v-if="$can('manage_patients') && patient.encounter.length == 0" @click="deleteItem(patient)">
               <v-icon dark>delete</v-icon>
             </v-btn>
           </div>
@@ -141,7 +141,7 @@
       </div>
     </v-flex>
     </v-layout>
-    <div class="text-xs-center">
+    <div v-if="length" class="text-xs-center">
       <v-pagination
         :length="length"
         :total-visible="pagination.visible"

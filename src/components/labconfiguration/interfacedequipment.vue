@@ -71,7 +71,7 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
-        <td class="justify-center layout px-0">
+        <td class="justify-left layout px-0">
         <v-btn
             outline
             small
@@ -88,6 +88,7 @@
             title="Edit"
             color="pink"
             flat
+            v-if="props.item.instrument_mapping.length == 0"
             @click="deleteItem(props.item)">
             Delete
             <v-icon right dark>delete</v-icon>
@@ -95,7 +96,7 @@
         </td>
       </template>
     </v-data-table>
-    <div class="text-xs-center">
+    <div v-if="length" class="text-xs-center">
       <v-pagination
         :length="length"
         :total-visible="pagination.visible"
@@ -199,6 +200,8 @@
           apiCall({url: '/api/instrument/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Interfaced Equipment Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
@@ -236,7 +239,7 @@
               this.saving = false;
               this.loading = false
 
-               this.message = 'Instrument Updated Succesfully';
+              this.message = 'Instrument Updated Succesfully';
               this.snackbar = true;
             })
             .catch(error => {
@@ -251,15 +254,14 @@
             this.loading = true
             apiCall({url: '/api/instrument', data: this.editedItem, method: 'POST' })
             .then(resp => {
-              this.editedItem.id = resp.id
-              this.instrument.push(this.editedItem)
+              this.instrument.push(resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
 
-               this.message = 'New Instrument Added Succesfully';
-               this.snackbar = true;
+              this.message = 'New Instrument Added Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               this.loading = false

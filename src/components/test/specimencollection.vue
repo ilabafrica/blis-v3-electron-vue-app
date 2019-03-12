@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+    >
+      {{ message }}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
@@ -66,6 +74,10 @@
         time_received: false,
       },
       loading: false,
+      message:'',
+      y: 'top',
+      color: 'success',
+      snackbar: false,
       landscape: true,
       reactive: true,
       valid: true,
@@ -124,6 +136,8 @@
             EventBus.$emit('update-test-list', resp);
             this.saving = false;
             this.loading = false
+            this.message = 'Collection Details Recorded Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
