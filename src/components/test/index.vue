@@ -104,6 +104,11 @@
                 <v-icon>check_circle_outline</v-icon>
                 Verify
               </v-btn>
+              <v-btn class="blis_card_button" small title="Verify" color="secondary" disabled="disabled" round v-if="test.test_status.code === 'verified'"
+              @click="detail(test)">
+                <v-icon>check_circle_outline</v-icon>
+                Verified
+              </v-btn>
               <v-btn class="blis_card_button" small title="Collect" color="primary" round v-if="!test.specimen && $can('accept_test_specimen')"
               @click="collectSpecimen(test)">
                 <v-icon left>gradient</v-icon>
