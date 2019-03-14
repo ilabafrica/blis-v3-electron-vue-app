@@ -1,18 +1,21 @@
 <template>
   <div>
-    <div class="blis_profile_sidebar">
-      <div class="blis_card_footer">
-        {{name}}
-      </div>
-      <div class="blis_card_footer_right">
-        <v-btn outline fab title="Edit" color="info" small v-if="$can('manage_patients')" @click="editItem(patient)">
-          <v-icon dark>edit</v-icon>
-        </v-btn>
-        <v-btn fab title="Logout" color="error" small @click="logout">
-          <v-icon dark>power_settings_new</v-icon>
-        </v-btn>
-      </div>
-    </div>
+    <v-card class="ma-1">
+        <v-img
+          class="white--text"
+          height="200px"
+          :src="home_url+'/storage/profile_pictures/'+organization.logo"
+        >
+          <v-container fluid style="background: rgba(75,0,130,0.5); position: absolute; bottom: 0px; height: 10px">
+            <v-layout>
+              <v-flex xs12 align-end flexbox>
+                <p class="text-xs-center title">{{organization.name}}</p>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-img>
+      
+    </v-card>
     <v-list dense>
       <v-list-tile to="/">
         <v-list-tile-action>
@@ -125,30 +128,22 @@
     </v-list>
   </div>
 </template>
-<style>
-  .blis_profile_sidebar{
-    height: 200px;
-    width: 100%;
-    position: relative;
-    border-top:2px solid #11002A;
-    background: #F7F7F7;
-  }
-  .blis_profile_sidebar .blis_card_footer{
-    color: white;
-    padding: 20px;
-    background-image: linear-gradient(to bottom, rgba(0,0,0,0),rgba(0,0,0,0.6));
-  }
-</style>
 
 <script>
   import { mapGetters, mapState } from 'vuex'
-  import { AUTH_LOGOUT } from '../store/actions/auth'
   import { USER_REQUEST } from '../store/actions/user'
+  import apiCall from '../utils/api'
   export default {
     name: 'Sidebar',
-    data: () => ({      
+    data: () => ({
       user: {},
+      organization: [],
       lab_configurations: [
+        {
+          path: '/labconfiguration/generalconfiguration',
+          label: 'General',
+          icon: 'build'
+        },
         {
           path: '/labconfiguration/healthunit',
           label: 'Health Units',
@@ -283,6 +278,7 @@
         },
       ]
     }),
+
     mounted: function () {
       if (this.$store.getters.isAuthenticated) {
         this.$store.dispatch(USER_REQUEST)
@@ -290,18 +286,32 @@
       }
     },
     methods: {
-      logout: function () {
-        this.$store.dispatch(AUTH_LOGOUT).then(() => this.$router.push('/login'))
+      initialize() {
+        apiCall({ url: "/api/generalconfiguration", method: "GET" })
+          .then(resp => {
+            this.organization = resp;
+            if (resp.logo == null) {
+              this.organization.logo = "default.png";
+            }
+          })
+          .catch(error => {
+            console.log(error.response);
+          });
       }
     },
     computed: {
       ...mapGetters(['getProfile', 'isAuthenticated', 'isProfileLoaded']),
       ...mapState({
         authLoading: state => state.auth.status === 'loading',
-        name: state => `${state.user.profile.name}`,
-        pic: state =>  `${state.user.profile.profile_picture}`,
+        home_url:()=>{
+          return process.env.VUE_APP_API_URL
+        }
+        
       })
     },
+    created() {
+      this.initialize();
+    }
   }
 </script>
 
