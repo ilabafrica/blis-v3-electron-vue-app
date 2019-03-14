@@ -6,7 +6,7 @@
           height="200px"
           :src="home_url+'/storage/profile_pictures/'+organization.logo"
         >
-          <v-container fluid style="background: rgba(75,0,130,0.5); position: absolute; bottom: 0px; height: 10px">
+          <v-container fluid style="background: linear-gradient(to bottom, rgb(75,0,130, 0.1), rgba(75,0,130,0.9)); position: absolute; bottom: 0px; height: 10px">
             <v-layout>
               <v-flex xs12 align-end flexbox>
                 <p class="text-xs-center title">{{organization.name}}</p>
