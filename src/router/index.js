@@ -8,6 +8,7 @@ import Patient from '../components/patients/patient'
 import HealthUnit from '../components/labconfiguration/healthunit'
 import Organization from '../components/labconfiguration/organization'
 import InterfacedEquipment from '../components/labconfiguration/interfacedequipment'
+import GeneralConfiguration from '../components/labconfiguration/generalconfiguration'
 import TestTypeCategory from '../components/testcatalog/testtypecategory'
 import SpecimenType from '../components/testcatalog/specimentype'
 import TestType from '../components/testcatalog/testtype/index'
@@ -111,6 +112,12 @@ export default new Router({
       path: '/labconfiguration/interfacedequipment',
       name: 'InterfacedEquipment',
       component: InterfacedEquipment,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/labconfiguration/generalconfiguration',
+      name: 'GeneralConfiguration',
+      component: GeneralConfiguration,
       beforeEnter: ifAuthenticated,
     },
     // Test Catalog

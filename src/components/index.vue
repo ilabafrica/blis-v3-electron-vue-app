@@ -23,7 +23,7 @@
               color="grey lighten-4"
               class="mr-2"
             >
-              <img :src="'storage/profile_pictures/'+pic" alt="">
+              <img :src="home_url+'/storage/profile_pictures/'+pic" alt="">
             </v-avatar>
           </v-flex>
           {{name}}
@@ -115,6 +115,9 @@
         authLoading: state => state.auth.status === 'loading',
         name: state => `${state.user.profile.name}`,
         pic: state =>  `${state.user.profile.profile_picture}`,
+        home_url:()=>{
+          return process.env.VUE_APP_API_URL
+        }
       })
     },
   }
