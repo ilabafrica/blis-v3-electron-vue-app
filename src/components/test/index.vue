@@ -58,7 +58,7 @@
       <v-flex md4 v-for="test in tests" :key="test.id">
         <div class="blis_card" v-bind:style="{ 'border-right-color': test.status_color}">
           <div class="blis_card_top_right">
-            <v-btn outline fab small title="Print" color="primaryb" v-if="test.specimen_id != null" @click="print(test.specimen_id)">
+            <v-btn outline fab small title="Print" color="primaryb" v-if="test.results.length != 0" @click="getPDF(test.encounter.patient_id)">
               <v-icon dark>print</v-icon>
             </v-btn>
           </div>
@@ -94,6 +94,9 @@
           <div class="blis_card_footer">
             <v-btn outline fab title="Details" color="success" small @click="detail(test)">
               <v-icon dark>visibility</v-icon>
+            </v-btn>
+            <v-btn outline fab title="Print" color="primaryb" small v-if="test.specimen_id != null" @click="print(test.specimen_id)">
+              <v-icon dark>gradient</v-icon>
             </v-btn>
             <v-btn outline fab title="Edit" color="accent" small v-if="!test.specimen_rejection && test.test_status.code === 'completed' && $can('enter_test_result')" @click="enterResults(test)">
               <v-icon dark>edit</v-icon>
@@ -134,6 +137,12 @@
         </div>
       </v-flex>
     </v-layout>
+    <v-dialog v-model="showPDF" max-width="1000px">
+      <PDFVuer
+        v-if="pdf_url"
+        :pdf_url="pdf_url"
+      />
+    </v-dialog>
 
     <div class="text-xs-center">
       <v-pagination
@@ -147,6 +156,8 @@
   </div>
 </template>
 <script>
+  import Vue from 'vue'
+  import PDFVuer from "@/components/PDFVuer.vue"
   import { EventBus } from './../../main.js';
   import apiCall from '../../utils/api'
   import specimencollection from './specimencollection'
@@ -161,13 +172,18 @@ import { log } from 'util';
   export default {
     name: 'Test',
       components: {
-      specimencollection,
-      result,
-      specimenrejection,
-      referral,
-      testdetail,
-    },
+        PDFVuer,
+        specimencollection,
+        result,
+        specimenrejection,
+        referral,
+        testdetail,
+      },
     data: () => ({
+      url_prefix: "/api/stats/",
+      pdf_url: '',
+      pdfdialog: false,
+      showPDF: false,
       search: '',
       query: '',
       editedIndex: -1,
@@ -205,7 +221,7 @@ import { log } from 'util';
     },
 
     watch: {
-      dialog (val) {
+      showPDF (val) {
         val || this.close()
       },
       tests: {
@@ -229,6 +245,9 @@ import { log } from 'util';
     },
 
     methods: {
+      close() {
+        this.pdf_url = ''
+      },
       loadingMethod(load, message="") {
         this.loadingDialog.loading = load;
         this.loadingDialog.message = message
@@ -394,14 +413,25 @@ import { log } from 'util';
       },
 
       print (item) {
-        apiCall({url: '/print-tracker/'+item, method: 'GET',data:'PDF'})
-          .then(resp => {
-            console.log(resp)
-          })
-          .catch(error => {
-          console.log(error.response)
-        })
+        console.log("Item is ",item)
+        Vue.set(this,"pdf_url", process.env.VUE_APP_API_URL+'/print-tracker/'+item)
+        Vue.set(this,"showPDF", true)
+
+        // apiCall({url: '/print-tracker/'+item, method: 'GET',data:'PDF'})
+        //   .then(resp => {
+        //     console.log("PDF URL is ",this.pdf_url)
+            
+        //   })
+        //   .catch(error => {
+        //   console.log(error.response)
+        // })
       },
+      getPDF(id){
+        console.log("Item is ",id)
+        Vue.set(this,"pdf_url", process.env.VUE_APP_API_URL+this.url_prefix+"results/patient?pdf=true&id="+id)
+        console.log("url is ",this.pdf_url)
+        Vue.set(this,"showPDF", true)
+      }
     }
   }
 </script>

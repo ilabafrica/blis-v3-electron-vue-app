@@ -20,7 +20,7 @@ const apiCall = ({url, data, method}) => new Promise((resolve, reject) => {
 
          //build a url from the file
          const fileURL = URL.createObjectURL(file);
-
+         resolve(response.data)
          //open the url on new window
          window.open(fileURL);
        }).catch((err)=>{
