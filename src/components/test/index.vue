@@ -138,10 +138,18 @@
       </v-flex>
     </v-layout>
     <v-dialog v-model="showPDF" max-width="1000px">
-      <PDFVuer
+      <v-btn dark small title="Print" color="primaryb" @click="$refs.myPdfComponent.print()">
+        Print
+        <v-icon right>print</v-icon>
+      </v-btn>
+      <pdf 
+        ref="myPdfComponent"
+        :src="pdf_url"
+      ></pdf>
+      <!-- <PDFVuer
         v-if="pdf_url"
         :pdf_url="pdf_url"
-      />
+      /> -->
     </v-dialog>
 
     <div class="text-xs-center">
@@ -157,7 +165,7 @@
 </template>
 <script>
   import Vue from 'vue'
-  import PDFVuer from "@/components/PDFVuer.vue"
+  import pdf from 'vue-pdf'
   import { EventBus } from './../../main.js';
   import apiCall from '../../utils/api'
   import specimencollection from './specimencollection'
@@ -165,14 +173,14 @@
   import testdetail from './testdetail'
   import referral from './referral'
   import result from './result'
-import { resolve } from 'url';
-import { log } from 'util';
+  import { resolve } from 'url';
+  import { log } from 'util';
 
 
   export default {
     name: 'Test',
       components: {
-        PDFVuer,
+        pdf: pdf,
         specimencollection,
         result,
         specimenrejection,
