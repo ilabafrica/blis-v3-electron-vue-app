@@ -421,21 +421,10 @@
       },
 
       print (item) {
-        console.log("Item is ",item)
         Vue.set(this,"pdf_url", process.env.VUE_APP_API_URL+'/print-tracker/'+item)
         Vue.set(this,"showPDF", true)
-
-        // apiCall({url: '/print-tracker/'+item, method: 'GET',data:'PDF'})
-        //   .then(resp => {
-        //     console.log("PDF URL is ",this.pdf_url)
-            
-        //   })
-        //   .catch(error => {
-        //   console.log(error.response)
-        // })
       },
       getPDF(id){
-        console.log("Item is ",id)
         Vue.set(this,"pdf_url", process.env.VUE_APP_API_URL+this.url_prefix+"results/patient?pdf=true&id="+id)
         console.log("url is ",this.pdf_url)
         Vue.set(this,"showPDF", true)
