@@ -1,6 +1,6 @@
 
 import Vue from 'vue'
-
+import './components'
 import store from './store'
 import router from './router'
 import './plugins/vuetify'
@@ -20,6 +20,7 @@ Vue.config.productionTip = false
 
 Vue.use(abilitiesPlugin, ability)
 Vue.use(VueRouter);
+
 Vue.component('index', require('./components/index.vue'))
 
 new Vue({

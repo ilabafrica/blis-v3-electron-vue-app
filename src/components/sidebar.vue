@@ -144,6 +144,8 @@
   import { mapGetters, mapState } from 'vuex'
   import { AUTH_LOGOUT } from '../store/actions/auth'
   import { USER_REQUEST } from '../store/actions/user'
+
+
   export default {
     name: 'Sidebar',
     data: () => ({      
