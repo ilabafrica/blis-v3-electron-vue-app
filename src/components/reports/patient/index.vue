@@ -33,7 +33,7 @@
             title="View Patient History"
             color="green"
             flat
-            v-if="$can('view_reports')"
+            v-if="$can('view_reports') && props.item.tests.length != 0"
             :to="{name:'patient_reports_single', params:{id:props.item.id}}">
             <!-- user new view_patient_report -->
             Report
