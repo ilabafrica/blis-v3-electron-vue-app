@@ -1,6 +1,5 @@
 
 import Vue from 'vue'
-import './components'
 import store from './store'
 import router from './router'
 import './plugins/vuetify'
