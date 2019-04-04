@@ -2,7 +2,6 @@
   <div>
       <v-snackbar
         v-model="snackbar"
-          
         :color="color"
         :timeout="6000"
       :top="y === 'top'"
@@ -148,7 +147,7 @@
             small
             title="Delete"
             color="pink"
-            v-if="$can('manage_test_catalog')"
+            v-if="$can('manage_test_catalog') && props.item.test_type_mapping.length == 0"
             flat
             @click="deleteItem(props.item)">
             Delete
@@ -157,7 +156,7 @@
         </td>
       </template>
     </v-data-table>
-    <div class="text-xs-center">
+    <div v-if="length" class="text-xs-center">
       <v-pagination
         :length="length"
         :total-visible="pagination.visible"
@@ -178,6 +177,7 @@
     },
     data: () => ({
       loading: false,
+      snackbar: false,
       message:'',
       y: 'top',
       color: 'success',
@@ -291,6 +291,8 @@
           apiCall({url: '/api/testtype/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Test Type Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)

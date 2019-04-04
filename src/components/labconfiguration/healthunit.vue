@@ -104,7 +104,7 @@
         </td>
       </template>
     </v-data-table>
-    <div class="text-xs-center">
+    <div v-if="length" class="text-xs-center">
       <v-pagination
         :length="length"
         :total-visible="pagination.visible"
@@ -211,7 +211,8 @@
           this.locations.splice(index, 1)
           apiCall({url: '/api/location/'+item.id, method: 'DELETE' })
           .then(resp => {
-            console.log(resp)
+            this.message = 'Health Unit Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)

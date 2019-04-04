@@ -23,7 +23,7 @@
               color="grey lighten-4"
               class="mr-2"
             >
-              <img :src="'storage/profile_pictures/'+pic" alt="">
+              <img :src="home_url+'/storage/profile_pictures/'+pic" alt="">
             </v-avatar>
           </v-flex>
           {{name}}
@@ -82,6 +82,7 @@
 <script>
   import HelloWorld from './HelloWorld'
   import Sidebar from './sidebar'
+  import Loading from './loading'
   import { mapGetters, mapState } from 'vuex'
   import { AUTH_LOGOUT } from '../store/actions/auth'
   import { USER_REQUEST } from '../store/actions/user'
@@ -89,7 +90,8 @@
     name: 'App',
     components: {
       HelloWorld,
-      Sidebar
+      Sidebar,
+      Loading
     },
     created: function () {
       if (this.$store.getters.isAuthenticated) {
@@ -99,6 +101,7 @@
     },
     data: () => ({
       user: {},
+      loading: false,
       drawer: null
     }),
     methods: {
@@ -112,6 +115,9 @@
         authLoading: state => state.auth.status === 'loading',
         name: state => `${state.user.profile.name}`,
         pic: state =>  `${state.user.profile.profile_picture}`,
+        home_url:()=>{
+          return process.env.VUE_APP_API_URL
+        }
       })
     },
   }

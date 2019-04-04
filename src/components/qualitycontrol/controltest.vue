@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+    >
+      {{ message }}
+    </v-snackbar>
     <result ref="resultForm"></result>
     <v-dialog v-model="dialog" max-width="500px">
       <v-btn
@@ -97,7 +105,7 @@
         </td>
       </template>
     </v-data-table>
-    <div class="text-xs-center">
+    <div v-if="length" class="text-xs-center">
       <v-pagination
         :length="length"
         :total-visible="pagination.visible"
@@ -119,6 +127,10 @@
     },
     data: () => ({
       loading: false,
+      message:'',
+      y: 'top',
+      color: 'success',
+      snackbar: false,
       valid: true,
       dialog: false,
       delete: false,
@@ -285,6 +297,8 @@
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
+              this.message = 'Control Test Updated Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               this.loading = false
@@ -304,6 +318,8 @@
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
+              this.message = 'Control Test Added Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               this.loading = false

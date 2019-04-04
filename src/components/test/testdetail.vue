@@ -17,7 +17,7 @@
           <p><span class="grey--text pa-2">Test Type: </span>{{test.test_type.name}}</p>
           <p><span class="grey--text pa-2">Test Status: </span>{{test.test_status.name}}</p>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions v-if="test.id">
           <v-spacer></v-spacer>
             <v-btn round outline xs12 sm6 color="blue darken-1" :disabled="!valid" @click.native="verify"
               v-if="test.test_status.code === 'completed' && $can('verify_test_result')">

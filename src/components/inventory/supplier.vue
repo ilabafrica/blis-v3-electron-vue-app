@@ -1,7 +1,7 @@
 <template>
   <div>
       <v-snackbar
-        v-model="alert"
+        v-model="snackbar"
         :color="color"
         :timeout="6000"
       :top="y === 'top'"
@@ -134,6 +134,7 @@
       loading: false,
       valid: true,
       dialog: false,
+      snackbar: false,
       message:'',
       y: 'top',
       color: 'success',
@@ -261,8 +262,8 @@
               this.resetDialogReferences();
               this.saving = false;
               this.loading = false
-                 this.message = 'Supplier Updated Succesfully';
-              this.alert = true;
+              this.message = 'Supplier Updated Succesfully';
+              this.snackbar = true;
             })
             .catch(error => {
               this.loading = false
@@ -282,7 +283,7 @@
               this.saving = false;
               this.loading = false
               this.message = 'New Supplier Added Succesfully';
-              this.alert = true;
+              this.snackbar = true;
             })
             .catch(error => {
               this.loading = false

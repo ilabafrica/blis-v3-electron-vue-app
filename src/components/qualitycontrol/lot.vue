@@ -113,6 +113,7 @@
             title="Delete"
             color="pink"
             flat
+            v-if="props.item.control_test.length == 0"
             @click="deleteItem(props.item)">
             Delete
             <v-icon right dark>delete</v-icon>
@@ -120,7 +121,7 @@
         </td>
       </template>
     </v-data-table>
-    <div class="text-xs-center">
+    <div v-if="length" class="text-xs-center">
       <v-pagination
         :length="length"
         :total-visible="pagination.visible"
@@ -243,6 +244,8 @@
           apiCall({url: '/api/lot/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
+            this.message = 'Lot Deleted Succesfully';
+            this.snackbar = true;
           })
           .catch(error => {
             console.log(error.response)
