@@ -11,6 +11,20 @@
                 <v-btn @click.native="getPDF()">Get PDF</v-btn>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="showPDF" max-width="1000px">
+          <v-btn dark small title="Print" color="primaryb" @click="$refs.myPdfComponent.print()">
+            Print
+            <v-icon right>print</v-icon>
+          </v-btn>
+          <pdf 
+            ref="myPdfComponent"
+            :src="pdf_url"
+          ></pdf>
+          <!-- <PDFVuer
+            v-if="pdf_url"
+            :pdf_url="pdf_url"
+          /> -->
+        </v-dialog>
         <v-layout row wrap ml-4 mr-4 align-center v-if="patient.tests" v-for="test in patient.tests" :key="test.id">
             <v-flex xs12 mt-4 mb-3>
                 <v-divider></v-divider>
@@ -91,10 +105,15 @@
 import apiCall from "../../../utils/api";
 import Chart from "chart.js";
 import Vue from 'vue';
+import pdf from 'vue-pdf'
 export default {
-   
+  components: {
+    pdf: pdf,
+  },
   data: () => ({
     url_prefix: "/api/stats/",
+    showPDF: false,
+    pdf_url: '',
     search: "",
     query: "",
     pagination: {
@@ -118,6 +137,12 @@ export default {
       return Math.ceil(this.pagination.total / this.pagination.visible);
     },
     
+  },
+
+  watch: {
+      showPDF (val) {
+        val || this.close()
+      },
   },
 
   created() {
@@ -144,14 +169,21 @@ export default {
             console.log(error.response)
         })
     },
+    close() {
+        this.pdf_url = ''
+      },
     getPDF(){
-        apiCall({url:this.url_prefix+"results/patient?pdf=true&id="+this.$route.params.id, method:"GET", data:'PDF'})
+        Vue.set(this,"pdf_url", process.env.VUE_APP_API_URL+this.url_prefix+"results/patient?pdf=true&id="+this.$route.params.id)
+        console.log("url is ",this.pdf_url)
+        Vue.set(this,"showPDF", true)
+
+        /*apiCall({url:this.url_prefix+"results/patient?pdf=true&id="+this.$route.params.id, method:"GET", data:'PDF'})
         .then(resp=>{
             // console.log(resp)           
         })
         .catch(error => {
             console.log(error.response)
-        })
+        })*/
         
     }
   }
