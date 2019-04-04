@@ -20,10 +20,6 @@
             ref="myPdfComponent"
             :src="pdf_url"
           ></pdf>
-          <!-- <PDFVuer
-            v-if="pdf_url"
-            :pdf_url="pdf_url"
-          /> -->
         </v-dialog>
         <v-layout row wrap ml-4 mr-4 align-center v-if="patient.tests" v-for="test in patient.tests" :key="test.id">
             <v-flex xs12 mt-4 mb-3>
@@ -152,17 +148,10 @@ export default {
   methods: {
     initialize() {
         this.query = "page=" + this.pagination.page;
-               
-        // if (this.search != "") {
-        //     this.query = this.query + "&search=" + this.search;
-        // }
         apiCall({url:this.url_prefix+"results/patient?id="+this.$route.params.id, method:"GET"})
         .then(resp=>{
             let patient = resp
             console.log("Patient request response is, ",resp)
-            // resp.data.forEach(element => {
-            //     categories.push({'text':element.name, 'value':element.id})
-            // });
             Vue.set(this, 'patient', patient)
         })
         .catch(error => {
@@ -175,16 +164,7 @@ export default {
     getPDF(){
         Vue.set(this,"pdf_url", process.env.VUE_APP_API_URL+this.url_prefix+"results/patient?pdf=true&id="+this.$route.params.id)
         console.log("url is ",this.pdf_url)
-        Vue.set(this,"showPDF", true)
-
-        /*apiCall({url:this.url_prefix+"results/patient?pdf=true&id="+this.$route.params.id, method:"GET", data:'PDF'})
-        .then(resp=>{
-            // console.log(resp)           
-        })
-        .catch(error => {
-            console.log(error.response)
-        })*/
-        
+        Vue.set(this,"showPDF", true)        
     }
   }
 };
