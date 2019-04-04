@@ -21,15 +21,15 @@
         <v-list-tile-action>
           <v-icon>home</v-icon>
         </v-list-tile-action>
-        <v-list-tile-title>Home</v-list-tile-title>
+        <v-list-tile-title >Home</v-list-tile-title>
       </v-list-tile>
-      <v-list-tile to="/patients/patient">
+      <v-list-tile to="/patients/patient" v-if="$can('manage_patients')">
         <v-list-tile-action>
           <v-icon>assignment_ind</v-icon>
         </v-list-tile-action>
         <v-list-tile-title>Patients</v-list-tile-title>
       </v-list-tile>
-      <v-list-group prepend-icon="settings" no-action>
+      <v-list-group prepend-icon="settings" no-action  v-if="$can('manage_configurations')">
         <v-list-tile slot="activator">
           <v-list-tile-title>Lab Configuration</v-list-tile-title>
         </v-list-tile>
@@ -41,7 +41,7 @@
           <v-list-tile-title v-text="lab_configuration.label"></v-list-tile-title>
         </v-list-tile>
       </v-list-group>
-      <v-list-group prepend-icon="assignment" no-action>
+      <v-list-group prepend-icon="assignment" no-action  v-if="$can('manage_test_catalog')">
         <v-list-tile slot="activator">
           <v-list-tile-title>Test Catalog</v-list-tile-title>
         </v-list-tile>
@@ -53,7 +53,7 @@
           <v-list-tile-title v-text="test_catalog.label"></v-list-tile-title>
         </v-list-tile>
       </v-list-group>
-      <v-list-group prepend-icon="security" no-action>
+      <v-list-group prepend-icon="security" no-action v-if="$can('manage_users')" >
         <v-list-tile slot="activator">
           <v-list-tile-title>Access Control</v-list-tile-title>
         </v-list-tile>
@@ -65,7 +65,7 @@
           <v-list-tile-title v-text="access_control.label"></v-list-tile-title>
         </v-list-tile>
       </v-list-group>
-      <v-list-tile to="/encounter/index">
+      <v-list-tile to="/encounter/index" >
         <v-list-tile-action>
           <v-icon>directions_walk</v-icon>
         </v-list-tile-action>
@@ -73,7 +73,7 @@
             Visits
         </v-list-tile-title>
       </v-list-tile>
-      <v-list-tile to="/test/index">
+      <v-list-tile to="/test/index" v-if="$can('edit_test_result')" >
         <v-list-tile-action>
           <v-icon>settings_input_component</v-icon>
         </v-list-tile-action>
@@ -81,7 +81,7 @@
             Tests
         </v-list-tile-title>
       </v-list-tile>
-      <v-list-group prepend-icon="sync_problem" no-action>
+      <v-list-group prepend-icon="sync_problem" no-action  v-if="$can('manage_quality_control')">
         <v-list-tile slot="activator">
           <v-list-tile-title>Quality Controls</v-list-tile-title>
         </v-list-tile>
@@ -92,7 +92,7 @@
           <v-list-tile-title v-text="quality_control.label"></v-list-tile-title>
         </v-list-tile>
       </v-list-group>
-      <v-list-group prepend-icon="line_weight" no-action>
+      <v-list-group prepend-icon="line_weight" no-action v-if="$can('manage_inventory')">
         <v-list-tile slot="activator">
           <v-list-tile-title>Inventory</v-list-tile-title>
         </v-list-tile>
@@ -133,6 +133,7 @@
   import { mapGetters, mapState } from 'vuex'
   import { USER_REQUEST } from '../store/actions/user'
   import apiCall from '../utils/api'
+
   export default {
     name: 'Sidebar',
     data: () => ({
@@ -287,16 +288,6 @@
     },
     methods: {
       initialize() {
-        apiCall({ url: "/api/generalconfiguration", method: "GET" })
-          .then(resp => {
-            this.organization = resp;
-            if (resp.logo == null) {
-              this.organization.logo = "default.png";
-            }
-          })
-          .catch(error => {
-            console.log(error.response);
-          });
       }
     },
     computed: {

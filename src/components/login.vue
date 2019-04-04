@@ -1,7 +1,7 @@
 <template>
     <v-layout align-center justify-center row wrap fill-height id="inspire">
       <v-flex md12 text-xs-center>
-        <p id="blis">Blis</p>
+        <p id="blis">BLIS</p>
       </v-flex>
       <v-flex>
         <v-card class="elevation-3" id="blis-login-card">
