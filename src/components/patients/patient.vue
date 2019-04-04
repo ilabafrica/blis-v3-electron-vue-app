@@ -133,7 +133,7 @@
             <v-btn outline fab title="Edit" color="info" small v-if="$can('manage_patients')" @click="editItem(patient)">
               <v-icon dark>edit</v-icon>
             </v-btn>
-            <v-btn outline fab title="Edit" color="warn" small v-if="$can('manage_patients') && patient.encounter.length == 0" @click="deleteItem(patient)">
+            <v-btn outline fab title="Edit" color="warn" small v-if="$can('manage_patients') &&  patient.encounter && patient.encounter.length == 0" @click="deleteItem(patient)">
               <v-icon dark>delete</v-icon>
             </v-btn>
           </div>
