@@ -25,10 +25,11 @@
           <td
             v-for="role in roles"
             :key="role.id">
+            {{row.item.id}}_{{role.id}}
               <v-checkbox
                 v-model="roleUserIds"
-                :value="getAssignment(row.item,role)"
-                v-on:click="toggleAssignment(row.item,role)">
+                :value="row.item.id+'_'+role.id"
+                v-on:click="toggleAssignment(row.item,role,row.item.id+'_'+role.id)">
               </v-checkbox>
             </td>
           </tr>
@@ -66,7 +67,6 @@
         total: 0,
         visible: 10
       },
-      rolesusers: [],
       roleUserIds: [],
       users: [],
       roles: [],
@@ -83,27 +83,17 @@
       apiCall({url: '/api/role', method: 'GET' })
         .then(resp => {
           console.log(resp)
-          this.roles = resp;
-          for (var i = 0; i < resp.length; i++) {
-            this.headers.push({
-              text: resp[i].name,
-              value: resp[i].name
-            })
-          }
-        })
-        .catch(error => {
-          console.log(error.response)
-        })
-
-        apiCall({url: '/api/roleuser', method: 'GET' })
-        .then(resp => {
-          console.log(resp)
-          this.rolesusers = resp;
-          this.roleUserIds = _.map(this.rolesusers, 'id');
-        })
-        .catch(error => {
-          console.log(error.response)
-        })
+        this.roles = resp;
+        for (var i = 0; i < resp.length; i++) {
+          this.headers.push({
+            text: resp[i].name,
+            value: resp[i].name
+          })
+        }
+      })
+      .catch(error => {
+        console.log(error.response)
+      })
     },
 
     created () {
@@ -125,67 +115,57 @@
           this.users = resp.data;
           this.pagination.per_page = resp.per_page;
           this.pagination.total = resp.total;
+
+          /*
+           * get value for array of checked (user_id,role_id) combination
+           * check box seems to only work with zero based indexing
+           */
+          var index = 0;
+          for (var i = this.users.length - 1; i >= 0; i--) {
+            // if there are any roles
+            for (var j = this.users[i].roles.length - 1; j >= 0; j--) {
+              this.roleUserIds[index] = this.users[i].id+'_'+this.users[i].roles[j].id;
+              index++;
+            }
+          }
         })
         .catch(error => {
           console.log(error.response)
         })
       },
 
-      getAssignment (user, role) {
-          var value = 0;
-          for (var i = this.rolesusers.length - 1; i >= 0; i--) {
-            if (user.id == this.rolesusers[i].user_id &&
-              role.id == this.rolesusers[i].role_id) {
-
-              value = this.rolesusers[i].id;
-              break;
-            }else{
-              value = user.id+'_'+role.id;
-            }
-          }
-          return value;
-      },
-
-      toggleAssignment (user,role) {
+      toggleAssignment (user,role,roleUserId) {
 
         this.query = 'user_id='+ user.id+'&&role_id='+ role.id;
-
-        var roleUserId = this.getAssignment(user, role);
-        // if attached
         if (_.includes(this.roleUserIds, roleUserId)) {
 
-          console.log('dettach role-user')
+          console.log('dettach user-role')
           // detach
           apiCall({
             url: '/api/roleuser/detach?'+this.query,
             method: 'GET'
-          })
-          .then(response => {
+          }).then(response => {
             console.log(response)
-            _.remove(this.roleUserIds, item => item === roleUserId);
-
+            // _.remove(this.roleUserIds, item => item === roleUserId);
+            this.roleUserIds.splice(this.roleUserIds.indexOf(roleUserId),1);
           })
           .catch(error => {
             console.log(error.response)
           })
         } else {
 
-          console.log('attach role-user')
+          console.log('attach user-role')
           // attach
           apiCall({
             url: '/api/roleuser/attach?'+this.query,
             method: 'GET'
           })
           .then(response => {
-            console.log(response)
-            let roleUserIds = this.roleUserIds
-            roleUserIds.push(response.id)
-            Vue.set(this,"roleUserIds",roleUserIds)
+            this.roleUserIds.push(roleUserId);
           })
           .catch(error => {
             console.log(error.response)
           })
-
         }
       },
 
