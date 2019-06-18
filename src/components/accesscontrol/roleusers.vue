@@ -146,7 +146,6 @@
             method: 'GET'
           }).then(response => {
             console.log(response)
-            // _.remove(this.roleUserIds, item => item === roleUserId);
             this.roleUserIds.splice(this.roleUserIds.indexOf(roleUserId),1);
           })
           .catch(error => {
