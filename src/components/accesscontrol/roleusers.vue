@@ -25,7 +25,6 @@
           <td
             v-for="role in roles"
             :key="role.id">
-            {{row.item.id}}_{{role.id}}
               <v-checkbox
                 v-model="roleUserIds"
                 :value="row.item.id+'_'+role.id"
