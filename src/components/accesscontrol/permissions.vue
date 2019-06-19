@@ -27,8 +27,8 @@
             :key="role.id">
               <v-checkbox
                 v-model="permissionRoleIds"
-                :value="getAssignment(row.item,role)"
-                v-on:click="toggleAssignment(row.item,role)">
+                :value="row.item.id+'_'+role.id"
+                v-on:click="toggleAssignment(row.item,role,row.item.id+'_'+role.id)">
               </v-checkbox>
             </td>
           </tr>
@@ -65,7 +65,6 @@
         total: 0,
         visible: 10
       },
-      permissionsroles: [],
       permissionRoleIds: [],
       permissions: [],
       roles: [],
@@ -93,16 +92,6 @@
         .catch(error => {
           console.log(error.response)
         })
-
-        apiCall({url: '/api/permissionrole', method: 'GET' })
-        .then(resp => {
-          console.log(resp)
-          this.permissionsroles = resp;
-          this.permissionRoleIds = _.map(this.permissionsroles, 'id');
-        })
-        .catch(error => {
-          console.log(error.response)
-        })
     },
 
     created () {
@@ -124,32 +113,27 @@
           this.permissions = resp.data;
           this.pagination.total = resp.total;
           this.pagination.per_page = resp.per_page;
+          /*
+           * get value for array of checked (user_id,role_id) combination
+           * check box seems to only work with zero based indexing
+           */
+          var index = 0;
+          for (var i = this.permissions.length - 1; i >= 0; i--) {
+            // if there are any roles
+            for (var j = this.permissions[i].roles.length - 1; j >= 0; j--) {
+              this.permissionRoleIds[index] = this.permissions[i].id+'_'+this.permissions[i].roles[j].id;
+              index++;
+            }
+          }
         })
         .catch(error => {
           console.log(error.response)
         })
       },
 
-      getAssignment (permission, role) {
-          var value = 0;
-          for (var i = this.permissionsroles.length - 1; i >= 0; i--) {
-            if (permission.id == this.permissionsroles[i].permission_id &&
-              role.id == this.permissionsroles[i].role_id) {
-
-              value = this.permissionsroles[i].id;
-              break;
-            }else{
-              value = permission.id+'_'+role.id;
-            }
-          }
-          return value;
-      },
-
-      toggleAssignment (permission,role) {
+      toggleAssignment (permission,role,permissionRoleId) {
 
         this.query = 'permission_id='+ permission.id+'&&role_id='+ role.id;
-
-        var permissionRoleId = this.getAssignment(permission, role);
         // if attached
         if (_.includes(this.permissionRoleIds, permissionRoleId)) {
 
@@ -161,7 +145,7 @@
           })
           .then(response => {
             console.log(response)
-            _.remove(this.permissionRoleIds, item => item === permissionRoleId);
+            this.permissionRoleIds.splice(this.permissionRoleIds.indexOf(permissionRoleId),1);
           })
           .catch(error => {
             console.log(error.response)
@@ -176,7 +160,8 @@
           })
           .then(response => {
             console.log(response)
-            this.permissionRoleIds.push(response.id);
+            console.log(permissionRoleId)
+            this.permissionRoleIds.push(permissionRoleId);
           })
           .catch(error => {
             console.log(error.response)
@@ -184,7 +169,6 @@
 
         }
       },
-
     }
   }
 </script>
