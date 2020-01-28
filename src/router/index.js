@@ -21,6 +21,8 @@ import Permissions from '../components/accesscontrol/permissions'
 import Role from '../components/accesscontrol/role'
 import RoleUser from '../components/accesscontrol/roleusers'
 import Test from '../components/test/index'
+import TestCulture from '../components/test/culture/isolatedorganism'
+import TestCultureSusceptibility from '../components/test/culture/susceptibility'
 import Encounter from '../components/encounter/index'
 import Lot from '../components/qualitycontrol/lot'
 import Stats from '../components/statistics/system/index'
@@ -217,6 +219,18 @@ export default new Router({
       path: '/test/index',
       name: 'Test',
       component: Test,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/test/:testId/measure/:measureId',
+      name: 'TestCulture',
+      component: TestCulture,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/test/:testId/result/:resultId/measure/:measureId/measurerange/:measureRangeId',
+      name: 'TestCultureSusceptibility',
+      component: TestCultureSusceptibility,
       beforeEnter: ifAuthenticated,
     },
     {

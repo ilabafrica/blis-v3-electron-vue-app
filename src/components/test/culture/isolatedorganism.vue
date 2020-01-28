@@ -50,7 +50,7 @@
   </div>
 </template>
 <script>
-  import { EventBus } from './../../../app.js';
+  import { EventBus } from './../../../main.js';
   import apiCall from '../../../utils/api'
   import organism from './organism'
 

@@ -394,7 +394,6 @@
 
       enterResults (test) {
         this.editedIndex = this.tests.indexOf(test)
-
         if (test.test_type.culture == 1) {
           this.$router.push({
             name:'TestCulture',
