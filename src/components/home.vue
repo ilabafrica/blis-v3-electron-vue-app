@@ -1,145 +1,139 @@
 <template>
   <div v-if='isAuthenticated && isProfileLoaded'>
 <div>
-    <v-layout>
-        <v-flex  sm6
-        xs12
-        md6
-        lg3 style="padding:10px;">
-        <v-card 
-      class="mx-auto"
-      color="#ff1000"
-      dark
-      max-width="400"
-      height='100%'
-        >
-        
-        <v-icon  style="font-size: 100px;">group</v-icon>
-          </v-card-actions>
-            <v-card-title primary-title>
-            <div>
-              <h3 class="headline mb-0">Total Patients Registered Today</h3>
-             
-            </div>
-          </v-card-title>
-              <v-card-title primary-title>
-            <div>
-              <div> <h3 class="headline mb-0">{{patient_count}}</h3></div>
-             
-            </div>
-          </v-card-title>
-
-                    <v-card-actions>
-        <v-btn to="/patients/patient" flat color="white">View More</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
 
 
-      <v-flex  sm6
-        xs12
-        md6
-        lg3 style="padding:10px;">
-        <v-card 
-      class="mx-auto"
-      color="#176ae8"
-      dark
-      max-width="400"
-      height='100%'
-    >
-        
-        <v-icon  style="font-size: 100px;">pages</v-icon>
-          </v-card-actions>
-            <v-card-title primary-title>
-            <div>
-              <h3 class="headline mb-0">Collected Specimen Today</h3>
-           
-            </div>
-          </v-card-title>
-              <v-card-title primary-title>
-            <div>
-              <div> <h3 class="headline mb-0">{{specimen_count}}</h3></div>
-             
-            </div>
-          </v-card-title>
-                    <v-card-actions>
-          <v-btn to="/test/index" flat color="white">View More</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-      
-         <v-flex  sm6
-        xs12
-        md6
-        lg3 style="padding:10px;">
-      <v-card 
-      class="mx-auto"
-      color="#ff9000"
-      dark
-      max-width="400"
-      height='100%'
-    >
-            <v-icon  style="font-size: 100px;">done_all</v-icon>
-  
-          <v-card-title primary-title>
-          
-            <div>
-              <h3 class="headline mb-0">Total Tests Done Today</h3>
-     
-            </div>
-          </v-card-title>
-              <v-card-title primary-title>
-            <div>
-              <div> <h3 class="headline mb-0">{{test_count}}</h3></div>
-             
-            </div>
-          </v-card-title>
-  
-          <v-card-actions>
-            <h3 class="headline mb-0"></h3>
-              <v-btn to="/test/index" flat color="white">View More</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
 
-       <v-flex  sm6
-        xs12
-        md6
-        lg3 style="padding:10px;">
-      <v-card 
-      class="mx-auto"
-      color="#11680c"
-      dark
-      max-width="400"
-        sub-icon="check_box"
-      height='100%'
-       >
-            <v-icon  style="font-size: 100px;">check_box</v-icon>
-  
-          <v-card-title primary-title>
-          
-            <div>
-              <h3 class="headline mb-0">Completed Tests Today</h3>
-            
-            </div>
-        
-          </v-card-title>
-      <v-card-title primary-title>
-            <div>
-              <div> <h3 class="headline mb-0">{{test_complete}}</h3></div>
-             
-            </div>
-          </v-card-title>
-          <v-card-actions>
-               <v-btn to="/test/index" flat color="white">View More</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
+
+ <v-layout wrap>
    
-      
+  <v-flex  sm6
+      xs12
+      md6
+      lg3 style="padding:10px;">
+      <v-card color="blue-grey darken-2" class="white--text">
+        <v-layout>
+          <v-flex xs5>
+            <v-img
+            src="https://image.flaticon.com/icons/svg/33/33308.svg"
+            height="125px"
+            contain
+            ></v-img>
+          </v-flex>
+       
+<v-flex xs7>
+  <v-card-title primary-title>
+    <div>
+      <div class="headline">Patients Registered Today</div>
+      <div class="title ml-2 mt-2">{{patient_count}}</div>
+      <div></div>
+    </div>
+  </v-card-title>
+</v-flex>
+</v-layout>
+<v-divider light></v-divider>
+<v-card-actions class="pa-3">
+ <v-btn to="/patients/patient" flat color="white">View More</v-btn>
+</v-card-actions>
+</v-card>
+</v-flex>
+
+<v-flex  sm6
+xs12
+md6
+lg3 style="padding:10px;">
+<v-card color="cyan darken-2" class="white--text">
+  <v-layout>
+    <v-flex xs5>
+      <v-img
+      src="test-tube.png"
+      height="125px"
+      contain
+      ></v-img>
+    </v-flex>
+    <v-flex xs7>
+      <v-card-title primary-title>
+        <div>
+          <div class="headline">Specimen Collected Today</div>
+          <div class="headline">{{specimen_count}}</div>
+          <div></div>
+        </div>
+      </v-card-title>
+    </v-flex>
+  </v-layout>
+  <v-divider light></v-divider>
+  <v-card-actions class="pa-3">
+   <v-btn to="/test/index" flat color="white">View More</v-btn>
+ </v-card-actions>
+</v-card>
+</v-flex>
+<v-flex  sm6
+xs12
+md6
+lg3 style="padding:10px;">
+<v-card color=" red darken-4" class="white--text">
+  <v-layout>
+    <v-flex xs5>
+      <v-img
+      src="alltests.png"
+      height="125px"
+      contain
+      ></v-img>
+    </v-flex>
+    <v-flex xs7>
+      <v-card-title primary-title>
+        <div>
+          <div class="headline">Total Tests Done Today</div>
+          <div class="headline">{{test_count}}</div>
+
+        </div>
+      </v-card-title>
+    </v-flex>
+  </v-layout>
+  <v-divider light></v-divider>
+  <v-card-actions class="pa-3">
+   <v-btn to="/test/index" flat color="white">View More</v-btn>
+ </v-card-actions>
+</v-card>
+</v-flex>
+<v-flex  sm6
+xs12
+md6
+lg3 style="padding:10px;">
+<v-card color="green" class="white--text">
+  <v-layout row>
+    <v-flex xs7>
+      <v-card-title primary-title>
+        <div>
+          <div class="headline">Completed Tests Today</div>
+          <div class="headline">{{test_complete}}</div>
+
+        </div>
+      </v-card-title>
+    </v-flex>
+    <v-flex xs5>
+      <v-img
+      src="blood-sample.png"
+      height="125px"
+      contain
+      ></v-img>
+    </v-flex>
+  </v-layout>
+  <v-divider light></v-divider>
+  <v-card-actions class="pa-3">
+    <v-btn to="/test/index" flat color="white">View More</v-btn>
+
+  </v-card-actions>
+</v-card>
+</v-flex>
 
 
-    </v-layout>
+</v-layout>
+
+
+
+
+   
   </div>
     </div>
 </template>
