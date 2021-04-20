@@ -14,7 +14,7 @@
     </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="patient"
+      :items="patients"
       hide-actions
       class="elevation-1"
     >
@@ -33,9 +33,10 @@
             title="View Patient History"
             color="green"
             flat
-            v-if="$can('view_reports') && props.item.tests.length != 0"
-            :to="{name:'patient_reports_single', params:{id:props.item.id}}">
-            <!-- user new view_patient_report -->
+            v-if="$can('view_reports') && props.item.encounters && props.item.encounters.length != 0"
+            @click.native="openPDF(props.item.id)"
+            >
+            <!-- :to="{name:'patient_reports_single', params:{id:props.item.id}}" -->
             Report
             <v-icon right dark>list_alt</v-icon>
           </v-btn>
@@ -85,7 +86,7 @@
         { text: 'Date of Birth', value: 'birth_date' },
         { text: 'Actions', value: 'name', sortable: false }
       ],
-      patient: [],
+      patients: [],
       editedIndex: -1,
       editedItem: {
         identifier: '',
@@ -143,7 +144,7 @@
         apiCall({url: '/api/patient?' + this.query, method: 'GET' })
         .then(resp => {
           console.log(resp)
-          this.patient = resp.data;
+          this.patients = resp.data;
           this.pagination.total = resp.total;
           this.pagination.per_page = resp.per_page;
         })
@@ -157,7 +158,7 @@
       },
 
       editItem (item) {
-        this.editedIndex = this.patient.indexOf(item)
+        this.editedIndex = this.patients.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
@@ -167,8 +168,8 @@
         confirm('Are you sure you want to delete this item?') && (this.delete = true)
 
         if (this.delete) {
-          const index = this.patient.indexOf(item)
-          this.patient.splice(index, 1)
+          const index = this.patients.indexOf(item)
+          this.patients.splice(index, 1)
           apiCall({url: '/api/patient/'+item.id, method: 'DELETE' })
           .then(resp => {
             console.log(resp)
@@ -199,6 +200,10 @@
         this.$refs.testRequestForm.modal(patient);
       },
 
+      openPDF(patient_id){
+        window.open(process.env.VUE_APP_API_URL+"/api/stats/results/patient?pdf=true&patient_id="+patient_id, "_blank");
+      },
+
       save () {
 
         this.saving = true;
@@ -207,7 +212,7 @@
 
           apiCall({url: '/api/patient/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
           .then(resp => {
-            Object.assign(this.patient[this.editedIndex], this.editedItem)
+            Object.assign(this.patients[this.editedIndex], this.editedItem)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;
@@ -221,7 +226,7 @@
 
           apiCall({url: '/api/patient', data: this.editedItem, method: 'POST' })
           .then(resp => {
-            this.patient.push(this.editedItem)
+            this.patients.push(this.editedItem)
             console.log(resp)
             this.resetDialogReferences();
             this.saving = false;

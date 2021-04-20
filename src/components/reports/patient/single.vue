@@ -162,9 +162,12 @@ export default {
         this.pdf_url = ''
       },
     getPDF(){
+        window.open(process.env.VUE_APP_API_URL+this.url_prefix+"results/patient?pdf=true&id="+this.$route.params.id, "_blank");
+    /*
         Vue.set(this,"pdf_url", process.env.VUE_APP_API_URL+this.url_prefix+"results/patient?pdf=true&id="+this.$route.params.id)
         console.log("url is ",this.pdf_url)
-        Vue.set(this,"showPDF", true)        
+        Vue.set(this,"showPDF", true)
+    */
     }
   }
 };

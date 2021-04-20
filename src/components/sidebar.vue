@@ -4,12 +4,12 @@
         <v-img
           class="white--text"
           height="200px"
-          :src="home_url+'/storage/profile_pictures/'+organization.logo"
+          :src="home_url+'/profile_pictures/'+adhocConfigConstants.Logo"
         >
           <v-container fluid style="background: linear-gradient(to bottom, rgb(75,0,130, 0.1), rgba(75,0,130,0.9)); position: absolute; bottom: 0px; height: 10px">
             <v-layout>
               <v-flex xs12 align-end flexbox>
-                <p class="text-xs-center title">{{organization.name}}</p>
+                <p class="text-xs-center title">{{adhocConfigConstants.Facility_Name}}</p>
               </v-flex>
             </v-layout>
           </v-container>
@@ -138,7 +138,7 @@
     name: 'Sidebar',
     data: () => ({
       user: {},
-      organization: [],
+      adhocConfigConstants: [],
       lab_configurations: [
         {
           path: '/labconfiguration/generalconfiguration',
@@ -283,11 +283,18 @@
     mounted: function () {
       if (this.$store.getters.isAuthenticated) {
         this.$store.dispatch(USER_REQUEST)
-        
       }
     },
     methods: {
       initialize() {
+        apiCall({ url: "/api/adhocconfig?constants=true", method: "GET" })
+        .then(resp => {
+          console.log(resp);
+          this.adhocConfigConstants = resp;
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
       }
     },
     computed: {
@@ -297,7 +304,6 @@
         home_url:()=>{
           return process.env.VUE_APP_API_URL
         }
-        
       })
     },
     created() {

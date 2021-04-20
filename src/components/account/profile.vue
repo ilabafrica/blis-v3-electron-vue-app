@@ -134,7 +134,7 @@
 									<v-card>
 										<img
 											position
-											:src="home_url+'/storage/profile_pictures/'+editedItem.profile_picture"
+											:src="home_url+'/profile_pictures/'+editedItem.profile_picture"
 											height = "320"
 											width = "320"
 										/>

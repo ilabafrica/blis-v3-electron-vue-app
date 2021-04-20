@@ -117,6 +117,7 @@
         measures: {}
       },
       inputs: [],
+      numericRangeInputs: [],
     }),
 
     watch: {
@@ -145,6 +146,7 @@
 
             if (this.savedResults[i].measure.measure_type.code == 'numeric') {
               this.inputs[this.savedResults[i].measure.id] = this.savedResults[i].result;
+              this.numericRangeInputs[this.savedResults[i].measure.id] = this.savedResults[i].measure_range_id;
               this.onChange(this.savedResults[i].measure.id, 'numeric')
 
             }else if (this.savedResults[i].measure.measure_type.code == 'free_text') {
@@ -169,7 +171,7 @@
       onChange (measure_id, measureType) {
          this.$nextTick(() => {
            this.results.measures[measure_id] = {
-             measure_range_id: ((measureType == 'alphanumeric') ? this.inputs[measure_id] : null),
+             measure_range_id: ((measureType == 'alphanumeric') ? this.inputs[measure_id] : this.numericRangeInputs[measure_id]),
              result: ((measureType == 'numeric' || measureType == 'free_text') ? this.inputs[measure_id] : null)
            };
          });

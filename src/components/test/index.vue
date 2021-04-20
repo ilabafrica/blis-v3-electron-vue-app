@@ -80,12 +80,6 @@
               </p>
               <p class="blis_card_description" v-else>No Specimen</p>
             </v-flex>
-            <v-flex>
-              <v-btn class="blis_card_button" small title="New Test" color="error" round v-if="(test.test_status.code === 'started' || test.test_status.code === 'pending') && test.test_status.test_phase.code === 'analytical' && !test.specimen_rejection && $can('reject_test_specimen')" @click="rejectSpecimen(test)">
-                <v-icon left dark>cancel</v-icon>
-                Reject
-              </v-btn>
-            </v-flex>
           </v-layout>
           <p class="blis_card_title">Physician</p>
           <p class="blis_card_description">{{ test.requested_by }}</p>
@@ -95,9 +89,11 @@
             <v-btn outline fab title="Details" color="success" small @click="detail(test)">
               <v-icon dark>visibility</v-icon>
             </v-btn>
+            <!--
             <v-btn outline fab title="Print" color="primaryb" small v-if="test.specimen_id != null" @click="print(test.specimen_id)">
               <v-icon dark>gradient</v-icon>
             </v-btn>
+            -->
             <v-btn outline fab title="Edit" color="accent" small v-if="!test.specimen_rejection && test.test_status.code === 'completed' && $can('enter_test_result')" @click="enterResults(test)">
               <v-icon dark>edit</v-icon>
             </v-btn>
@@ -121,6 +117,10 @@
               @click="start(test)">
                 <v-icon left>play_arrow</v-icon>
                 Start
+              </v-btn>
+              <v-btn class="blis_card_button" small title="Reject Specimen" color="error" round v-if="(test.test_status.code === 'started' || test.test_status.code === 'pending') && test.test_status.test_phase.code === 'analytical' && !test.specimen_rejection && $can('reject_test_specimen')" @click="rejectSpecimen(test)">
+                <v-icon left dark>cancel</v-icon>
+                Reject
               </v-btn>
               <v-btn dark class="blis_card_button" small title="Enter" color="blue" round v-if="!test.specimen_rejection && test.test_status.code === 'started' && $can('enter_test_result')"
               @click="enterResults(test)">
@@ -419,15 +419,19 @@
       detail (test) {
         this.$refs.testDetailForm.modal(test);
       },
-
+/*
       print (item) {
         Vue.set(this,"pdf_url", process.env.VUE_APP_API_URL+'/print-tracker/'+item)
         Vue.set(this,"showPDF", true)
       },
+*/
       getPDF(id){
+        window.open(process.env.VUE_APP_API_URL+this.url_prefix+"results/patient?pdf=true&patient_id="+id, "_blank")
+      /*
         Vue.set(this,"pdf_url", process.env.VUE_APP_API_URL+this.url_prefix+"results/patient?pdf=true&id="+id)
         console.log("url is ",this.pdf_url)
         Vue.set(this,"showPDF", true)
+      */
       }
     }
   }

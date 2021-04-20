@@ -268,28 +268,28 @@
                         <v-select
                             :items="users"
                             label="Created By User"
-                            outline v-model="user_id_filter"
+                            v-model="user_id_filter"
                         ></v-select>
                     </v-flex>
                     <v-flex xs12 sm6 d-flex pt-4 pr-2>
                         <v-select
                             :items="users"
                             label="Tested By User"
-                            outline v-model="tested_by_filter"
+                            v-model="tested_by_filter"
                         ></v-select>
                     </v-flex>            
                     <v-flex xs12 sm6 d-flex pt-4 pr-2>
                         <v-select
                             :items="locations"
                             label="By Location"
-                            outline v-model="location_id_filter"
+                            v-model="location_id_filter"
                         ></v-select>
                     </v-flex>
                     <v-flex xs12 sm6 d-flex pt-4 pr-2>
                         <v-select
                             :items="categories"
                             label="By Category"
-                            outline v-model="category_id_filter"
+                            v-model="category_id_filter"
                         ></v-select>
                     </v-flex>
                 </v-layout>

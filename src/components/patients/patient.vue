@@ -34,9 +34,9 @@
               <v-flex xs12 sm12 md12>
                 <v-text-field
                   v-model="editedItem.identifier"
-                  :rules="[v => !!v || 'Patient No. is Required']"
                   label="Patient No.">
                 </v-text-field>
+                <!-- :rules="[v => !!v || 'Patient No. is Required']" -->
               </v-flex>
               <v-flex xs12 sm12 md12>
                 <v-text-field v-if="editedIndex > -1"
@@ -111,10 +111,10 @@
       </v-text-field>
     </v-card-title>
     <v-layout row wrap>
-    <v-flex sm12 md6 lg4 v-for="patient in patient" :key="patient.id">
+    <v-flex sm12 md6 lg4 v-for="patient in patients" :key="patient.id">
       <div class="blis_card">
         <div class="blis_card_top_right">
-          <v-btn outline fab small title="View History" color="green" v-if="$can('view_reports')" @click="toPatientHistory">
+          <v-btn outline fab small title="View History" color="green" v-if="$can('view_reports')" @click="toPatientHistory(patient)">
             <v-icon dark>description</v-icon>
           </v-btn>
         </div>
@@ -172,7 +172,6 @@
         loading: false,
         message: ""
       },
-      message:'',
       y: 'top',
       color: 'success',
       message: '',
@@ -198,7 +197,8 @@
         { text: 'Date of Birth', value: 'birth_date' },
         { text: 'Actions', value: 'name', sortable: false }
       ],
-      patient: [],
+      patients: [],
+      patient: {},
       editedIndex: -1,
       editedItem: {
         identifier: '',
@@ -256,7 +256,7 @@
         apiCall({url: '/api/patient?' + this.query, method: 'GET' })
         .then(resp => {
           console.log(resp)
-          this.patient = resp.data;
+          this.patients = resp.data;
           this.pagination.total = resp.total;
           this.pagination.per_page = resp.per_page;
           this.loadingMethod(false)
@@ -273,7 +273,7 @@
         Vue.set(this,"dialog",true);
       },
       editItem (item) {
-        this.editedIndex = this.patient.indexOf(item)
+        this.editedIndex = this.patients.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
@@ -320,7 +320,7 @@
             apiCall({url: '/api/patient/'+this.editedItem.id, data: this.editedItem, method: 'PUT' })
             .then(resp => {
               this.loading = false
-              Object.assign(this.patient[this.editedIndex], this.editedItem)
+              Object.assign(this.patients[this.editedIndex], resp)
               console.log(resp)
               this.resetDialogReferences();
               this.saving = false;
@@ -346,7 +346,8 @@
               this.editedItem.id = resp.id
               this.editedItem.gender = resp.gender
               this.editedItem.name = resp.name
-              this.patient.push(this.editedItem)
+              this.editedItem.identifier = resp.identifier
+              this.patients.push(this.editedItem)
               console.log(this.editedItem)
               this.resetDialogReferences();
               this.saving = false;

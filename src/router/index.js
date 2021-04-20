@@ -308,16 +308,16 @@ export default new Router({
     },
     //Patient Reports
     {
-      path: '/reports/patients',
-      name: 'patient_reports',
-      component: PatientReport,
+      path: '/reports/patients/:id',
+      name: 'patient_reports_single',
+      component: PatientReportSingle,
       beforeEnter: ifAuthenticated,
     },
     //Patient Reports
     {
-      path: '/reports/patients/:id',
-      name: 'patient_reports_single',
-      component: PatientReportSingle,
+      path: '/reports/patients',
+      name: 'patient_reports',
+      component: PatientReport,
       beforeEnter: ifAuthenticated,
     },
     {

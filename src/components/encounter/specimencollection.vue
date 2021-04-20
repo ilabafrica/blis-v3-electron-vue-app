@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+    >
+      {{ message }}
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-toolbar dark color="primary" class="elevation-0">
@@ -45,27 +53,18 @@
                     </v-text-field>
                   </v-flex>
                   <v-flex xs12 sm12 md12>
-                    <v-autocomplete
-                      v-bind:items="testTypes"
-                      v-model="specimenCollection.testIds"
-                      label="Tests"
-                      item-text="name"
-                      item-value="id"
-                      multiple chips>
-                    </v-autocomplete>
+                    Tests
                   </v-flex>
-                </v-layout>
-                <v-layout row wrap>
                   <v-flex
-                  xs6 sm6 md6
-                  v-for="test in tests"
-                  :key="test.id">
-                  <v-checkbox
-                    v-model="specimenCollection.testIds"
-                    v-if="isSpecimenCompartible(test)"
-                    :label="test.test_type.name"
-                    :value="test.id"> 
-                  </v-checkbox>
+                    xs12 sm12 md12
+                    v-for="test in tests"
+                    :key="test.id">
+                    <v-checkbox
+                      v-model="specimenCollection.testIds"
+                      v-if="isSpecimenCompartible(test)"
+                      :label="test.test_type.name"
+                      :value="test.id"> 
+                    </v-checkbox>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -83,6 +82,7 @@
 </template>
 
 <script>
+  import { EventBus } from './../../main.js'
   import apiCall from '../../utils/api'
   export default {
     data: () => ({
@@ -96,6 +96,10 @@
       testTypes: [],
       encounter: {},
       tests: {},
+      message:'',
+      y: 'top',
+      color: 'success',
+      snackbar: false,
       specimenCollection: {
         encounter_id: '',
         specimen_type_id: '',
@@ -120,10 +124,10 @@
 
       initialize () {
 
-        apiCall({url: '/api/specimentype', method: 'GET' })
+        apiCall({url: '/api/specimentype?all=true', method: 'GET' })
         .then(resp => {
-          console.log(resp.data)
-          this.specimenTypes = resp.data;
+          console.log(resp)
+          this.specimenTypes = resp;
         })
         .catch(error => {
           console.log(error.response)
@@ -174,6 +178,9 @@
           apiCall({url: '/api/encounter/specimencollection', data: this.specimenCollection, method: 'POST' })
           .then(resp => {
             console.log(resp)
+            EventBus.$emit('update-encounter-list', resp);
+            this.message = 'Specimen Collected';
+            this.snackbar = true;
             this.saving = false;
             this.loading = false
           })

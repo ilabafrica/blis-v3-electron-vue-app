@@ -1,7 +1,16 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="6000"
+      :top="y === 'top'"
+    >
+      {{ message }}
+    </v-snackbar>
     <specimencollection ref="specimenCollectionForm"></specimencollection>
     <encounterdetail ref="encounterDetailForm"></encounterdetail>
+    <specimenrejection ref="specimenRejectionForm"></specimenrejection>
     <v-card-title>
       Visits
       <v-spacer></v-spacer>
@@ -57,6 +66,17 @@
                 Collect
                 <v-icon right dark>gradient</v-icon>
               </v-btn>
+              <v-btn
+                outline
+                small
+                title="Reject Specimen"
+                color="error"
+                flat
+                v-if="props.item.tests && $can('accept_test_specimen')"
+                @click="rejectSpecimen(props.item)">
+                Reject
+                <v-icon right dark>cancel</v-icon>
+              </v-btn>
         </td>
       </template>
     </v-data-table>
@@ -75,17 +95,28 @@
   import { EventBus } from './../../main.js';
   import apiCall from '../../utils/api'
   import specimencollection from './specimencollection'
+  import specimenrejection from './specimenrejection'
   import encounterdetail from './encounterdetail'
 
   export default {
     name:'Encounter',
     components: {
       specimencollection,
+      specimenrejection,
       encounterdetail,
     },
     data: () => ({
       search: '',
       query: '',
+      editedIndex: -1,
+      message:'',
+      y: 'top',
+      color: 'success',
+      snackbar: false,
+      loadingDialog: {
+        loading: false,
+        message: ""
+      },
       pagination: {
         page: 1,
         per_page: 0,
@@ -123,8 +154,11 @@
     mounted() {
       // Listen for the update-encounter-list event and its payload.
       EventBus.$on('update-encounter-list', data => {
+        console.log(data)
         console.log('update-encounter-list')
         Object.assign(this.encounters[this.editedIndex], data)
+        // this.message = 'Entry Recorded Succesfully';
+        // this.snackbar = true;
       });
     },
 
@@ -167,7 +201,13 @@
       },
 
       collectSpecimen (encounter) {
+        this.editedIndex = this.encounters.indexOf(encounter)
         this.$refs.specimenCollectionForm.modal(encounter);
+      },
+
+      rejectSpecimen (encounter) {
+        this.editedIndex = this.encounters.indexOf(encounter)
+        this.$refs.specimenRejectionForm.modal(encounter);
       },
 
       detail (encounter) {

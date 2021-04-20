@@ -23,7 +23,7 @@
               color="grey lighten-4"
               class="mr-2"
             >
-              <img :src="home_url+'/storage/profile_pictures/'+pic" alt="">
+              <img :src="home_url+'/profile_pictures/'+pic" alt="">
             </v-avatar>
           </v-flex>
           {{name}}
@@ -80,7 +80,6 @@
 </style>
 
 <script>
-  import HelloWorld from './HelloWorld'
   import Sidebar from './sidebar'
   import Loading from './loading'
   import { mapGetters, mapState } from 'vuex'
@@ -89,7 +88,6 @@
   export default {
     name: 'App',
     components: {
-      HelloWorld,
       Sidebar,
       Loading
     },
